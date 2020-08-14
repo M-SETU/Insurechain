@@ -15,6 +15,13 @@ class App extends Component {
          <Route path='/' exact component={Home}/> 
          <Route path='/createpolicy' exact component={CreatePolicy}/>
          <Route path='/createclaim' exact component={CreateClaim}/>
+          <Route path='/createpolicydash' exact component={CreatePolicyDash}/>
+         
+         <Route path='/createclaimdash' exact component={CreateClaimPolicy}/>
+         
+         
+         <Route path='/admin' exact component={Admin}/>
+         </Switch>
          </Switch>
       </div>
       
