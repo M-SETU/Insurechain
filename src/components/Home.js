@@ -4,6 +4,7 @@ import { Redirect, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CreatePolicy from './CreatePolicy.js';
 import logo from '../images/logos/Matic logo symbol.png';
+import { Dropdown, Menu } from 'semantic-ui-react'
 
 class Home extends Component {
 
@@ -12,6 +13,7 @@ class Home extends Component {
     this.state = {
       name: "",
       network: "",
+      address:"",
       click: false
     };
     this.handleSubmit1 = this.handleSubmit1.bind(this);
@@ -22,6 +24,7 @@ class Home extends Component {
     await this.setState({
       name: "LIC",
       network: "goerli",
+      address: "0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF",
       click: true
     })
   }
@@ -30,6 +33,7 @@ class Home extends Component {
     await this.setState({
       name: "HDFC",
       network: "maticMumbai",
+      address:"0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF",
       click: true
     })
   }
@@ -37,8 +41,8 @@ class Home extends Component {
   render () {
     if (this.state.click === true) {
       return <Redirect to={{
-        pathname: '/createpolicy',
-        state: { name: this.state.name, network: this.state.network }
+        pathname: '/createpolicydash',
+        state: { name: this.state.name, network: this.state.network, address: this.state.address}
     }}
 />
       
@@ -48,13 +52,9 @@ class Home extends Component {
       <div>
         <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
           <a className="navbar-brand">
-            <img src={logo} style = {{width: "60px" , height: "60px"}} />
-            <strong style={{ display: "inline-block" , paddingtop: "20px", color:"white" ,fontSize:"37px"}}>Matic</strong>
-          </a>
-        </nav>
-
-
-      
+            <img src={logo} style = {{width: "40px" , height: "40px"}} />
+             </a>
+        </nav> 
         <div align="center">
           <div style={{margin: "20px", display: "inline-block"}}>
             <div align= "left">
