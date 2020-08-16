@@ -1,9 +1,9 @@
-import { Button, Card, Image , Form, Input, TextArea, Select, Dropdown, Menu} from 'semantic-ui-react'
-import MenuExampleSizeMini from './MenuExampleSizeMini.js';
+import { Button, Card, Form, Input,  Select, Menu} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
+import logo from '../images/logos/Matic logo symbol.png';
 
 const PolicyCard = props => (
   <div style={{display: "inline-block", marginright:"10px"}}>
@@ -165,9 +165,14 @@ class CreatePolicyDash extends Component {
   render() {
 
     return (
-      <div style={{margin: "20px"}} align="center" >
-             <>
-          <div>
+      <div>
+          <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
+              <div className="navbar-brand">
+                <img src={logo} style = {{width: "40px" , height: "40px"}} />
+              </div>
+          </nav> 
+          <>
+          <div style={{margin: "20px"}} align="center" >
           <Menu size='mini'>
             <Menu.Item
               name='Admin'
@@ -179,6 +184,9 @@ class CreatePolicyDash extends Component {
             />
 
             <Menu.Menu position='right'>
+              <Menu.Item
+                name= {this.state.account}
+              />
           
 
               <Menu.Item>

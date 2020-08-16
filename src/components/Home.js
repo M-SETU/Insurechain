@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Card, Image } from 'semantic-ui-react'
-import { Redirect, Route } from "react-router-dom";
+import { Button, Card} from 'semantic-ui-react'
+import { Redirect } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import CreatePolicy from './CreatePolicy.js';
 import logo from '../images/logos/Matic logo symbol.png';
-import { Dropdown, Menu } from 'semantic-ui-react'
 
 class Home extends Component {
 
@@ -51,9 +49,9 @@ class Home extends Component {
     return (
       <div>
         <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
-          <a className="navbar-brand">
-            <img src={logo} style = {{width: "40px" , height: "40px"}} />
-             </a>
+            <div className="navbar-brand">
+              <img src={logo} style = {{width: "40px" , height: "40px"}} />
+            </div>
         </nav> 
         <div align="center">
           <div style={{margin: "20px", display: "inline-block"}}>
