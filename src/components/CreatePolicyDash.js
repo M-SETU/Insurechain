@@ -6,18 +6,12 @@ import Portis from '@portis/web3';
 import logo from '../images/logos/Matic logo symbol.png';
 
 const PolicyCard = props => (
-  <div style={{display: "inline-block", marginright:"10px"}}>
-    <Card>
-      <Card.Content>
-        <Card.Header>{props.policyCard[0].toNumber()}</Card.Header>
-        <Card.Meta>{props.policyCard[4]}</Card.Meta>
-        <Card.Meta>{props.policyCard[2].toNumber()}</Card.Meta>
-        <Card.Description>
-          {props.policyCard[3]}
-        </Card.Description>
-      </Card.Content>
-    </Card>
-  </div>
+  <tr>
+    <td data-label="">{props.policyCard[0].toNumber()}</td>
+    <td data-label="">{props.policyCard[2].toNumber()}</td>
+    <td data-label="">{props.policyCard[4]}</td>
+    <td data-label="">{props.policyCard[3]}</td>
+  </tr>
 )
 
 class CreatePolicyDash extends Component {
@@ -28,7 +22,6 @@ class CreatePolicyDash extends Component {
       account: '',
       hash: '',
       policySelected: 'SmartLife',
-      policy:{},
       policyTypes: [],
       allpolicyTypes: [],
       portis: {},
@@ -39,19 +32,13 @@ class CreatePolicyDash extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handlePolicySubmit = this.handlePolicySubmit.bind(this);
-    //this.handleSubmit = this.handleSubmit.bind(this);
-    // this.login = this.login.bind(this);
-    // this.logout = this.logout.bind(this);
-    // this.loadWeb3 = this.loadWeb3.bind(this);
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.policyList = this.policyList.bind(this);
 
   
   }
   async componentWillMount() {
-    console.log(this.props.policy);
-    console.log(this.props.portis);
-    if(this.props.loginstatus == true)
+    if(this.props.loginstatus === true)
     {
       await this.setState({
         policy: this.props.policy,
@@ -60,47 +47,9 @@ class CreatePolicyDash extends Component {
         account: this.props.account
       })
       await this.loadBlockchainData();
+      await this.handlePoliciesLoop();
     }
   }
-  // async login() {
-  //   await this.loadWeb3();
-  //   await this.loadBlockchainData();
-  //   await this.handlePoliciesLoop();
-  // }
-
-  // async logout() {
-  //   await this.state.portis.logout(() => {
-  //     console.log('User logged out');
-  //   });
-  // }
-
-  
-  // async loadWeb3() {
-
-  //   // if (window.ethereum) {
-  //   //   const web3 = new Web3(window.ethereum)
-  //   //   await window.ethereum.enable()
-  //   // this.setState({ web3 })
-  //   // }
-  //   // else if (window.web3) {
-  //   //   const web3 = new Web3(window.web3.currentProvider)
-  //   //   this.setState({ web3 })
-  //   // }
-  //   // else {
-  //   //   window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-  //   // }
-
-  //   const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.props.route.params.network);
-  //   this.setState({
-  //     portis: portis
-  //   })
-  //   const web3 = new Web3(portis.provider);
-  //   this.setState({ web3 })
-  //   let acc = await web3.eth.getAccounts();
-  //   this.setState({
-  //     account: acc[0]
-  //   })
-  // }
 
   async loadBlockchainData(){
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
@@ -111,12 +60,9 @@ class CreatePolicyDash extends Component {
       policyTypes: a
     })
 
-    console.log(a)
-
     let b = await this.state.policy.methods.getUserCustomerId(
       this.state.account)
     .call({from: this.state.account});
-    console.log(b.toNumber());
 
     let c = await this.state.policy.methods.getUserPolicies(
       this.state.account)
@@ -134,20 +80,20 @@ class CreatePolicyDash extends Component {
   }
 
   async handlePolicySubmit (){
-    console.log(this.state.hash)
-    console.log(this.state.policySelected)
-    console.log(this.state.policy)
-    console.log(this.state.account)
-
-    this.state.policy.methods.createPolicy(
-      this.state.hash, this.state.policySelected)
-    .send({from: this.state.account, gasPrice: 400000})
-    .then ((receipt) => {
-      console.log(receipt);
-    })
-    .catch((err)=> {
-      console.log(err);
-    });
+    try{
+      await this.state.policy.methods.createPolicy(
+        this.state.hash, this.state.policySelected)
+      .send({from: this.state.account, gasPrice: 400000})
+      .then ((receipt) => {
+        console.log(receipt);
+      })
+      .catch((err)=> {
+        console.log(err);
+      });
+    } catch {
+      window.alert("Login first")
+    }
+    
   }
 
   handleChange (evt) {
@@ -179,34 +125,7 @@ class CreatePolicyDash extends Component {
 
     return (
       <div>
-          <>
-          <div style={{margin: "20px"}} align="center" >
-          <Menu size='mini'>
-            <Menu.Item
-              name='Admin'
-              onClick={this.handleItemClick}
-            />
-            <Menu.Item
-              name='User'
-              onClick={this.handleItemClick}
-            />
-
-            <Menu.Menu position='right'>
-              <Menu.Item
-                name= {this.state.account}
-              />
-          
-
-              <Menu.Item>
-              <Button onClick={this.login} basic color='green'>
-                Login
-              </Button>
-              </Menu.Item>
-            </Menu.Menu>
-          </Menu>
-          </div>
-
-          <div style={{marginLeft: "350px",marginTop: "40px"}} align="center">
+        <div style={{marginLeft: "350px",marginTop: "40px"}} align="center">
         <Card.Group>
             <Card>
               <Card.Content>
@@ -281,13 +200,25 @@ class CreatePolicyDash extends Component {
           
           </Card.Group>
 
-              </div>
-          <Card.Group>  
-              <div  style={{marginLeft: "350px",marginTop: "40px", padding: "20px"}} align="center">
-                { this.policyList() }
-              </div> 
-          </Card.Group>
-        </>
+          </div>
+          <br></br>
+          <div style={{padding:"20px"}}>
+            <div style={{fontSize:"20px", position:"center"}} align = "center"><strong>All Policies</strong></div>
+              <table className="ui celled table ">
+                <thead>
+                <tr>
+                  <th>Policy Id</th>
+                  <th>Customer ID</th>
+                  <th>Policy Type</th>
+                  <th>KYC Hash</th>
+                </tr></thead>
+                <tbody>
+                  { this.policyList() }
+                </tbody>
+              </table>
+          </div>
+          
+        
       </div>
     );
   }

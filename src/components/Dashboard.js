@@ -24,11 +24,11 @@ class Dashboard extends Component {
         address:"",
         chainId: 0,
         click: false,
-        login: false
+        login: false,
+        loginText: "Login"
       };
 
         this.login = this.login.bind(this);
-        this.logout = this.logout.bind(this);
         this.loadWeb3 = this.loadWeb3.bind(this);
         this.loadBlockchainData = this.loadBlockchainData.bind(this);
         this.handleSubmit1 = this.handleSubmit1.bind(this);
@@ -57,20 +57,31 @@ class Dashboard extends Component {
     
 
     async login() {
-      await this.loadWeb3();
-      await this.loadBlockchainData();
-      this.setState({
-          login: true
-      })
-    }
-  
-    async logout() {
-      await this.state.portis.logout(() => {
-        console.log('User logged out');
-      });
-      this.setState({
-        login: false
-    })
+      try {
+        if(this.state.loginText==="Login"){
+            await this.loadWeb3();
+            await this.loadBlockchainData();
+            await this.setState({
+                login: true
+            })
+            if(this.state.account!==''){
+                await this.setState({
+                    loginText: "Logout"
+                })
+            }
+          }else{
+            await this.state.portis.logout(() => {
+                console.log('User logged out');
+            });
+            this.setState({
+                login: false,
+                loginText: "Login",
+                account: ''
+            })
+          }
+      } catch {
+          window.alert("select Vendor first")
+      }
     }
   
     
@@ -107,27 +118,24 @@ class Dashboard extends Component {
                                 <img src={logo} style = {{width: "40px" , height: "40px"}} />
                             </div>
                         </li>
-                        <li style={{display:"inline-block"}}><NavLink
-                            to="/admin"
-                            exact
-                            activeClassName="my-active"
-                            activeStyle={{
-                                color: '#fa923f',
-                                textDecoration: 'underline'
-                            }}
-                            >Admin</NavLink></li>
+                        <li style={{display:"inline-block"}}><NavLink to={{
+                            pathname: "/admin"
+                            }}>Admin</NavLink>
+                        </li>
                         <li style={{display:"inline-block"}}><NavLink to={{
                             pathname: '/CreatePolicyDash',
-                        }}>policy</NavLink></li>
+                            }}>policy</NavLink>
+                        </li>
                         <li style={{display:"inline-block"}}><NavLink to={{
                             pathname: '/CreateClaimPolicy',
-                        }}>claims</NavLink></li>
+                            }}>claims</NavLink>
+                        </li>
                         <li style={{display:"inline-block", position:"right"}} >
                             {this.state.account}
                         </li>
                         <li style={{display:"inline-block", position:"right"}} >
                             <Button onClick={this.login} basic color='green'>
-                                Login
+                                {this.state.loginText}
                             </Button>
                         </li>
                     </ul>
@@ -136,17 +144,19 @@ class Dashboard extends Component {
             <Switch>    
                 <Route path="/admin" component={
                     () => <Admin 
-                        policy={this.state.policy} 
+                        address={this.state.address} 
                         web3={this.state.web3} 
                         account = {this.state.account}
-                        portis = {this.state.portis} />}/>
+                        portis = {this.state.portis}
+                        loginstatus = {this.state.login}/>}/>
 
                 <Route path="/CreateClaimPolicy" component={
                     () => <CreateClaimPolicy 
-                        policy={this.state.policy} 
+                        address={this.state.address} 
                         web3={this.state.web3} 
                         account = {this.state.account}
-                        portis = {this.state.portis} />}/>
+                        portis = {this.state.portis}
+                        loginstatus = {this.state.login} />}/>
 
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 

@@ -42,46 +42,33 @@ class Admin extends Component {
       claimIds: [],
       policiesList: [],
       claimsList: [],
+      web3: {},
+      address: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-    this.loadWeb3 = this.loadWeb3.bind(this);
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.handleClaimButton = this.handleClaimButton.bind(this);
     this.claimReject = this.claimReject.bind(this);
     this.claimApprove = this.claimApprove.bind(this);
   
   }
-
-  async login() {
-    await this.loadWeb3();
-    await this.loadBlockchainData();
-    await this.handleClaimsLoop();
-  }
-
-  async logout() {
-    await this.state.portis.logout(() => {
-      console.log('User logged out');
-    });
-  }
-
-  async loadWeb3() {
-    const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', "goerli");
-    this.setState({
-      portis: portis
-    })
-    const web3 = new Web3(portis.provider);
-    this.setState({ web3 })
-    let acc = await web3.eth.getAccounts();
-    this.setState({
-      account: acc[0]
-    })
+  async componentWillMount() {
+    if(this.props.loginstatus == true)
+    {
+      await this.setState({
+        policy: this.props.policy,
+        web3: this.props.web3,
+        portis: this.props.portis,
+        account: this.props.account
+      })
+      await this.loadBlockchainData();
+      await this.handleLoop();
+    }
   }
 
   async loadBlockchainData(){
-    const policy = new this.state.web3.eth.Contract(Policy, "0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF");
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
     let b = await this.state.policy.methods.getPolicyIds()
@@ -179,34 +166,9 @@ class Admin extends Component {
 
 
   render() {
-
-    return (
-      <div>
-             <>
-          <div style={{margin: "20px"}}>
-          <Menu size='mini'>
-            <Menu.Item
-              name='Admin'
-              onClick={this.handleItemClick}
-            />
-            <Menu.Item
-              name='User'
-              onClick={this.handleItemClick}
-            />
-
-            <Menu.Menu position='right'>
-              <Menu.Item
-                name= {this.state.account}
-              />
-              <Menu.Item>
-              <Button onClick={this.login} basic color='green'>
-                Login
-              </Button>
-              </Menu.Item>
-            </Menu.Menu>
-          </Menu>
-          </div>
-          <br></br>
+    if(this.props.oginstatus==="true" && this.state.account === "admin"){
+      return (
+        <div>
           <div style={{margin:"30px"}}>
                 <div style={{fontSize:"25px"}} align = "center"><strong>All Policies</strong></div>
                 <table className="ui celled table ">
@@ -243,9 +205,17 @@ class Admin extends Component {
                   </tbody>
                 </table>
         </div>   
-        </>
+      </div>
+      )
+    }else{
+      return (
+          <div style={{position: "center", fontSize: "30px", color: "black"}} align="center">
+          <br></br><br></br>
+          <strong>You Should be Admin</strong><br></br><br></br>
+          Login with Admin Account
       </div>
     );
+    }
   }
 }
 

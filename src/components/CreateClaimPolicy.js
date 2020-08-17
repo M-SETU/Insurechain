@@ -6,21 +6,15 @@ import Portis from '@portis/web3';
 import logo from '../images/logos/Matic logo symbol.png';
 
 const ClaimCard = props => (
-  <div>
-    <Card>
-      <Card.Content>
-        <Card.Header>{props.claimCard[0].toNumber()}</Card.Header>
-        <Card.Meta>{props.claimCard[1].toNumber()}</Card.Meta>
-        <Card.Meta>{props.claimCard[2]}</Card.Meta>
-        <Card.Description>
-          {props.claimCard[3]}
-        </Card.Description>
-        <Card.Meta>{props.claimCard[4].toNumber()}</Card.Meta>
-        <Card.Meta>{props.claimCard[5]}</Card.Meta>
-        <Card.Meta>{props.claimCard[6]}</Card.Meta>
-      </Card.Content>
-    </Card>
-  </div>
+  <tr>
+    <td>{props.claimCard[0].toNumber()}</td>
+    <td>{props.claimCard[1].toNumber()}</td>
+    <td>{props.claimCard[2]}</td>
+    <td>{props.claimCard[3]}</td>
+    <td>{props.claimCard[4].toNumber()}</td>
+    <td>{props.claimCard[5]}</td>
+    <td>{props.claimCard[6]}</td>
+  </tr>
 )
 
 class CreateClaimPolicy extends Component {
@@ -38,59 +32,41 @@ class CreateClaimPolicy extends Component {
       policy:{},
       portis: {},
       policyIdsArray: [],
-      claimsList: []
+      claimsList: [],
+      web3: {},
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleClaimSubmit = this.handleClaimSubmit.bind(this);
-    //this.handleSubmit = this.handleSubmit.bind(this);
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-    this.loadWeb3 = this.loadWeb3.bind(this);
+    this.handleClaimSubmit = this.handleClaimSubmit.bind(this); 
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.handleClaimList = this.handleClaimList.bind(this);
-
-  
   }
 
-  async login() {
-    await this.loadWeb3();
-    await this.loadBlockchainData();
-    await this.handleClaimsLoop();
-  }
-
-  async logout() {
-    await this.state.portis.logout(() => {
-      console.log('User logged out');
-    });
-  }
-
-  async loadWeb3() {
-    const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', "goerli");
-    this.setState({
-      portis: portis
-    })
-    const web3 = new Web3(portis.provider);
-    this.setState({ web3 })
-    let acc = await web3.eth.getAccounts();
-    this.setState({
-      account: acc[0]
-    })
+  async componentWillMount() {
+    if(this.props.loginstatus == true)
+    {
+      await this.setState({
+        policy: this.props.policy,
+        web3: this.props.web3,
+        portis: this.props.portis,
+        account: this.props.account
+      })
+      await this.loadBlockchainData();
+      await this.handleClaimsLoop();
+    }
   }
 
   async loadBlockchainData(){
-    const policy = new this.state.web3.eth.Contract(Policy, "0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF");
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
     let b = await this.state.policy.methods.getUserCustomerId(
       this.state.account)
     .call({from: this.state.account});
-    console.log(b.toNumber());
 
     let c = await this.state.policy.methods.getUserPolicies(
       this.state.account)
     .call({from: this.state.account});
-    console.log(c[0].toNumber());
 
     this.setState({
       policyIdsArray: c,
@@ -98,21 +74,25 @@ class CreateClaimPolicy extends Component {
   }
 
   async handleClaimSubmit (){
-
-    this.state.policy.methods.claimPolicy(
-      this.state.policyId, 
-      this.state.claimDate,
-      this.state.hospitalName,
-      this.state.description,
-      this.state.amount,
-      this.state.claimHash)
-    .send({from: this.state.account, gasPrice: 400000})
-    .then ((receipt) => {
-      console.log(receipt);
-    })
-    .catch((err)=> {
-      console.log(err);
-    });
+    try{
+      await this.state.policy.methods.claimPolicy(
+        this.state.policyId, 
+        this.state.claimDate,
+        this.state.hospitalName,
+        this.state.description,
+        this.state.amount,
+        this.state.claimHash)
+      .send({from: this.state.account, gasPrice: 400000})
+      .then ((receipt) => {
+        console.log(receipt);
+      })
+      .catch((err)=> {
+        console.log(err);
+      });
+    }
+    catch{
+      window.alert("Login First")
+    }
   }
 
   handleChange (evt) {
@@ -142,47 +122,26 @@ class CreateClaimPolicy extends Component {
       return <ClaimCard claimCard={currentclaim} key={currentclaim[0].toNumber()}/>;
     })
   }
-
-
   render() {
-
     return (
-      <div>
-             <>
-          <div style={{margin: "20px"}} align="center" >
-            <Menu size='mini' color="blue">
-              <Menu.Item
-                name='Admin'
-                onClick={this.handleItemClick}
-              />
-              <Menu.Item
-                name='User'
-                onClick={this.handleItemClick}
-              />
-
-              <Menu.Menu position='right'>
-                <Menu.Item
-                  name= {this.state.account}
-                />
-                <Menu.Item>
-                <Button onClick={this.login} basic color='green'>
-                  Login
-                </Button>
-                </Menu.Item>
-              </Menu.Menu>
-            </Menu>
-          </div>
-
-          <div style={{marginLeft: "350px",marginTop: "40px"}} align="center">
-        <Card.Group>
-            <Card>
-              <Card.Content>
-                
-                <Card.Header>Claim Policy</Card.Header>
-                <Card.Meta>Claim</Card.Meta>
-                <Card.Description>
-                
-                <div  align="center" >
+      <div align="center">
+          <div style={{
+            marginLeft: "75px", 
+            marginRight:"75px", 
+            marginTop:"40px", 
+            position:"center",
+            }} align="center">
+              <div style={{
+                borderWidth:"2px", 
+                borderColor:"blue", 
+                padding:"25px",
+                borderRadius:"15px" 
+                }} className = "border border-dark">
+                <div align="center">
+                  <div style={{fontSize:"20px"}}>
+                    <strong>Claim Policy</strong>
+                  </div>
+                  <br></br>
                   <div >
                     <Form>
                       <Form.Group widths='equal'>
@@ -194,12 +153,14 @@ class CreateClaimPolicy extends Component {
                           name="policyId"
                           onChange={this.handleChange}
                         />
-                      </Form.Group>
-                    </Form>
-                  </div>
-                  <div >
-                    <Form>
-                      <Form.Group widths='equal'>
+                        <Form.Field
+                          id='form-input-control-claimdate'
+                          control={Input}
+                          label='Claim Date'
+                          placeholder='Date'
+                          name="claimDate"
+                          onChange={this.handleChange}
+                        />
                         <Form.Field
                           id='form-input-control-claimdate'
                           control={Input}
@@ -211,6 +172,7 @@ class CreateClaimPolicy extends Component {
                       </Form.Group>
                     </Form>
                   </div>
+                  
                   <div >
                     <Form>
                       <Form.Group widths='equal'>
@@ -222,12 +184,6 @@ class CreateClaimPolicy extends Component {
                           name="hospitalName"
                           onChange={this.handleChange}
                         />
-                      </Form.Group>
-                    </Form>
-                  </div>
-                  <div >
-                    <Form>
-                      <Form.Group widths='equal'>
                         <Form.Field
                           id='form-input-control-description'
                           control={Input}
@@ -236,12 +192,6 @@ class CreateClaimPolicy extends Component {
                           name="description"
                           onChange={this.handleChange}
                         />
-                      </Form.Group>
-                    </Form>
-                  </div>
-                  <div >
-                    <Form>
-                      <Form.Group widths='equal'>
                         <Form.Field
                           id='form-input-control-amount'
                           control={Input}
@@ -268,27 +218,34 @@ class CreateClaimPolicy extends Component {
                     </Form>
                   </div>
                 </div>
-
-
-                </Card.Description>
-              </Card.Content>
-              <Card.Content extra>
+                
                 <div className='ui two buttons'>
                   <Button onClick={this.handleClaimSubmit} basic color='blue'>
                     Claim
                   </Button>
-                
                 </div>
-              </Card.Content>
-            </Card>
-              <Card.Group>  
-                <div>
+            </div>
+        </div> 
+        <br></br>
+          <div style={{padding:"20px"}}>
+            <div style={{fontSize:"20px", position:"center"}} align = "center"><strong>All Claims</strong></div>
+              <table className="ui celled table ">
+                <thead>
+                  <tr>
+                    <th>ClaimId</th>
+                    <th>Date</th>
+                    <th>Hospital Name</th>
+                    <th>description</th>
+                    <th>docs</th>
+                    <th>amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
                   { this.handleClaimList() }
-                </div> 
-              </Card.Group>
-          </Card.Group>
-        </div>   
-        </>
+                </tbody>
+              </table>
+          </div>  
       </div>
     );
   }
