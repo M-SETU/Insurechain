@@ -86,6 +86,11 @@ class Dashboard extends Component {
   
     
     async loadWeb3() {
+
+   // const myPrivateEthereumNode = {
+   //   rpcUrl: 'https://rpc-mumbai.matic.today', // your own node url
+   //  chainId: 80001 // chainId of your own node
+   //  }
   
       const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.network);
       this.setState({
