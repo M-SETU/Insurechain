@@ -6,7 +6,7 @@ import Portis from '@portis/web3';
 import logo from '../images/logos/Matic logo symbol.png';
 
 const ClaimCard = props => (
-  <div style={{display: "inline-block", marginright:"10px"}}>
+  <div>
     <Card>
       <Card.Content>
         <Card.Header>{props.claimCard[0].toNumber()}</Card.Header>
@@ -148,33 +148,29 @@ class CreateClaimPolicy extends Component {
 
     return (
       <div>
-          <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
-              <div className="navbar-brand">
-                <img src={logo} style = {{width: "40px" , height: "40px"}} />
-              </div>
-          </nav> 
              <>
           <div style={{margin: "20px"}} align="center" >
-          <Menu size='mini'>
-            <Menu.Item
-              name='Admin'
-              onClick={this.handleItemClick}
-            />
-            <Menu.Item
-              name='User'
-              onClick={this.handleItemClick}
-            />
+            <Menu size='mini' color="blue">
+              <Menu.Item
+                name='Admin'
+                onClick={this.handleItemClick}
+              />
+              <Menu.Item
+                name='User'
+                onClick={this.handleItemClick}
+              />
 
-            <Menu.Menu position='right'>
-          
-
-              <Menu.Item>
-              <Button onClick={this.login} basic color='green'>
-                Login
-              </Button>
-              </Menu.Item>
-            </Menu.Menu>
-          </Menu>
+              <Menu.Menu position='right'>
+                <Menu.Item
+                  name= {this.state.account}
+                />
+                <Menu.Item>
+                <Button onClick={this.login} basic color='green'>
+                  Login
+                </Button>
+                </Menu.Item>
+              </Menu.Menu>
+            </Menu>
           </div>
 
           <div style={{marginLeft: "350px",marginTop: "40px"}} align="center">
@@ -286,7 +282,7 @@ class CreateClaimPolicy extends Component {
               </Card.Content>
             </Card>
               <Card.Group>  
-                <div align="center">
+                <div>
                   { this.handleClaimList() }
                 </div> 
               </Card.Group>

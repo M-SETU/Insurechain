@@ -84,12 +84,10 @@ class Admin extends Component {
     const policy = new this.state.web3.eth.Contract(Policy, "0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF");
     this.setState({policy});
 
-    let b = await this.state.policy.methods.getPolicyIds(
-      this.state.account)
+    let b = await this.state.policy.methods.getPolicyIds()
     .call({from: this.state.account});
 
-    let c = await this.state.policy.methods.getAllClaimIds(
-      this.state.account)
+    let c = await this.state.policy.methods.getAllClaimIds()
     .call({from: this.state.account});
 
     this.setState({
@@ -184,11 +182,6 @@ class Admin extends Component {
 
     return (
       <div>
-        <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
-              <div className="navbar-brand">
-                <img src={logo} style = {{width: "40px" , height: "40px"}} />
-              </div>
-          </nav> 
              <>
           <div style={{margin: "20px"}}>
           <Menu size='mini'>
@@ -202,8 +195,9 @@ class Admin extends Component {
             />
 
             <Menu.Menu position='right'>
-          
-
+              <Menu.Item
+                name= {this.state.account}
+              />
               <Menu.Item>
               <Button onClick={this.login} basic color='green'>
                 Login
@@ -229,7 +223,7 @@ class Admin extends Component {
                 </table>
           </div>
           <br></br>
-          <div>
+          <div style={{margin: "30px"}}>
                 <div style={{fontSize:"25px"}} align = "center"><strong>All Claims</strong></div>
                 <table className="ui celled table">
                   <thead>

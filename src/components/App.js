@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
-import Home from './Home.js';
-import { Route ,Switch } from 'react-router-dom';
-import CreatePolicyDash from "./CreatePolicyDash.js";
-import CreateClaimPolicy from "./CreateClaimPolicy.js";
-import Admin from "./admin.js";
+import { Route ,Switch , BrowserRouter } from 'react-router-dom';
+import Dashboard from "./Dashboard.js";
 
 class App extends Component {
 
   render() {
     return (
-      <div>
-        <Switch>
-          <Route path='/' exact component={Home}/> 
-          <Route path='/createpolicydash' exact component={CreatePolicyDash}/>
-          <Route path='/createclaimdash' exact component={CreateClaimPolicy}/>
-          <Route path='/admin' exact component={Admin}/>
-         </Switch>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <Dashboard />
+        </div>
+      </BrowserRouter>
       
     );
   }

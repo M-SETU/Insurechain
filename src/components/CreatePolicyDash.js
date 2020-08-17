@@ -33,71 +33,84 @@ class CreatePolicyDash extends Component {
       allpolicyTypes: [],
       portis: {},
       policyIdsArray: [],
+      web3: {},
       policiesList: []
     };
+
     this.handleChange = this.handleChange.bind(this);
     this.handlePolicySubmit = this.handlePolicySubmit.bind(this);
     //this.handleSubmit = this.handleSubmit.bind(this);
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-    this.loadWeb3 = this.loadWeb3.bind(this);
+    // this.login = this.login.bind(this);
+    // this.logout = this.logout.bind(this);
+    // this.loadWeb3 = this.loadWeb3.bind(this);
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.policyList = this.policyList.bind(this);
 
   
   }
-  // async componentWillMount() {
-  //   await this.loadWeb3()
-  //   await this.loadBlockchainData()
+  async componentWillMount() {
+    console.log(this.props.policy);
+    console.log(this.props.portis);
+    if(this.props.loginstatus == true)
+    {
+      await this.setState({
+        policy: this.props.policy,
+        web3: this.props.web3,
+        portis: this.props.portis,
+        account: this.props.account
+      })
+      await this.loadBlockchainData();
+    }
+  }
+  // async login() {
+  //   await this.loadWeb3();
+  //   await this.loadBlockchainData();
+  //   await this.handlePoliciesLoop();
   // }
-  async login() {
-    await this.loadWeb3();
-    await this.loadBlockchainData();
-    await this.handlePoliciesLoop();
-  }
 
-  async logout() {
-    await this.state.portis.logout(() => {
-      console.log('User logged out');
-    });
-  }
+  // async logout() {
+  //   await this.state.portis.logout(() => {
+  //     console.log('User logged out');
+  //   });
+  // }
 
   
-  async loadWeb3() {
+  // async loadWeb3() {
 
-    // if (window.ethereum) {
-    //   const web3 = new Web3(window.ethereum)
-    //   await window.ethereum.enable()
-    // this.setState({ web3 })
-    // }
-    // else if (window.web3) {
-    //   const web3 = new Web3(window.web3.currentProvider)
-    //   this.setState({ web3 })
-    // }
-    // else {
-    //   window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-    // }
+  //   // if (window.ethereum) {
+  //   //   const web3 = new Web3(window.ethereum)
+  //   //   await window.ethereum.enable()
+  //   // this.setState({ web3 })
+  //   // }
+  //   // else if (window.web3) {
+  //   //   const web3 = new Web3(window.web3.currentProvider)
+  //   //   this.setState({ web3 })
+  //   // }
+  //   // else {
+  //   //   window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+  //   // }
 
-    const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.props.location.state.network);
-    this.setState({
-      portis: portis
-    })
-    const web3 = new Web3(portis.provider);
-    this.setState({ web3 })
-    let acc = await web3.eth.getAccounts();
-    this.setState({
-      account: acc[0]
-    })
-  }
+  //   const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.props.route.params.network);
+  //   this.setState({
+  //     portis: portis
+  //   })
+  //   const web3 = new Web3(portis.provider);
+  //   this.setState({ web3 })
+  //   let acc = await web3.eth.getAccounts();
+  //   this.setState({
+  //     account: acc[0]
+  //   })
+  // }
 
   async loadBlockchainData(){
-    const policy = new this.state.web3.eth.Contract(Policy, this.props.location.state.address);
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
     let a = await this.state.policy.methods.getPolicyTypes().call({from: this.state.account});
     this.setState({
       policyTypes: a
     })
+
     console.log(a)
 
     let b = await this.state.policy.methods.getUserCustomerId(
@@ -166,11 +179,6 @@ class CreatePolicyDash extends Component {
 
     return (
       <div>
-          <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
-              <div className="navbar-brand">
-                <img src={logo} style = {{width: "40px" , height: "40px"}} />
-              </div>
-          </nav> 
           <>
           <div style={{margin: "20px"}} align="center" >
           <Menu size='mini'>
