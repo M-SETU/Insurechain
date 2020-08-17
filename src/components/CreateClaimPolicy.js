@@ -11,8 +11,8 @@ const ClaimCard = props => (
     <td>{props.claimCard[1].toNumber()}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
-    <td>{props.claimCard[4].toNumber()}</td>
     <td>{props.claimCard[5]}</td>
+    <td>{props.claimCard[4].toNumber()}</td>
     <td>{props.claimCard[6]}</td>
   </tr>
 )

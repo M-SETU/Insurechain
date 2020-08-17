@@ -22,6 +22,10 @@ class Dashboard extends Component {
         name: "",
         network: "",
         address:"",
+        config: {
+            rpcUrl: '', 
+            chainId: 0
+        },
         chainId: 0,
         click: false,
         login: false,
@@ -41,23 +45,29 @@ class Dashboard extends Component {
           network: "goerli",
           address: "0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF",
           click: true,
-          chainId: 5
+          config: {
+            nodeUrl: 'https://rpc.goerli.mudit.blog/', 
+            chainId: 5
+            }
         })
     }
     
     async handleSubmit2() {
-    await this.setState({
-        name: "HDFC",
-        network: "maticMumbai",
-        address:"0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF",
-        click: true,
-        chainId: 80001
-    })
+        await this.setState({
+            name: "HDFC",
+            network: "maticMumbai",
+            address:"0x34c19b69dF26888041d593fBD4a06bD8983EB7CD",
+            click: true,
+            config: {
+                nodeUrl: 'https://rpc-mumbai.matic.today', 
+                chainId: 80001
+            },
+        })
     }
     
 
     async login() {
-      try {
+        try {
         if(this.state.loginText==="Login"){
             await this.loadWeb3();
             await this.loadBlockchainData();
@@ -79,20 +89,16 @@ class Dashboard extends Component {
                 account: ''
             })
           }
-      } catch {
-          window.alert("select Vendor first")
-      }
+        } catch {
+            window.alert("Select vendor first")
+        }
+      
     }
   
     
     async loadWeb3() {
-
-   // const myPrivateEthereumNode = {
-   //   rpcUrl: 'https://rpc-mumbai.matic.today', // your own node url
-   //  chainId: 80001 // chainId of your own node
-   //  }
   
-      const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.network);
+      const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.config);
       this.setState({
         portis: portis
       })
@@ -114,11 +120,36 @@ class Dashboard extends Component {
     render() {
       return (
         <div>
-            <>
             <header>
                 <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
+                    <div className=" col-1 navbar-brand" position="inline-block">
+                        <img src={logo} style = {{width: "40px" , height: "40px"}} />
+                    </div>
+                    <div className= "col-1" style={{fontSize:"17px"}}>
+                        <NavLink to={{
+                            pathname: "/admin",
+                        }}>Admin</NavLink>
+                    </div>
+                    <div className= "col-1" style={{fontSize:"17px"}}>
+                        <NavLink to={{
+                            pathname: '/CreatePolicyDash',
+                        }}>policy</NavLink>
+                    </div>
+                    <div className= "col-1" style={{fontSize:"17px"}}>
+                        <NavLink to={{
+                            pathname: '/CreateClaimPolicy',
+                        }}>claims</NavLink>
+                    </div>
+                    <div className= "col-6" style={{fontSize:"15px", position:"right", color:"white"}} align="right">
+                        {this.state.account}
+                    </div>
+                    <div className= "col-1" style={{fontSize:"17px"}} align = "Right">
+                        <Button onClick={this.login} basic color='green'>
+                            {this.state.loginText}
+                        </Button>
+                    </div>
                     <ul>
-                        <li style={{display:"inline-block"}}>
+                        {/* <li style={{display:"inline-block"}}>
                             <div className="navbar-brand" position="inline-block">
                                 <img src={logo} style = {{width: "40px" , height: "40px"}} />
                             </div>
@@ -126,23 +157,23 @@ class Dashboard extends Component {
                         <li style={{display:"inline-block"}}><NavLink to={{
                             pathname: "/admin"
                             }}>Admin</NavLink>
-                        </li>
-                        <li style={{display:"inline-block"}}><NavLink to={{
+                        </li> */}
+                        {/* <li style={{display:"inline-block"}}><NavLink to={{
                             pathname: '/CreatePolicyDash',
                             }}>policy</NavLink>
                         </li>
                         <li style={{display:"inline-block"}}><NavLink to={{
                             pathname: '/CreateClaimPolicy',
                             }}>claims</NavLink>
-                        </li>
-                        <li style={{display:"inline-block", position:"right"}} >
+                        </li> */}
+                        {/* <li style={{display:"inline-block", position:"right"}} >
                             {this.state.account}
                         </li>
                         <li style={{display:"inline-block", position:"right"}} >
                             <Button onClick={this.login} basic color='green'>
                                 {this.state.loginText}
                             </Button>
-                        </li>
+                        </li> */}
                     </ul>
                 </nav>
             </header>
@@ -153,7 +184,8 @@ class Dashboard extends Component {
                         web3={this.state.web3} 
                         account = {this.state.account}
                         portis = {this.state.portis}
-                        loginstatus = {this.state.login}/>}/>
+                        loginstatus = {this.state.login}
+                        config = {this.state.config}/>}/>
 
                 <Route path="/CreateClaimPolicy" component={
                     () => <CreateClaimPolicy 
@@ -161,7 +193,8 @@ class Dashboard extends Component {
                         web3={this.state.web3} 
                         account = {this.state.account}
                         portis = {this.state.portis}
-                        loginstatus = {this.state.login} />}/>
+                        loginstatus = {this.state.login} 
+                        config = {this.state.config}/>}/>
 
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 
@@ -169,7 +202,8 @@ class Dashboard extends Component {
                         web3={this.state.web3} 
                         account = {this.state.account}
                         portis = {this.state.portis}
-                        loginstatus = {this.state.login} />}/>
+                        loginstatus = {this.state.login} 
+                        config = {this.state.config}/>}/>
 
                 <Route path="/" render={() => 
                     <div>
@@ -228,7 +262,6 @@ class Dashboard extends Component {
                   </div>
                 }/>
             </Switch>           
-            </>
         </div>
       );
     }

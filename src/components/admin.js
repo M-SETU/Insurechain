@@ -54,16 +54,21 @@ class Admin extends Component {
   
   }
   async componentWillMount() {
-    if(this.props.loginstatus == true)
-    {
-      await this.setState({
-        policy: this.props.policy,
-        web3: this.props.web3,
-        portis: this.props.portis,
-        account: this.props.account
-      })
-      await this.loadBlockchainData();
-      await this.handleLoop();
+    try{
+      if(this.props.loginstatus == true)
+      {
+        await this.setState({
+          policy: this.props.policy,
+          web3: this.props.web3,
+          portis: this.props.portis,
+          account: this.props.account
+        })
+        await this.loadBlockchainData();
+        await this.handleLoop();
+      }
+    }
+    catch {
+
     }
   }
 
@@ -166,7 +171,7 @@ class Admin extends Component {
 
 
   render() {
-    if(this.props.oginstatus==="true" && this.state.account === "admin"){
+    if(this.props.loginstatus===true && this.state.account === "0xDFB3399A54A9e332Ab20255d0417A4D12599F732"){
       return (
         <div>
           <div style={{margin:"30px"}}>
@@ -209,6 +214,7 @@ class Admin extends Component {
       )
     }else{
       return (
+
           <div style={{position: "center", fontSize: "30px", color: "black"}} align="center">
           <br></br><br></br>
           <strong>You Should be Admin</strong><br></br><br></br>

@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
-import logo from '../images/logos/Matic logo symbol.png';
 
 const PolicyCard = props => (
   <tr>
@@ -81,7 +80,7 @@ class CreatePolicyDash extends Component {
 
   async handlePolicySubmit (){
     try{
-      await this.state.policy.methods.createPolicy(
+      this.state.policy.methods.createPolicy(
         this.state.hash, this.state.policySelected)
       .send({from: this.state.account, gasPrice: 400000})
       .then ((receipt) => {
