@@ -1,14 +1,13 @@
-import { Button, Card, Form, Input,  Select, Menu} from 'semantic-ui-react'
+import { Button, Card} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
 import logo from '../images/logos/Matic logo symbol.png';
-import {Route, Link, Switch, NavLink } from 'react-router-dom';
+import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import CreateClaimPolicy from "./CreateClaimPolicy.js";
 import Admin from "./admin.js";
-import Home from './Home.js';
 
 class Dashboard extends Component {
 
@@ -43,7 +42,7 @@ class Dashboard extends Component {
         await this.setState({
           name: "LIC",
           network: "goerli",
-          address: "0x9bf61c1e0Fdd845e0b7C6C33598cA830fDa6fCbF",
+          address: "0x6dB46d8c9C9A3Dc4B4493C04358D969aB763ED7f",
           click: true,
           config: {
             nodeUrl: 'https://rpc.goerli.mudit.blog/', 
@@ -56,7 +55,7 @@ class Dashboard extends Component {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0x34c19b69dF26888041d593fBD4a06bD8983EB7CD",
+            address:"0xd0A7478DD962c47d9608a1A1B24ba0F32e20Cc07",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
@@ -133,12 +132,12 @@ class Dashboard extends Component {
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
-                        }}>policy</NavLink>
+                        }}>Policy</NavLink>
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
                             pathname: '/CreateClaimPolicy',
-                        }}>claims</NavLink>
+                        }}>Claims</NavLink>
                     </div>
                     <div className= "col-6" style={{fontSize:"15px", position:"right", color:"white"}} align="right">
                         {this.state.account}
@@ -148,33 +147,6 @@ class Dashboard extends Component {
                             {this.state.loginText}
                         </Button>
                     </div>
-                    <ul>
-                        {/* <li style={{display:"inline-block"}}>
-                            <div className="navbar-brand" position="inline-block">
-                                <img src={logo} style = {{width: "40px" , height: "40px"}} />
-                            </div>
-                        </li>
-                        <li style={{display:"inline-block"}}><NavLink to={{
-                            pathname: "/admin"
-                            }}>Admin</NavLink>
-                        </li> */}
-                        {/* <li style={{display:"inline-block"}}><NavLink to={{
-                            pathname: '/CreatePolicyDash',
-                            }}>policy</NavLink>
-                        </li>
-                        <li style={{display:"inline-block"}}><NavLink to={{
-                            pathname: '/CreateClaimPolicy',
-                            }}>claims</NavLink>
-                        </li> */}
-                        {/* <li style={{display:"inline-block", position:"right"}} >
-                            {this.state.account}
-                        </li>
-                        <li style={{display:"inline-block", position:"right"}} >
-                            <Button onClick={this.login} basic color='green'>
-                                {this.state.loginText}
-                            </Button>
-                        </li> */}
-                    </ul>
                 </nav>
             </header>
             <Switch>    

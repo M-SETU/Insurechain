@@ -1,18 +1,17 @@
-import { Button, Card, Form, Input, Menu} from 'semantic-ui-react'
+import { Button, Form, Input} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
-import logo from '../images/logos/Matic logo symbol.png';
 
 const ClaimCard = props => (
   <tr>
-    <td>{props.claimCard[0].toNumber()}</td>
-    <td>{props.claimCard[1].toNumber()}</td>
+    <td>{props.claimCard[0]}</td>
+    <td>{props.claimCard[1]}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
     <td>{props.claimCard[5]}</td>
-    <td>{props.claimCard[4].toNumber()}</td>
+    <td>{props.claimCard[4]}</td>
     <td>{props.claimCard[6]}</td>
   </tr>
 )
@@ -43,7 +42,7 @@ class CreateClaimPolicy extends Component {
   }
 
   async componentWillMount() {
-    if(this.props.loginstatus == true)
+    if(this.props.loginstatus === true)
     {
       await this.setState({
         policy: this.props.policy,
@@ -107,7 +106,7 @@ class CreateClaimPolicy extends Component {
         .call({from: this.state.account});
       let allclaims = details[5];
       for (let j = 0; j<allclaims.length;j++){
-        let cl = await this.state.policy.methods.getClaim(allclaims[i].toNumber())
+        let cl = await this.state.policy.methods.getClaim(allclaims[i])
         .call({from: this.state.account});
         arr.push(cl);
       }
@@ -119,7 +118,7 @@ class CreateClaimPolicy extends Component {
 
   handleClaimList() {
     return this.state.claimsList.map(currentclaim => {
-      return <ClaimCard claimCard={currentclaim} key={currentclaim[0].toNumber()}/>;
+      return <ClaimCard claimCard={currentclaim} key={currentclaim[0]}/>;
     })
   }
   render() {
@@ -162,11 +161,11 @@ class CreateClaimPolicy extends Component {
                           onChange={this.handleChange}
                         />
                         <Form.Field
-                          id='form-input-control-claimdate'
+                          id='form-input-control-hospitalname'
                           control={Input}
-                          label='Claim Date'
-                          placeholder='Date'
-                          name="claimDate"
+                          label='Hospital Name'
+                          placeholder='Hospital Name'
+                          name="hospitalName"
                           onChange={this.handleChange}
                         />
                       </Form.Group>
@@ -176,14 +175,7 @@ class CreateClaimPolicy extends Component {
                   <div >
                     <Form>
                       <Form.Group widths='equal'>
-                        <Form.Field
-                          id='form-input-control-hospitalname'
-                          control={Input}
-                          label='Hospital Name'
-                          placeholder='Hospital Name'
-                          name="hospitalName"
-                          onChange={this.handleChange}
-                        />
+                        
                         <Form.Field
                           id='form-input-control-description'
                           control={Input}
@@ -200,12 +192,6 @@ class CreateClaimPolicy extends Component {
                           name="amount"
                           onChange={this.handleChange}
                         />
-                      </Form.Group>
-                    </Form>
-                  </div>
-                  <div >
-                    <Form>
-                      <Form.Group widths='equal'>
                         <Form.Field
                           id='form-input-control-claimdochash'
                           control={Input}

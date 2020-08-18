@@ -1,4 +1,4 @@
-import { Button, Card, Form, Input,  Select, Menu} from 'semantic-ui-react'
+import { Button, Card, Form, Input} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
@@ -6,11 +6,17 @@ import Portis from '@portis/web3';
 
 const PolicyCard = props => (
   <tr>
-    <td data-label="">{props.policyCard[0].toNumber()}</td>
-    <td data-label="">{props.policyCard[2].toNumber()}</td>
+    <td data-label="">{props.policyCard[0]}</td>
+    <td data-label="">{props.policyCard[2]}</td>
     <td data-label="">{props.policyCard[4]}</td>
     <td data-label="">{props.policyCard[3]}</td>
   </tr>
+)
+
+const OptionCard = props => (
+  <option value={props.opt}>
+    {props.opt}
+  </option>
 )
 
 class CreatePolicyDash extends Component {
@@ -20,9 +26,8 @@ class CreatePolicyDash extends Component {
     this.state = {
       account: '',
       hash: '',
-      policySelected: 'SmartLife',
+      policySelected: 'None',
       policyTypes: [],
-      allpolicyTypes: [],
       portis: {},
       policyIdsArray: [],
       web3: {},
@@ -33,6 +38,8 @@ class CreatePolicyDash extends Component {
     this.handlePolicySubmit = this.handlePolicySubmit.bind(this);
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.policyList = this.policyList.bind(this);
+    this.handleSelectPolicyType = this.handleSelectPolicyType.bind(this);
+    
 
   
   }
@@ -59,9 +66,9 @@ class CreatePolicyDash extends Component {
       policyTypes: a
     })
 
-    let b = await this.state.policy.methods.getUserCustomerId(
-      this.state.account)
-    .call({from: this.state.account});
+    // let b = await this.state.policy.methods.getUserCustomerId(
+    //   this.state.account)
+    // .call({from: this.state.account});
 
     let c = await this.state.policy.methods.getUserPolicies(
       this.state.account)
@@ -69,12 +76,6 @@ class CreatePolicyDash extends Component {
 
     this.setState({
       policyIdsArray: c,
-      allpolicyTypes: [
-        { key: 'a', text: this.state.policyTypes[0], value: this.state.policyTypes[0] },
-        { key: 'b', text: this.state.policyTypes[1], value: this.state.policyTypes[1] },
-        { key: 'c', text: this.state.policyTypes[2], value: this.state.policyTypes[2] },
-        { key: 'd', text: this.state.policyTypes[3], value: this.state.policyTypes[3] }
-      ],
     })
   }
 
@@ -99,6 +100,10 @@ class CreatePolicyDash extends Component {
     this.setState({ [evt.target.name]: evt.target.value });
   }
 
+  async handleSelectPolicyType (evt) {
+    await this.setState({ policySelected: evt.target.value });
+  }
+
   async handlePoliciesLoop(){
     var ids = this.state.policyIdsArray;
     var arr = [];
@@ -115,7 +120,13 @@ class CreatePolicyDash extends Component {
 
   policyList() {
     return this.state.policiesList.map(currentpolicy => {
-      return <PolicyCard policyCard={currentpolicy} key={currentpolicy.policyId.toNumber()}/>;
+      return <PolicyCard policyCard={currentpolicy} key={currentpolicy[0]}/>;
+    })
+  }
+
+  optionsList() {
+    return this.state.policyTypes.map(currenttype => {
+      return <OptionCard opt={currenttype} key={currenttype}/>;
     })
   }
 
@@ -137,16 +148,30 @@ class CreatePolicyDash extends Component {
                 <div>
                   <Form>
                     <Form.Group widths='equal'>
-                      <Form.Field
+                      {/* <Form.Field
                         control={Select}
                         options={this.state.allpolicyTypes}
                         label={{ children: 'Policy Type', htmlFor: 'form-select-policytype' }}
                         placeholder='Policy Type'
-                        search
-                        searchInput={{ id: 'form-select-policytype' }}
                         name="policySelected"
                         onChange={this.handleChange}
-                      />
+                      /> */}
+                      <Form.Field>
+                        <div>
+                          <strong>Policy Type</strong>
+                          <select id="typespolicy" onChange={this.handleSelectPolicyType}
+                            style = {{
+                              width: "equal"
+                            }}
+                            >
+                            <option value="None" defaultValue>
+                              {"None"}
+                            </option>
+                            {this.optionsList()}
+                          </select>
+                        </div>
+                      </Form.Field>
+                      
                     </Form.Group>
                   </Form>
                 </div>

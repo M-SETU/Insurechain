@@ -1,21 +1,20 @@
-import { Button, Menu} from 'semantic-ui-react'
+import { Button} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
-import logo from '../images/logos/Matic logo symbol.png';
 
 const ClaimCard = props => (
   <tr>
-    <td>{props.claimCard[0].toNumber()}</td>
-    <td>{props.claimCard[1].toNumber()}</td>
+    <td>{props.claimCard[0]}</td>
+    <td>{props.claimCard[1]}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
-    <td>{props.claimCard[4].toNumber()}</td>
+    <td>{props.claimCard[4]}</td>
     <td>{props.claimCard[5]}</td>
     <td>{props.claimCard[6]}</td>
     { 
-      props.handleClaimButton(props.claimCard[0].toNumber(), props.claimCard[6])
+      props.handleClaimButton(props.claimCard[0], props.claimCard[6])
     }
 
   </tr>
@@ -23,8 +22,8 @@ const ClaimCard = props => (
 
 const PolicyCard = props => (
   <tr>
-    <td data-label="Name">{props.policyCard[0].toNumber()}</td>
-    <td data-label="Age">{props.policyCard[2].toNumber()}</td>
+    <td data-label="Name">{props.policyCard[0]}</td>
+    <td data-label="Age">{props.policyCard[2]}</td>
     <td data-label="Job">{props.policyCard[4]}</td>
     <td data-label="Job">{props.policyCard[3]}</td>
   </tr>
@@ -55,7 +54,7 @@ class Admin extends Component {
   }
   async componentWillMount() {
     try{
-      if(this.props.loginstatus == true)
+      if(this.props.loginstatus === true)
       {
         await this.setState({
           policy: this.props.policy,
@@ -119,12 +118,14 @@ class Admin extends Component {
   async handleLoop(){
 
     var pol_ids = this.state.policyIds;
+    
     var arr1 = [];
     for(let i = 0; i <pol_ids.length; i++) {
       let details = await this.state.policy.methods.getPolicy(pol_ids[i])
         .call({from: this.state.account});
       arr1.push(details);
     }
+    console.log(arr1)
 
     var claim_ids = this.state.claimIds;
     var arr2 = [];
@@ -134,30 +135,30 @@ class Admin extends Component {
       arr2.push(details);
     }
     this.setState({
-      PoliciesList: arr1,
+      policiesList: arr1,
       claimsList: arr2
     })
   }
 
   handleClaimButton(id, status){
     if(status==="unprocessed"){
-      return (<tr>
+      return (<td>
         <Button onClick={() => { this.claimApprove(id) }} basic color='green'>
           Approve
         </Button>
         <Button onClick={() => { this.claimReject(id) }} basic color='red'>
           Reject
         </Button>
-      </tr>)
+      </td>)
     }
     else{
-      return <tr>Completed</tr>
+      return <td>Completed</td>
     }
   }
 
   handlePolicyList() {
     return this.state.policiesList.map(currentpolicy => {
-      return <PolicyCard policyCard={currentpolicy} key={currentpolicy[0].toNumber()}/>;
+      return <PolicyCard policyCard={currentpolicy} key={currentpolicy[0]}/>;
     })
   }
 
@@ -165,7 +166,7 @@ class Admin extends Component {
     return this.state.claimsList.map(currentclaim => {
       return <ClaimCard claimCard={currentclaim} 
         handleClaimButton = {this.handleClaimButton}
-        key={currentclaim[0].toNumber()}/>;
+        key={currentclaim[0]}/>;
     })
   }
 
@@ -217,8 +218,8 @@ class Admin extends Component {
 
           <div style={{position: "center", fontSize: "30px", color: "black"}} align="center">
           <br></br><br></br>
-          <strong>You Should be Admin</strong><br></br><br></br>
-          Login with Admin Account
+          <strong>You Should be Vendor</strong><br></br><br></br>
+          Login with Vendor Account
       </div>
     );
     }

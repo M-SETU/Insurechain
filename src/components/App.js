@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route ,Switch , BrowserRouter } from 'react-router-dom';
+import { Route , BrowserRouter } from 'react-router-dom';
 import Dashboard from "./Dashboard.js";
 
 class App extends Component {
