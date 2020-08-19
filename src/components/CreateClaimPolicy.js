@@ -1,14 +1,14 @@
 import { Button, Form, Input} from 'semantic-ui-react'
-import React, { Component } from 'react'
+import React, { Component} from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
-import {Link } from 'react-router-dom';
 import ipfs from './ipfs.js'
 
 const ClaimCard = props => (
   <tr>
     <td>{props.claimCard[0]}</td>
+    <td>{props.claimCard[7]}</td>
     <td>{props.claimCard[1]}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
@@ -55,6 +55,11 @@ class CreateClaimPolicy extends Component {
   }
 
   async componentWillMount() {
+    let today = new Date();
+    let date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate() + '-' + today.getHours() +':' + today.getMinutes();
+    this.setState({
+      claimDate: date
+    })
     if(this.props.loginstatus === true)
     {
       await this.setState({
@@ -170,6 +175,7 @@ class CreateClaimPolicy extends Component {
       return <ClaimCard claimCard={currentclaim} key={currentclaim[0]}/>;
     })
   }
+
   render() {
     return (
       <div align="center">
@@ -210,10 +216,9 @@ class CreateClaimPolicy extends Component {
                           id='form-input-control-claimdate'
                           control={Input}
                           label='Claim Date'
-                          placeholder='Date'
                           name="claimDate"
-                          onChange={this.handleChange}
-                        />
+                          value={this.state.claimDate}
+                        /> 
                         <Form.Field
                           id='form-input-control-hospitalname'
                           control={Input}
@@ -273,6 +278,7 @@ class CreateClaimPolicy extends Component {
                 <thead>
                   <tr>
                     <th>ClaimId</th>
+                    <th>PolicyId</th>
                     <th>Date</th>
                     <th>Hospital Name</th>
                     <th>Description</th>

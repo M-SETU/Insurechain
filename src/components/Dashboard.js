@@ -28,7 +28,8 @@ class Dashboard extends Component {
         chainId: 0,
         click: false,
         login: false,
-        loginText: "Login"
+        loginText: "Login",
+        owner: ""
       };
 
         this.login = this.login.bind(this);
@@ -47,7 +48,8 @@ class Dashboard extends Component {
           config: {
             nodeUrl: 'https://rpc.goerli.mudit.blog/', 
             chainId: 5
-            }
+          },
+          owner: ""
         })
     }
     
@@ -55,12 +57,13 @@ class Dashboard extends Component {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0xF770e87fC4A7DFC873b8D2D720DB3DbB733571Ce",
+            address:"0xd0796FD10F2133dcdd185D9402e5041fcB830391",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
                 chainId: 80001
             },
+            owner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9"
         })
     }
     
@@ -157,7 +160,8 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         loginstatus = {this.state.login}
-                        config = {this.state.config}/>}/>
+                        config = {this.state.config}
+                        owner = {this.state.owner}/>}/>
 
                 <Route path="/CreateClaimPolicy" component={
                     () => <CreateClaimPolicy 
@@ -166,7 +170,8 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         loginstatus = {this.state.login} 
-                        config = {this.state.config}/>}/>
+                        config = {this.state.config}
+                        owner = {this.state.owner}/>}/>
 
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 
@@ -175,7 +180,8 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         loginstatus = {this.state.login} 
-                        config = {this.state.config}/>}/>
+                        config = {this.state.config}
+                        owner = {this.state.owner}/>}/>
 
                 <Route path="/" render={() => 
                     <div>

@@ -3,11 +3,11 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
-import { Link } from 'react-router-dom';
 
 const ClaimCard = props => (
   <tr>
     <td>{props.claimCard[0]}</td>
+    <td>{props.claimCard[7]}</td>
     <td>{props.claimCard[1]}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
@@ -182,7 +182,7 @@ class Vendor extends Component {
 
 
   render() {
-    if(this.props.loginstatus===true && this.state.account === "0x63b5e1aDAb7Cc1Bd757689Bd551cE29b06F02455"){
+    if(this.props.loginstatus===true && this.state.account === this.props.owner){
       return (
         <div>
           <div style={{margin:"30px"}}>
@@ -207,6 +207,7 @@ class Vendor extends Component {
                   <thead>
                     <tr>
                       <th>ClaimId</th>
+                      <th>PolicyId</th>
                       <th>Date</th>
                       <th>Hospital Name</th>
                       <th>Description</th>

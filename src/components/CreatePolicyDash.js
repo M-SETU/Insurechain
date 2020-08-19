@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
-import {Link } from 'react-router-dom';
 import ipfs from './ipfs.js'
 
 const PolicyCard = props => (
