@@ -7,7 +7,7 @@ import logo from '../images/logos/Matic logo symbol.png';
 import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import CreateClaimPolicy from "./CreateClaimPolicy.js";
-import Admin from "./admin.js";
+import Vendor from "./vendor.js";
 
 class Dashboard extends Component {
 
@@ -55,7 +55,7 @@ class Dashboard extends Component {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0xd0A7478DD962c47d9608a1A1B24ba0F32e20Cc07",
+            address:"0xF770e87fC4A7DFC873b8D2D720DB3DbB733571Ce",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
@@ -126,8 +126,8 @@ class Dashboard extends Component {
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
-                            pathname: "/admin",
-                        }}>Admin</NavLink>
+                            pathname: "/vendor",
+                        }}>Vendor</NavLink>
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
@@ -150,8 +150,8 @@ class Dashboard extends Component {
                 </nav>
             </header>
             <Switch>    
-                <Route path="/admin" component={
-                    () => <Admin 
+                <Route path="/vendor" component={
+                    () => <Vendor
                         address={this.state.address} 
                         web3={this.state.web3} 
                         account = {this.state.account}

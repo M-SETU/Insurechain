@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
+import { Link } from 'react-router-dom';
 
 const ClaimCard = props => (
   <tr>
@@ -10,8 +11,10 @@ const ClaimCard = props => (
     <td>{props.claimCard[1]}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
+    <td data-label="hash">
+      <a href={`https://ipfs.infura.io/ipfs/${props.claimCard[5]}`}>{props.claimCard[5]}</a>
+    </td>
     <td>{props.claimCard[4]}</td>
-    <td>{props.claimCard[5]}</td>
     <td>{props.claimCard[6]}</td>
     { 
       props.handleClaimButton(props.claimCard[0], props.claimCard[6])
@@ -22,14 +25,16 @@ const ClaimCard = props => (
 
 const PolicyCard = props => (
   <tr>
-    <td data-label="Name">{props.policyCard[0]}</td>
-    <td data-label="Age">{props.policyCard[2]}</td>
-    <td data-label="Job">{props.policyCard[4]}</td>
-    <td data-label="Job">{props.policyCard[3]}</td>
+    <td data-label="policyid">{props.policyCard[0]}</td>
+    <td data-label="custID">{props.policyCard[2]}</td>
+    <td data-label="poltype">{props.policyCard[4]}</td>
+    <td data-label="hash">
+      <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>{props.policyCard[3]}</a>
+    </td>
   </tr>
 )
 
-class Admin extends Component {
+class Vendor extends Component {
 
   constructor(props) {
     super(props)
@@ -90,7 +95,7 @@ class Admin extends Component {
   async claimApprove (id){
     await this.state.policy.methods.approveClaim(
       id)
-    .send({from: this.state.account, gasPrice: 400000})
+    .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then ((receipt) => {
       console.log(receipt);
     })
@@ -102,7 +107,7 @@ class Admin extends Component {
   async claimReject (id){
     await this.state.policy.methods.rejectClaim(
       id)
-    .send({from: this.state.account, gasPrice: 400000})
+    .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then ((receipt) => {
       console.log(receipt);
     })
@@ -125,7 +130,6 @@ class Admin extends Component {
         .call({from: this.state.account});
       arr1.push(details);
     }
-    console.log(arr1)
 
     var claim_ids = this.state.claimIds;
     var arr2 = [];
@@ -152,7 +156,13 @@ class Admin extends Component {
       </td>)
     }
     else{
-      return <td>Completed</td>
+      return <td>
+        <Button onClick={() => { this.claimApprove(id) }} basic color='green' disabled={true}>
+          Approve
+        </Button>
+        <Button onClick={() => { this.claimReject(id) }} basic color='red' disabled={true}>
+          Reject
+        </Button></td>
     }
   }
 
@@ -172,7 +182,7 @@ class Admin extends Component {
 
 
   render() {
-    if(this.props.loginstatus===true && this.state.account === "0xDFB3399A54A9e332Ab20255d0417A4D12599F732"){
+    if(this.props.loginstatus===true && this.state.account === "0x63b5e1aDAb7Cc1Bd757689Bd551cE29b06F02455"){
       return (
         <div>
           <div style={{margin:"30px"}}>
@@ -199,11 +209,11 @@ class Admin extends Component {
                       <th>ClaimId</th>
                       <th>Date</th>
                       <th>Hospital Name</th>
-                      <th>description</th>
-                      <th>docs</th>
-                      <th>amount</th>
+                      <th>Description</th>
+                      <th>Docs</th>
+                      <th>Amount</th>
                       <th>Status</th>
-                      <th>result</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -226,4 +236,4 @@ class Admin extends Component {
   }
 }
 
-export default Admin;
+export default Vendor;

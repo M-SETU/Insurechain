@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
+import {Link } from 'react-router-dom';
+import ipfs from './ipfs.js'
 
 const ClaimCard = props => (
   <tr>
@@ -10,10 +12,18 @@ const ClaimCard = props => (
     <td>{props.claimCard[1]}</td>
     <td>{props.claimCard[2]}</td>
     <td>{props.claimCard[3]}</td>
-    <td>{props.claimCard[5]}</td>
+    <td data-label="hash">
+      <a href={`https://ipfs.infura.io/ipfs/${props.claimCard[5]}`}>{props.claimCard[5]}</a>
+    </td>
     <td>{props.claimCard[4]}</td>
     <td>{props.claimCard[6]}</td>
   </tr>
+)
+
+const PolicyOptions = props => (
+  <option value={props.opt}>
+    {props.opt}
+  </option>
 )
 
 class CreateClaimPolicy extends Component {
@@ -21,6 +31,7 @@ class CreateClaimPolicy extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      buffer: null,
       account: '',
       policyId: '',
       claimDate: '',
@@ -39,6 +50,8 @@ class CreateClaimPolicy extends Component {
     this.handleClaimSubmit = this.handleClaimSubmit.bind(this); 
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.handleClaimList = this.handleClaimList.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
+    this.handlePolicyId = this.handlePolicyId.bind(this);
   }
 
   async componentWillMount() {
@@ -72,25 +85,51 @@ class CreateClaimPolicy extends Component {
     })
   }
 
+  async handleFileChange(event){
+    event.preventDefault()
+    try{
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result) })
+      console.log('buffer', this.state.buffer)
+      }
+    } 
+    catch(err){
+      console.log(err)
+    }
+  }
+
   async handleClaimSubmit (){
     try{
-      await this.state.policy.methods.claimPolicy(
-        this.state.policyId, 
-        this.state.claimDate,
-        this.state.hospitalName,
-        this.state.description,
-        this.state.amount,
-        this.state.claimHash)
-      .send({from: this.state.account, gasPrice: 400000})
-      .then ((receipt) => {
-        console.log(receipt);
+      console.log("Submitting file to ipfs...")
+      ipfs.add(this.state.buffer, (error, result) => {
+        console.log('Ipfs result', result)
+        if(error) {
+          console.error(error)
+          return
+        }
+        this.setState({ claimHash: result[0].hash })
+        const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+        policy.methods.claimPolicy(
+          this.state.policyId, 
+          this.state.claimDate,
+          this.state.hospitalName,
+          this.state.description,
+          this.state.amount,
+          this.state.claimHash)
+        .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+        .then ((receipt) => {
+          console.log(receipt);
+        })
+        .catch((err)=> {
+          console.log(err);
+        });
       })
-      .catch((err)=> {
-        console.log(err);
-      });
     }
-    catch{
-      window.alert("Login First")
+    catch(err) {
+      console.log(err);
     }
   }
 
@@ -106,7 +145,7 @@ class CreateClaimPolicy extends Component {
         .call({from: this.state.account});
       let allclaims = details[5];
       for (let j = 0; j<allclaims.length;j++){
-        let cl = await this.state.policy.methods.getClaim(allclaims[i])
+        let cl = await this.state.policy.methods.getClaim(allclaims[j])
         .call({from: this.state.account});
         arr.push(cl);
       }
@@ -114,6 +153,16 @@ class CreateClaimPolicy extends Component {
     this.setState({
       claimsList: arr
     })
+  }
+
+  policyOptionsList() {
+    return this.state.policyIdsArray.map(currentpol => {
+      return <PolicyOptions opt={currentpol} key={currentpol}/>;
+    })
+  }
+
+  async handlePolicyId (evt) {
+    await this.setState({ policyId: evt.target.value });
   }
 
   handleClaimList() {
@@ -145,13 +194,18 @@ class CreateClaimPolicy extends Component {
                     <Form>
                       <Form.Group widths='equal'>
                         <Form.Field
-                          id='form-input-control-policyid'
+                          id='form-input-control-polid'
                           control={Input}
-                          label='Policy ID'
-                          placeholder='Policy Id'
-                          name="policyId"
-                          onChange={this.handleChange}
-                        />
+                          label='Policy Id'
+                          name="id">
+                            <select id="policyId" onChange={this.handlePolicyId}
+                              >
+                              <option value="None" defaultValue>
+                                {"None"}
+                              </option>
+                              {this.policyOptionsList()}
+                            </select>
+                        </Form.Field>
                         <Form.Field
                           id='form-input-control-claimdate'
                           control={Input}
@@ -195,11 +249,11 @@ class CreateClaimPolicy extends Component {
                         <Form.Field
                           id='form-input-control-claimdochash'
                           control={Input}
-                          label='Claim Docs Hash'
-                          placeholder='Claim Docs Hash'
+                          label='Upload Claim Docs'
                           name="claimHash"
-                          onChange={this.handleChange}
-                        />
+                        >
+                          <input type="file" onChange={this.handleFileChange} />
+                        </Form.Field>
                       </Form.Group>
                     </Form>
                   </div>
@@ -221,9 +275,9 @@ class CreateClaimPolicy extends Component {
                     <th>ClaimId</th>
                     <th>Date</th>
                     <th>Hospital Name</th>
-                    <th>description</th>
-                    <th>docs</th>
-                    <th>amount</th>
+                    <th>Description</th>
+                    <th>Docs</th>
+                    <th>Amount</th>
                     <th>Status</th>
                   </tr>
                 </thead>

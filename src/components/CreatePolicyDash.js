@@ -3,13 +3,17 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
+import {Link } from 'react-router-dom';
+import ipfs from './ipfs.js'
 
 const PolicyCard = props => (
   <tr>
-    <td data-label="">{props.policyCard[0]}</td>
-    <td data-label="">{props.policyCard[2]}</td>
-    <td data-label="">{props.policyCard[4]}</td>
-    <td data-label="">{props.policyCard[3]}</td>
+    <td data-label="policyID">{props.policyCard[0]}</td>
+    <td data-label="custID">{props.policyCard[2]}</td>
+    <td data-label="poltype">{props.policyCard[4]}</td>
+    <td data-label="hash">
+      <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>{props.policyCard[3]}</a>
+    </td>
   </tr>
 )
 
@@ -19,11 +23,13 @@ const OptionCard = props => (
   </option>
 )
 
+
 class CreatePolicyDash extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
+      buffer: null,
       account: '',
       hash: '',
       policySelected: 'None',
@@ -39,6 +45,7 @@ class CreatePolicyDash extends Component {
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
     this.policyList = this.policyList.bind(this);
     this.handleSelectPolicyType = this.handleSelectPolicyType.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
     
 
   
@@ -66,10 +73,6 @@ class CreatePolicyDash extends Component {
       policyTypes: a
     })
 
-    // let b = await this.state.policy.methods.getUserCustomerId(
-    //   this.state.account)
-    // .call({from: this.state.account});
-
     let c = await this.state.policy.methods.getUserPolicies(
       this.state.account)
     .call({from: this.state.account});
@@ -79,19 +82,46 @@ class CreatePolicyDash extends Component {
     })
   }
 
-  async handlePolicySubmit (){
+  async handleFileChange(event){
+    event.preventDefault()
     try{
-      this.state.policy.methods.createPolicy(
-        this.state.hash, this.state.policySelected)
-      .send({from: this.state.account, gasPrice: 400000})
-      .then ((receipt) => {
-        console.log(receipt);
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result) })
+      console.log('buffer', this.state.buffer)
+      }
+    } 
+    catch(err){
+      console.log(err)
+    }
+  }
+
+  async handlePolicySubmit (event){
+    event.preventDefault()
+    try{
+      console.log("Submitting file to ipfs...")
+      ipfs.add(this.state.buffer, (error, result) => {
+        console.log('Ipfs result', result)
+        if(error) {
+          console.error(error)
+          return
+        }
+        this.setState({ hash: result[0].hash })
+        const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+        policy.methods.createPolicy(
+          this.state.hash, this.state.policySelected)
+        .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+        .then ((receipt) => {
+          console.log(receipt);
+        })
+        .catch((err)=> {
+          console.log(err);
+        });
       })
-      .catch((err)=> {
-        console.log(err);
-      });
-    } catch {
-      window.alert("Login first")
+    } catch(err) {
+      console.log(err);
     }
     
   }
@@ -148,14 +178,6 @@ class CreatePolicyDash extends Component {
                 <div>
                   <Form>
                     <Form.Group widths='equal'>
-                      {/* <Form.Field
-                        control={Select}
-                        options={this.state.allpolicyTypes}
-                        label={{ children: 'Policy Type', htmlFor: 'form-select-policytype' }}
-                        placeholder='Policy Type'
-                        name="policySelected"
-                        onChange={this.handleChange}
-                      /> */}
                       <Form.Field>
                         <div>
                           <strong>Policy Type</strong>
@@ -171,7 +193,6 @@ class CreatePolicyDash extends Component {
                           </select>
                         </div>
                       </Form.Field>
-                      
                     </Form.Group>
                   </Form>
                 </div>
@@ -181,11 +202,11 @@ class CreatePolicyDash extends Component {
                       <Form.Field
                         id='form-input-control-documenthash'
                         control={Input}
-                        label='Document Hash'
-                        placeholder='Document Hash'
+                        label='KYC Document'
                         name="hash"
-                        onChange={this.handleChange}
-                      />
+                      >
+                        <input type="file" onChange={this.handleFileChange} />
+                      </Form.Field>
                     </Form.Group>
                   </Form>
                 </div>
@@ -214,7 +235,7 @@ class CreatePolicyDash extends Component {
               </Card.Content>
               <Card.Content extra>
                 <div className='ui two buttons'>
-                  <Button basic color='green'>
+                  <Button basic color='green' disabled={true}>
                 PORT
                   </Button>
                   
