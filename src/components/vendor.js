@@ -226,7 +226,6 @@ class Vendor extends Component {
       )
     }else{
       return (
-
           <div style={{position: "center", fontSize: "30px", color: "black"}} align="center">
           <br></br><br></br>
           <strong>You Should be Vendor</strong><br></br><br></br>

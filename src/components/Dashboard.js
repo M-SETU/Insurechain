@@ -8,12 +8,14 @@ import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import CreateClaimPolicy from "./CreateClaimPolicy.js";
 import Vendor from "./vendor.js";
+import Home from "./Home.js";
 
 class Dashboard extends Component {
 
     constructor(props) {
       super(props)
       this.state = {
+        displayAdmin: "hidden",
         account: '',
         policy:{},
         portis: {},
@@ -29,12 +31,11 @@ class Dashboard extends Component {
         click: false,
         login: false,
         loginText: "Login",
-        owner: ""
+        owner : ""
       };
 
         this.login = this.login.bind(this);
         this.loadWeb3 = this.loadWeb3.bind(this);
-        this.loadBlockchainData = this.loadBlockchainData.bind(this);
         this.handleSubmit1 = this.handleSubmit1.bind(this);
         this.handleSubmit2 = this.handleSubmit2.bind(this);
     
@@ -48,8 +49,7 @@ class Dashboard extends Component {
           config: {
             nodeUrl: 'https://rpc.goerli.mudit.blog/', 
             chainId: 5
-          },
-          owner: ""
+            }
         })
     }
     
@@ -57,13 +57,12 @@ class Dashboard extends Component {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0xd0796FD10F2133dcdd185D9402e5041fcB830391",
+            address:"0x6E441c6E95387c6761Ec44CB006891583c4Bed06",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
                 chainId: 80001
             },
-            owner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9"
         })
     }
     
@@ -72,10 +71,18 @@ class Dashboard extends Component {
         try {
         if(this.state.loginText==="Login"){
             await this.loadWeb3();
-            await this.loadBlockchainData();
             await this.setState({
                 login: true
             })
+            if(this.state.account == this.state.owner){
+              await this.setState({
+                displayAdmin: "visible"
+              })
+            }else{
+              await this.setState({
+                displayAdmin: "hidden"
+              })
+            }
             if(this.state.account!==''){
                 await this.setState({
                     loginText: "Logout"
@@ -88,7 +95,8 @@ class Dashboard extends Component {
             this.setState({
                 login: false,
                 loginText: "Login",
-                account: ''
+                account: '',
+                displayAdmin: "hidden"
             })
           }
         } catch {
@@ -97,9 +105,7 @@ class Dashboard extends Component {
       
     }
   
-    
     async loadWeb3() {
-  
       const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.config);
       this.setState({
         portis: portis
@@ -111,12 +117,14 @@ class Dashboard extends Component {
       this.setState({
         account: acc[0]
       })
-    }
-  
-    async loadBlockchainData(){
-      const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+      const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
       this.setState({
-          policy: policy});
+          policy: policy
+      });
+      let owner = await policy.methods.getOwner().call({from: this.state.account});
+      this.setState({
+        owner: owner
+      })
     }
   
     render() {
@@ -129,19 +137,20 @@ class Dashboard extends Component {
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
-                            pathname: "/vendor",
-                        }}>Vendor</NavLink>
+                            pathname: '/home',
+                        }}>Home</NavLink>
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
-                        }}>Policy</NavLink>
+                        }}>User</NavLink>
                     </div>
-                    <div className= "col-1" style={{fontSize:"17px"}}>
+                    <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayAdmin }}>
                         <NavLink to={{
-                            pathname: '/CreateClaimPolicy',
-                        }}>Claims</NavLink>
+                            pathname: '/vendor',
+                        }}>Vendor</NavLink>
                     </div>
+                    
                     <div className= "col-6" style={{fontSize:"15px", position:"right", color:"white"}} align="right">
                         {this.state.account}
                     </div>
@@ -152,7 +161,10 @@ class Dashboard extends Component {
                     </div>
                 </nav>
             </header>
-            <Switch>    
+            <Switch>  
+                <Route path="/home" component={
+                    () => <Home/>}/>
+
                 <Route path="/vendor" component={
                     () => <Vendor
                         address={this.state.address} 
@@ -163,16 +175,6 @@ class Dashboard extends Component {
                         config = {this.state.config}
                         owner = {this.state.owner}/>}/>
 
-                <Route path="/CreateClaimPolicy" component={
-                    () => <CreateClaimPolicy 
-                        address={this.state.address} 
-                        web3={this.state.web3} 
-                        account = {this.state.account}
-                        portis = {this.state.portis}
-                        loginstatus = {this.state.login} 
-                        config = {this.state.config}
-                        owner = {this.state.owner}/>}/>
-
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 
                         address={this.state.address} 
@@ -180,8 +182,7 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         loginstatus = {this.state.login} 
-                        config = {this.state.config}
-                        owner = {this.state.owner}/>}/>
+                        config = {this.state.config}/>}/>
 
                 <Route path="/" render={() => 
                     <div>
@@ -201,7 +202,7 @@ class Dashboard extends Component {
                             <Card.Content extra>
                               <div className='ui two buttons'>
                                 <NavLink to={{
-                                    pathname: '/CreatePolicyDash',
+                                    pathname: '/home',
                                 }}
                                 >
                                     <Button onClick={this.handleSubmit1} basic color='blue'>
@@ -223,7 +224,7 @@ class Dashboard extends Component {
                             <Card.Content extra>
                               <div className='ui two buttons'>
                                 <NavLink to={{
-                                    pathname: '/CreatePolicyDash',
+                                    pathname: '/home',
                                 }}
                                 >
                                     <Button onClick={this.handleSubmit2} basic color='blue'>
