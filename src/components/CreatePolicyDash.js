@@ -4,8 +4,8 @@ import Web3 from 'web3'
 import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
 import ipfs from './ipfs.js'
-import {Route, Switch, NavLink } from 'react-router-dom';
 import Modal from "react-bootstrap/Modal";
+
 
 const PolicyCard = props => (
   <tr>
@@ -215,6 +215,7 @@ class CreatePolicyDash extends Component {
     }
   }
 
+
   handleChange (evt) {
     this.setState({ [evt.target.name]: evt.target.value });
   }
@@ -377,11 +378,12 @@ class CreatePolicyDash extends Component {
             </Modal.Body>
             <Modal.Footer>
               <Card.Content extra>
-                  <div className='ui two buttons'>
+                  <div className='ui two buttons' style={{paddingRight: "20px"}}>
                     <Button onClick={this.handlePolicySubmit} basic color='green'>
                       BUY
                     </Button>
-                    <Button onClick={this.hidePolicyModal} basic color='red'>
+                    <div style={{paddingRight: "20px"}}></div>
+                    <Button onClick={this.hidePolicyModal} basic color='red' >
                       CANCEL
                     </Button>
                   </div>
@@ -481,10 +483,11 @@ class CreatePolicyDash extends Component {
             </Modal.Body>
             <Modal.Footer>
               <Card.Content extra>
-                  <div className='ui two buttons'>
+                  <div className='ui two buttons' style={{paddingRight: "20px"}}>
                     <Button onClick={this.handleClaimSubmit} basic color='green'>
                       BUY
                     </Button>
+                    <div style={{paddingRight: "20px"}}></div>
                     <Button onClick={this.hideClaimModal} basic color='red'>
                       CANCEL
                     </Button>

@@ -6,9 +6,9 @@ import Portis from '@portis/web3';
 import logo from '../images/logos/Matic logo symbol.png';
 import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
-import CreateClaimPolicy from "./CreateClaimPolicy.js";
 import Vendor from "./vendor.js";
 import Home from "./Home.js";
+import Pos from "./matic.js"
 
 class Dashboard extends Component {
 
@@ -142,6 +142,11 @@ class Dashboard extends Component {
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
+                            pathname: '/matic',
+                        }}>Matic</NavLink>
+                    </div>
+                    <div className= "col-1" style={{fontSize:"17px"}}>
+                        <NavLink to={{
                             pathname: '/CreatePolicyDash',
                         }}>User</NavLink>
                     </div>
@@ -164,6 +169,9 @@ class Dashboard extends Component {
             <Switch>  
                 <Route path="/home" component={
                     () => <Home/>}/>
+
+                <Route path="/matic" component={
+                    () => <Pos/>}/>
 
                 <Route path="/vendor" component={
                     () => <Vendor
