@@ -8,7 +8,6 @@ import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import Vendor from "./vendor.js";
 import Home from "./Home.js";
-import Pos from "./matic.js"
 
 class Dashboard extends Component {
 
@@ -146,11 +145,6 @@ class Dashboard extends Component {
                             pathname: '/home',
                         }}>Home</NavLink>
                     </div>
-                    {/* <div className= "col-1" style={{fontSize:"17px"}}>
-                        <NavLink to={{
-                            pathname: '/matic',
-                        }}>Matic</NavLink>
-                    </div> */}
                     <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayUser}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
@@ -175,9 +169,6 @@ class Dashboard extends Component {
             <Switch>  
                 <Route path="/home" component={
                     () => <Home/>}/>
-
-                <Route path="/matic" component={
-                    () => <Pos/>}/>
 
                 <Route path="/vendor" component={
                     () => <Vendor
