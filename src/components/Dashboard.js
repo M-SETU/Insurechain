@@ -38,6 +38,7 @@ class Dashboard extends Component {
         this.loadWeb3 = this.loadWeb3.bind(this);
         this.handleSubmit1 = this.handleSubmit1.bind(this);
         this.handleSubmit2 = this.handleSubmit2.bind(this);
+        this.newCustomerCheck = this.newCustomerCheck.bind(this);
     
     }
     async handleSubmit1() {
@@ -51,19 +52,21 @@ class Dashboard extends Component {
             chainId: 5
             }
         })
+        this.login();
     }
     
     async handleSubmit2() {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0x2b401A519c38658d1c95aB74e765Ee6b17d7F9D9",
+            address:"0xf64E481C9D173086f4f7fE3e98a8d11252872eaf",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
                 chainId: 80001
             },
         })
+        this.login();
     }
     
 
@@ -79,17 +82,20 @@ class Dashboard extends Component {
                 displayAdmin: "visible",
                 displayUser: "hidden"
               })
+              window.alert("Welcome Vendor");
             }else{
               await this.setState({
                 displayAdmin: "hidden",
                 displayUser: "visible"
               })
+              await this.newCustomerCheck();
             }
             if(this.state.account!==''){
                 await this.setState({
                     loginText: "Logout"
                 })
             }
+            
           }else{
             await this.state.portis.logout(() => {
                 console.log('User logged out');
@@ -98,13 +104,38 @@ class Dashboard extends Component {
                 login: false,
                 loginText: "Login",
                 account: '',
-                displayAdmin: "hidden"
+                displayAdmin: "hidden",
+                displayUser: "hidden"
             })
           }
         } catch {
+            await this.state.portis.logout(() => {});
+            await this.setState({
+              displayAdmin: "hidden",
+              displayUser: "hidden",
+              account: '',
+              login: false,
+              loginText: "Login",
+              policy:{},
+              portis: {},
+              web3: {}, 
+            })
             window.alert("Select vendor first")
         }
       
+    }
+
+    async newCustomerCheck(){
+      const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
+      let isOldCustomer = await policy.methods.checkNewCustomer().call({from: this.state.account});
+      if(isOldCustomer){
+        window.alert("welcome back!!");
+      }
+      else{
+        let customerId = await policy.methods.createNewCustomer()
+          .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+        window.alert("Welcome! Happy to have you onboard.")
+      }
     }
   
     async loadWeb3() {
@@ -140,11 +171,6 @@ class Dashboard extends Component {
                       }}><img src={logo} style = {{width: "40px" , height: "40px"}} />
                       </NavLink> 
                     </div>
-                    <div className= "col-1" style={{fontSize:"17px"}}>
-                        <NavLink to={{
-                            pathname: '/home',
-                        }}>Home</NavLink>
-                    </div>
                     <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayUser}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
@@ -153,10 +179,10 @@ class Dashboard extends Component {
                     <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayAdmin }}>
                         <NavLink to={{
                             pathname: '/vendor',
-                        }}>User Policies</NavLink>
+                        }}>Customers' Policies</NavLink>
                     </div>
                     
-                    <div className= "col-6" style={{fontSize:"15px", position:"right", color:"white"}} align="right">
+                    <div className= "col-7" style={{fontSize:"15px", position:"right", color:"white"}} align="right">
                         {this.state.account}
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}} align = "Right">
@@ -167,8 +193,6 @@ class Dashboard extends Component {
                 </nav>
             </header>
             <Switch>  
-                <Route path="/home" component={
-                    () => <Home/>}/>
 
                 <Route path="/vendor" component={
                     () => <Vendor
@@ -195,31 +219,10 @@ class Dashboard extends Component {
                       <div style={{margin: "20px", display: "inline-block"}}>
                         <div align= "left">
                           <Card.Group>
+
                           <Card>
                             <Card.Content>
                               <Card.Header>Vendor 1</Card.Header>
-                              <Card.Meta>LC</Card.Meta>
-                              <Card.Description>
-                                <strong>LIC</strong><br></br>
-                                <strong>Goerli</strong>
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              <div className='ui two buttons'>
-                                <NavLink to={{
-                                    pathname: '/home',
-                                }}
-                                >
-                                    <Button onClick={this.handleSubmit1} basic color='blue'>
-                                    Select
-                                    </Button>
-                                </NavLink>
-                              </div>
-                            </Card.Content>
-                          </Card>
-                          <Card>
-                            <Card.Content>
-                              <Card.Header>Vendor 2</Card.Header>
                               <Card.Meta>HF</Card.Meta>
                               <Card.Description>
                                 <strong>HDFC</strong><br></br>
@@ -228,17 +231,30 @@ class Dashboard extends Component {
                             </Card.Content>
                             <Card.Content extra>
                               <div className='ui two buttons'>
-                                <NavLink to={{
-                                    pathname: '/home',
-                                }}
-                                >
                                     <Button onClick={this.handleSubmit2} basic color='blue'>
-                                    Select
+                                    Login
                                     </Button>
-                                </NavLink>
                               </div>
                             </Card.Content>
                           </Card>
+                          <Card>
+                            <Card.Content>
+                              <Card.Header>Vendor 2</Card.Header>
+                              <Card.Meta>LC</Card.Meta>
+                              <Card.Description>
+                                <strong>LIC</strong><br></br>
+                                <strong>Goerli</strong>
+                              </Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                              <div className='ui two buttons'>
+                                    <Button onClick={this.handleSubmit1} basic color='blue'>
+                                    Login
+                                    </Button>
+                              </div>
+                            </Card.Content>
+                          </Card>
+                          
                         </Card.Group>
                         </div>
                       </div>

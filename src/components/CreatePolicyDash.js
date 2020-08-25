@@ -456,10 +456,7 @@ class CreatePolicyDash extends Component {
               <Modal.Title><b>BUY POLICY</b></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Card>
-              <Card.Content>
-                <Card.Header>Buy Policy</Card.Header>
-                <Card.Description>  
+            
                 <div>
                 <div>
                   <Form>
@@ -497,9 +494,6 @@ class CreatePolicyDash extends Component {
                   </Form>
                 </div>
                   </div>
-                </Card.Description>
-              </Card.Content>
-            </Card>
             </Modal.Body>
             <Modal.Footer>
               <Card.Content extra>
