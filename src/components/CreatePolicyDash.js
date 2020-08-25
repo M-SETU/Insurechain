@@ -5,6 +5,10 @@ import Policy from '../abis/policy.json';
 import Portis from '@portis/web3';
 import ipfs from './ipfs.js'
 import Modal from "react-bootstrap/Modal";
+import Matic from "@maticnetwork/maticjs";
+const bn = require("bn.js");
+const Network = require("@maticnetwork/meta/network");
+const SCALING_FACTOR = new bn(10).pow(new bn(18));
 
 
 const PolicyCard = props => (
@@ -19,7 +23,10 @@ const PolicyCard = props => (
         <Button onClick={() => { props.handleClaimButton(props.policyCard[0]) }} basic color='yellow'>
           Claim
         </Button>
-      </td>
+        <Button onClick={() => { props.handlePortButton(props.policyCard[0]) }} basic color='pink'>
+          Port
+        </Button>
+    </td>
   </tr>
 )
 
@@ -87,6 +94,13 @@ class CreatePolicyDash extends Component {
     this.handleClaimList = this.handleClaimList.bind(this);
     this.handlePolicyId = this.handlePolicyId.bind(this);
     this.handleClaimButton = this.handleClaimButton.bind(this);
+    this.depositer = this.depositer.bind(this);
+    this.withdrawer = this.withdrawer.bind(this);
+    this.burned = this.burned.bind(this);
+    this.exiter = this.exiter.bind(this);
+    this.getMaticClient = this.getMaticClient.bind(this);
+    this.port = this.port.bind(this);
+    this.deactivatePolicy = this.deactivatePolicy.bind(this);
   
   }
   async componentWillMount() {
@@ -110,7 +124,43 @@ class CreatePolicyDash extends Component {
     }
   }
 
+  async getMaticClient(_network = "testnet", _version = "mumbai") {
+    console.log({
+        network: _network,
+        version: _version,
+        parentProvider: this.state.portisGoerli.provider,
+        maticProvider: this.state.portisMumbai.provider,  
+        parentDefaultOptions:  this.state.account , 
+        maticDefaultOptions: this.state.account,
+    }); 
+
+    const network = new Network(_network, _version);
+    const matic = new Matic({
+        network: _network,
+        version: _version,
+        parentProvider: this.state.portisGoerli.provider,
+        maticProvider: this.state.portisMumbai.provider,  
+        parentDefaultOptions:  this.state.account , 
+        maticDefaultOptions: this.state.account,
+    });
+    await matic.initialize();       
+    return { matic, network };
+  }
+
   async loadBlockchainData(){
+    const portisMumbai = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
+        nodeUrl: 'https://rpc-mumbai.matic.today', 
+        chainId: 80001
+    });
+    const portisGoerli = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
+        nodeUrl: 'https://rpc.goerli.mudit.blog/', 
+        chainId: 5
+    });
+    this.setState({
+        portisMumbai: portisMumbai,
+        portisGoerli: portisGoerli
+    })
+
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
@@ -224,6 +274,11 @@ class CreatePolicyDash extends Component {
     await this.setState({ policySelected: evt.target.value });
   }
 
+  async deactivatePolicy(id){
+    await this.state.policy.methods.burn(id)
+        .call({from: this.state.account});
+  }
+
   async handlePoliciesLoop(){
     var ids = this.state.policyIdsArray;
     var arr = [];
@@ -231,7 +286,9 @@ class CreatePolicyDash extends Component {
       let id = ids[i];
       let details = await this.state.policy.methods.getPolicy(id)
         .call({from: this.state.account});
-      arr.push(details);
+      if(details[6]==true){
+        arr.push(details);
+      }
     }
     this.setState({
       policiesList: arr
@@ -256,10 +313,82 @@ class CreatePolicyDash extends Component {
     })
   }
 
+  async burned(id) {
+    
+    console.log('asaa');
+    const { matic, network } = await this.getMaticClient();
+ 
+    console.log(matic);
+    console.log(network);
+    // burning erc721 tokens are also supported
+    //Matic chain address
+    const token = this.props.address;
+    console.log(this.props.address);
+    console.log(this.state.account);
+
+
+    // or provide the tokenId in case of an erc721
+    const tokenId = id;
+    const hash = await matic.startWithdrawForNFT(token, tokenId, { from:this.state.account});
+    await this.setState({
+        hash: hash.transactionHash
+    });
+    console.log(hash.transactionHash);
+    console.log(this.state.hash);
+    localStorage.setItem('hash',this.state.hash);
+    this.deactivatePolicy(id); 
+    setTimeout(this.port(), 1200000);   
+  }
+
+  async port(){
+    await this.withdrawer();
+    await this.exiter();
+    await this.depositer();
+  }  
+
+  async withdrawer() {
+      const hash1 = localStorage.getItem('hash');
+      console.log(hash1);  
+      const { matic, network } = await this.getMaticClient();
+      
+          // provide the burn tx hash
+      const chash = await matic.withdrawNFT(hash1, { from: this.state.account , gas: "2000000" });
+      console.log(chash.transactionHash);
+      localStorage.setItem('chash',chash.transactionHash);
+  }
+
+// Withdraw process is completed, funds will be transfered to your account after challege period is over.
+
+  async exiter() {
+      const { matic, network } = await this.getMaticClient();
+      
+      //Goerli chain address
+      const token = "0xD22b4C3D639d85C255449Dc535B523a214219E0E";
+      const phash = await matic.processExits(token, { from: this.state.account, gas: 7000000 })
+      console.log(phash.transactionHash);
+      localStorage.setItem('phash',phash.transactionHash);
+  }
+
+  async depositer(id){
+      const { matic, network } = await this.getMaticClient();
+      console.log(this.state.account)
+      const token = "0xD22b4C3D639d85C255449Dc535B523a214219E0";
+      const tokenId = id;
+
+      await matic.approveERC20TokensForDeposit(token, tokenId,{ from: this.state.account }).then((res) => {
+      console.log("approve hash: ", res.transactionHash);
+      });
+
+      await matic.safeDepositERC721Tokens(token, tokenId, { from: this.state.account }).then((res) => {
+      console.log("desposit hash: ", res.transactionHash);
+      });
+  }
+
   policyList() {
     return this.state.policiesList.map(currentpolicy => {
       return <PolicyCard policyCard={currentpolicy} 
       handleClaimButton = {this.handleClaimButton} 
+      handlePortButton = {this.burned}
       key={currentpolicy[0]}/>;
     })
   }
@@ -315,12 +444,8 @@ class CreatePolicyDash extends Component {
 
     return (
       <div>
-        <div style={{marginLeft: "80px",marginTop: "40px"}} align="center">
-        <div>
-          <Button onClick={this.showPolicyModal} basic color='blue'>
-            BUY POLICY
-          </Button>
-        </div>
+        <div style={{marginLeft: "80px",marginTop: "20px"}} align="center">
+        
         <div align = "center">
           <Modal
             show={this.state.showPolicyModal}
@@ -496,13 +621,18 @@ class CreatePolicyDash extends Component {
             </Modal.Footer>
           </Modal>
         </div>
-
         <br></br>
-
           </div>
-          <br></br>
-          <div style={{padding:"20px"}}>
-            <div style={{fontSize:"20px", position:"center"}} align = "center"><strong>All Policies</strong></div>
+          <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
+            <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center"></div>
+              <div style={{fontSize:"20px", display:"inline-block", paddingLeft: "20px"}}>
+                <strong>My Policies</strong>
+              </div>
+              <div style={{display:"inline-block", float: "right"}}>
+                <Button onClick={this.showPolicyModal} basic color='blue'>
+                  BUY POLICY
+                </Button>
+              </div>
               <table className="ui celled table ">
                 <thead>
                 <tr>
@@ -519,7 +649,10 @@ class CreatePolicyDash extends Component {
           </div>
           <br></br>
           <div style={{padding:"20px"}}>
-            <div style={{fontSize:"20px", position:"center"}} align = "center"><strong>All Claims</strong></div>
+            <div style={{fontSize:"20px", position:"center"}} align = "center"></div>
+              <div style={{fontSize:"20px", position:"center", display:"inline-block", paddingLeft: "20px"}} align = "center">
+                <strong>My Claims</strong>
+              </div>
               <table className="ui celled table ">
                 <thead>
                   <tr>

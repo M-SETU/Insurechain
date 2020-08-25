@@ -16,6 +16,7 @@ class Dashboard extends Component {
       super(props)
       this.state = {
         displayAdmin: "hidden",
+        displayUser: "hidden",
         account: '',
         policy:{},
         portis: {},
@@ -44,7 +45,7 @@ class Dashboard extends Component {
         await this.setState({
           name: "LIC",
           network: "goerli",
-          address: "0x6dB46d8c9C9A3Dc4B4493C04358D969aB763ED7f",
+          address: "0xD22b4C3D639d85C255449Dc535B523a214219E0E",
           click: true,
           config: {
             nodeUrl: 'https://rpc.goerli.mudit.blog/', 
@@ -57,7 +58,7 @@ class Dashboard extends Component {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0x6E441c6E95387c6761Ec44CB006891583c4Bed06",
+            address:"0x2b401A519c38658d1c95aB74e765Ee6b17d7F9D9",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
@@ -76,11 +77,13 @@ class Dashboard extends Component {
             })
             if(this.state.account == this.state.owner){
               await this.setState({
-                displayAdmin: "visible"
+                displayAdmin: "visible",
+                displayUser: "hidden"
               })
             }else{
               await this.setState({
-                displayAdmin: "hidden"
+                displayAdmin: "hidden",
+                displayUser: "visible"
               })
             }
             if(this.state.account!==''){
@@ -132,28 +135,31 @@ class Dashboard extends Component {
         <div>
             <header>
                 <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
-                    <div className=" col-1 navbar-brand" position="inline-block">
-                        <img src={logo} style = {{width: "40px" , height: "40px"}} />
+                    <div className=" col-0 navbar-brand" position="inline-block">
+                      <NavLink to={{
+                            pathname: '/',
+                      }}><img src={logo} style = {{width: "40px" , height: "40px"}} />
+                      </NavLink> 
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
                             pathname: '/home',
                         }}>Home</NavLink>
                     </div>
-                    <div className= "col-1" style={{fontSize:"17px"}}>
+                    {/* <div className= "col-1" style={{fontSize:"17px"}}>
                         <NavLink to={{
                             pathname: '/matic',
                         }}>Matic</NavLink>
-                    </div>
-                    <div className= "col-1" style={{fontSize:"17px"}}>
+                    </div> */}
+                    <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayUser}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
-                        }}>User</NavLink>
+                        }}>My Policies</NavLink>
                     </div>
                     <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayAdmin }}>
                         <NavLink to={{
                             pathname: '/vendor',
-                        }}>Vendor</NavLink>
+                        }}>User Policies</NavLink>
                     </div>
                     
                     <div className= "col-6" style={{fontSize:"15px", position:"right", color:"white"}} align="right">

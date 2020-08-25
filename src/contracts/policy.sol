@@ -1,18 +1,18 @@
 pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
-import "./ERC721Token.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 
 contract cryptoPolicy is ERC721 {
-    //0xF601fc2817Df7A3232bC177214B6C01c32e0978a
 
     struct claim {
         uint256 claimId;
-        uint256 claimDate;
+        string claimDate;
         string hospitalName;
         string description;
         uint256 amount;
         string claimDocumentHash;
         string status;
+        uint256 policyId;
     }
 
     struct policy {
@@ -22,12 +22,13 @@ contract cryptoPolicy is ERC721 {
         string kycHash;
         string policyType;
         uint256[] claimIds;
+        bool active;
     }
 
     string[] policyTypes;
     uint256[] allPolicyIds;
     uint256[] allClaimIds;
-    mapping(address => uint256) public userPolicies;
+    mapping(address => uint256[]) public userPolicies;
     mapping(address => uint256) public userCustomerId;
     mapping(uint256 => policy) public policies;
     mapping(uint256 => claim) public claims;
@@ -39,10 +40,10 @@ contract cryptoPolicy is ERC721 {
         ERC721(_name, _symbol)
     {
         admin = msg.sender;
-        policyTypes.push("SmartLife");
-        policyTypes.push("360Cover");
-        policyTypes.push("PersonalProtect");
-        policyTypes.push("FamilySure");
+        policyTypes.push("Smart");
+        policyTypes.push("360");
+        policyTypes.push("Personal");
+        policyTypes.push("Family");
     }
 
     function createPolicyType(string memory _policyType) public {
@@ -53,13 +54,17 @@ contract cryptoPolicy is ERC721 {
     function getPolicyTypes() public view returns (string[] memory) {
         return policyTypes;
     }
+    
+    function getOwner() public view returns (address) {
+        return admin;
+    }
 
     function getPolicyIds() public view returns (uint256[] memory) {
         require(msg.sender == admin, "only admin");
         return allPolicyIds;
     }
 
-    function getUserPolicies(address _address) public view returns (uint256) {
+    function getUserPolicies(address _address) public view returns (uint256[] memory) {
         require(msg.sender == _address);
         return userPolicies[_address];
     }
@@ -70,27 +75,24 @@ contract cryptoPolicy is ERC721 {
     }
 
     function getPolicy(uint256 _policyId) public view returns (policy memory) {
-        if (msg.sender == admin || msg.sender == policies[_policyId].owner) {
+        if(msg.sender==admin || msg.sender == policies[_policyId].owner){
             return policies[_policyId];
-        } else {
+        }
+        else{
             revert("Not Owner or Admin");
         }
     }
-
+    
     function getClaim(uint256 _claimId) public view returns (claim memory) {
         return claims[_claimId];
     }
-
+    
     function getAllClaimIds() public view returns (uint256[] memory) {
         require(msg.sender == admin, "only admin");
         return allClaimIds;
     }
-
-    function getUserPolicyClaimIds(uint256 _policyId)
-        public
-        view
-        returns (uint256[] memory)
-    {
+    
+    function getUserPolicyClaimIds(uint256 _policyId) public view returns (uint256[] memory) {
         require(msg.sender == policies[_policyId].owner);
         return policies[_policyId].claimIds;
     }
@@ -114,31 +116,35 @@ contract cryptoPolicy is ERC721 {
         nonce++;
 
         policies[policyId].customerId = userCustomerId[msg.sender];
-        userPolicies[msg.sender] = policyId;
+        userPolicies[msg.sender].push(policyId);
         policies[policyId].policyId = policyId;
         policies[policyId].owner = msg.sender;
         policies[policyId].kycHash = _documentHash;
+        policies[policyId].active = true;
         policies[policyId].policyType = _policyType;
         allPolicyIds.push(policyId);
         _mint(msg.sender, policyId);
     }
+    
+    function burn(uint256 _policyId) external {
+        require(msg.sender == policies[_policyId].owner);
+        policies[_policyId].active = false;
+    }
 
     function claimPolicy(
         uint256 _policyId,
-        uint256 _claimDate,
+        string calldata _claimDate,
         string calldata _hospitalName,
         string calldata _description,
         uint256 _amount,
         string calldata _claimdocs
     ) external {
         require(userCustomerId[msg.sender] == policies[_policyId].customerId);
-
         uint256 id = uint256(
             keccak256(abi.encodePacked(now, msg.sender, nonce))
         ) % 100000;
         id = id + 1;
         nonce++;
-
         claims[id] = claim(
             id,
             _claimDate,
@@ -146,7 +152,8 @@ contract cryptoPolicy is ERC721 {
             _description,
             _amount,
             _claimdocs,
-            "unprocessed"
+            "unprocessed",
+            _policyId
         );
         policies[_policyId].claimIds.push(id);
         allClaimIds.push(id);
