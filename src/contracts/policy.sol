@@ -1,9 +1,9 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
+import "./EIP712MetaTransaction.sol";
+import "./openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 
-contract cryptoPolicy is ERC721 {
-
+contract cryptoPolicy is ERC721, EIP712MetaTransaction {
     struct claim {
         uint256 claimId;
         string claimDate;
@@ -44,6 +44,29 @@ contract cryptoPolicy is ERC721 {
         policyTypes.push("360");
         policyTypes.push("Personal");
         policyTypes.push("Family");
+        uint256 randomnumber = uint256(
+            keccak256(abi.encodePacked(now, msg.sender, nonce))
+        ) % 100000;
+        randomnumber = randomnumber + 1;
+        nonce++;
+        userCustomerId[msg.sender] = randomnumber;
+    }
+
+    function checkNewCustomer() public view returns (bool) {
+        if (userCustomerId[msg.sender] == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function createNewCustomer() external returns (uint256) {
+        uint256 randomnumber = uint256(
+            keccak256(abi.encodePacked(now, msg.sender, nonce))
+        ) % 100000;
+        randomnumber = randomnumber + 1;
+        nonce++;
+        userCustomerId[msg.sender] = randomnumber;
     }
 
     function createPolicyType(string memory _policyType) public {
@@ -54,7 +77,7 @@ contract cryptoPolicy is ERC721 {
     function getPolicyTypes() public view returns (string[] memory) {
         return policyTypes;
     }
-    
+
     function getOwner() public view returns (address) {
         return admin;
     }
@@ -64,7 +87,11 @@ contract cryptoPolicy is ERC721 {
         return allPolicyIds;
     }
 
-    function getUserPolicies(address _address) public view returns (uint256[] memory) {
+    function getUserPolicies(address _address)
+        public
+        view
+        returns (uint256[] memory)
+    {
         require(msg.sender == _address);
         return userPolicies[_address];
     }
@@ -75,24 +102,27 @@ contract cryptoPolicy is ERC721 {
     }
 
     function getPolicy(uint256 _policyId) public view returns (policy memory) {
-        if(msg.sender==admin || msg.sender == policies[_policyId].owner){
+        if (msg.sender == admin || msg.sender == policies[_policyId].owner) {
             return policies[_policyId];
-        }
-        else{
+        } else {
             revert("Not Owner or Admin");
         }
     }
-    
+
     function getClaim(uint256 _claimId) public view returns (claim memory) {
         return claims[_claimId];
     }
-    
+
     function getAllClaimIds() public view returns (uint256[] memory) {
         require(msg.sender == admin, "only admin");
         return allClaimIds;
     }
-    
-    function getUserPolicyClaimIds(uint256 _policyId) public view returns (uint256[] memory) {
+
+    function getUserPolicyClaimIds(uint256 _policyId)
+        public
+        view
+        returns (uint256[] memory)
+    {
         require(msg.sender == policies[_policyId].owner);
         return policies[_policyId].claimIds;
     }
@@ -101,14 +131,6 @@ contract cryptoPolicy is ERC721 {
         string calldata _documentHash,
         string calldata _policyType
     ) external {
-        if (userCustomerId[msg.sender] == 0) {
-            uint256 randomnumber = uint256(
-                keccak256(abi.encodePacked(now, msg.sender, nonce))
-            ) % 100000;
-            randomnumber = randomnumber + 1;
-            nonce++;
-            userCustomerId[msg.sender] = randomnumber;
-        }
         uint256 policyId = uint256(
             keccak256(abi.encodePacked(now, msg.sender, nonce))
         ) % 100000;
@@ -125,7 +147,7 @@ contract cryptoPolicy is ERC721 {
         allPolicyIds.push(policyId);
         _mint(msg.sender, policyId);
     }
-    
+
     function burn(uint256 _policyId) external {
         require(msg.sender == policies[_policyId].owner);
         policies[_policyId].active = false;

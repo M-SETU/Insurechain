@@ -8,14 +8,18 @@ import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import Vendor from "./vendor.js";
 import Home from "./Home.js";
+import Modal from "react-bootstrap/Modal";
+import "./dashboard.css"
+import insurechain from '../images/logos/home-insurance-getty.jpg';
+
 
 class Dashboard extends Component {
 
     constructor(props) {
       super(props)
       this.state = {
-        displayAdmin: "hidden",
-        displayUser: "hidden",
+        // displayAdmin: "hidden",
+        // displayUser: "hidden",
         account: '',
         policy:{},
         portis: {},
@@ -31,7 +35,12 @@ class Dashboard extends Component {
         click: false,
         login: false,
         loginText: "Login",
-        owner : ""
+        owner : "",
+        showNewCustomer: false,
+        showOldCustomer: false,
+        showVendor: false,
+        loginButtonDisabled: true,
+        copyVis: "hidden"
       };
 
         this.login = this.login.bind(this);
@@ -39,7 +48,6 @@ class Dashboard extends Component {
         this.handleSubmit1 = this.handleSubmit1.bind(this);
         this.handleSubmit2 = this.handleSubmit2.bind(this);
         this.newCustomerCheck = this.newCustomerCheck.bind(this);
-    
     }
     async handleSubmit1() {
         await this.setState({
@@ -59,7 +67,7 @@ class Dashboard extends Component {
         await this.setState({
             name: "HDFC",
             network: "maticMumbai",
-            address:"0xf64E481C9D173086f4f7fE3e98a8d11252872eaf",
+            address:"0x21C5111620aEd2Fe7885c96C4b72fBf89095A085",
             click: true,
             config: {
                 nodeUrl: 'https://rpc-mumbai.matic.today', 
@@ -78,21 +86,23 @@ class Dashboard extends Component {
                 login: true
             })
             if(this.state.account == this.state.owner){
-              await this.setState({
-                displayAdmin: "visible",
-                displayUser: "hidden"
-              })
-              window.alert("Welcome Vendor");
+              // await this.setState({
+              //   // displayAdmin: "visible",
+              //   // displayUser: "hidden"
+              // })
+              this.showVendorModal();
             }else{
-              await this.setState({
-                displayAdmin: "hidden",
-                displayUser: "visible"
-              })
+              // await this.setState({
+              //   // displayAdmin: "hidden",
+              //   // displayUser: "visible"
+              // })
               await this.newCustomerCheck();
             }
             if(this.state.account!==''){
                 await this.setState({
-                    loginText: "Logout"
+                    loginButtonDisabled: false,
+                    loginText: "Logout",
+                    copyVis: "visible"
                 })
             }
             
@@ -104,23 +114,25 @@ class Dashboard extends Component {
                 login: false,
                 loginText: "Login",
                 account: '',
-                displayAdmin: "hidden",
-                displayUser: "hidden"
+                // displayAdmin: "hidden",
+                // displayUser: "hidden",
+                loginButtonDisabled: true,
+                copyVis: "hidden"
             })
           }
         } catch {
             await this.state.portis.logout(() => {});
             await this.setState({
-              displayAdmin: "hidden",
-              displayUser: "hidden",
+              // displayAdmin: "hidden",
+              // displayUser: "hidden",
               account: '',
               login: false,
               loginText: "Login",
               policy:{},
               portis: {},
               web3: {}, 
+              copyVis: "hidden"
             })
-            window.alert("Select vendor first")
         }
       
     }
@@ -129,12 +141,12 @@ class Dashboard extends Component {
       const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
       let isOldCustomer = await policy.methods.checkNewCustomer().call({from: this.state.account});
       if(isOldCustomer){
-        window.alert("welcome back!!");
+        this.showOldCustomerModal();
       }
       else{
         let customerId = await policy.methods.createNewCustomer()
           .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-        window.alert("Welcome! Happy to have you onboard.")
+        this.showNewCustomerModal();
       }
     }
   
@@ -150,6 +162,7 @@ class Dashboard extends Component {
       this.setState({
         account: acc[0]
       })
+      console.log(this.state.account);
       const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
       this.setState({
           policy: policy
@@ -159,36 +172,154 @@ class Dashboard extends Component {
         owner: owner
       })
     }
+
+    hideVendorModal = (e) => {
+      this.setState({
+        showVendor: false,
+      });
+    };
+  
+    showVendorModal = (e) => {
+      this.setState({
+        showVendor: true,
+      });
+    };
+
+    hideNewCustomerModal = (e) => {
+      this.setState({
+        showNewCustomer: false,
+      });
+    };
+  
+    showNewCustomerModal = (e) => {
+      this.setState({
+        showNewCustomer: true,
+      });
+    };
+
+    hideOldCustomerModal = (e) => {
+      this.setState({
+        showOldCustomer: false,
+      });
+    };
+  
+    showOldCustomerModal = (e) => {
+      this.setState({
+        showOldCustomer: true,
+      });
+    };
   
     render() {
       return (
         <div>
             <header>
+              <Modal
+                show={this.state.showNewCustomer}
+                onHide={this.hideNewCustomerModal}
+              >
+                <Modal.Header>
+                  <Modal.Title><b>Welcome to the Dapp</b></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {this.state.account}
+                </Modal.Body>
+                  
+                <Modal.Footer>
+                  <Card.Content extra>
+                      <div className='ui two buttons' style={{paddingRight: "20px"}}>
+                        <Button onClick={this.hideNewCustomerModal} basic color='green'>
+                          Ok
+                        </Button>
+    
+                      </div>
+                    </Card.Content>
+                </Modal.Footer>
+              </Modal>
+              <Modal
+                show={this.state.showOldCustomer}
+                onHide={this.hideOldCustomerModal}
+              >
+                <Modal.Header>
+                  <Modal.Title><b>Welcome Back</b></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                {this.state.account}
+                </Modal.Body>
+                  
+                <Modal.Footer>
+                <Card.Content extra>
+                    <div className='ui two buttons' style={{paddingRight: "20px"}}>
+                      <Button onClick={this.hideOldCustomerModal} basic color='green'>
+                        Ok
+                      </Button>
+                    </div>
+                  </Card.Content>
+                </Modal.Footer>
+              </Modal>
+              <Modal
+                show={this.state.showVendor}
+                onHide={this.hideVendorModal}
+              >
+                <Modal.Header>
+                  <Modal.Title><b>Welcome Vendor</b></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                {this.state.account}
+                </Modal.Body>
+                  
+                <Modal.Footer>
+                  <Card.Content extra>
+                    <div className='ui two buttons' style={{paddingRight: "20px"}}>
+                      <Button onClick={this.hideVendorModal} basic color='green'>
+                        Ok
+                      </Button>
+                    </div>
+                  </Card.Content>
+                </Modal.Footer>
+              </Modal>
+
                 <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
                     <div className=" col-0 navbar-brand" position="inline-block">
                       <NavLink to={{
                             pathname: '/',
                       }}><img src={logo} style = {{width: "40px" , height: "40px"}} />
+                      <b style={{
+                        position: "absolute",
+                        color: "white",
+                        top: "22px",
+                        fontSize: "20px",
+                        fontFamily: "arial"}}>Matic</b>
                       </NavLink> 
                     </div>
-                    <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayUser}}>
+                    
+                    <div className= "col-1" style={{fontSize:"17px",color:"white", visibility: "hidden"}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
                         }}>My Policies</NavLink>
                     </div>
-                    <div className= "col-1" style={{fontSize:"17px", visibility: this.state.displayAdmin }}>
+                    <div className= "col-1" style={{fontSize:"17px",color:"white",  visibility: "hidden" }}>
                         <NavLink to={{
                             pathname: '/vendor',
                         }}>Customers' Policies</NavLink>
                     </div>
                     
-                    <div className= "col-7" style={{fontSize:"15px", position:"right", color:"white"}} align="right">
-                        {this.state.account}
+                    <div className= "col-7" style={{fontSize:"15px", position:"right", color:"white", visibility: this.state.copyVis}} align="right">
+                      {/* <CopyToClipboard text={this.state.account}>
+                        <Button basic color='yellow'>
+                          Copy
+                        </Button>
+                      </CopyToClipboard> */}
+                        {this.state.account} 
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}} align = "Right">
-                        <Button onClick={this.login} basic color='green'>
+                        <NavLink to={{
+                            pathname: '/',
+                        }}>
+                          <Button onClick={this.login} basic color='green'  disabled= {this.state.loginButtonDisabled} >
                             {this.state.loginText}
-                        </Button>
+                          </Button>
+                        </NavLink>
+                        
                     </div>
                 </nav>
             </header>
@@ -214,52 +345,107 @@ class Dashboard extends Component {
                         config = {this.state.config}/>}/>
 
                 <Route path="/" render={() => 
-                    <div>
-                    <div align="center">
-                      <div style={{margin: "20px", display: "inline-block"}}>
-                        <div align= "left">
-                          <Card.Group>
+                  <div> 
+                    <div className="mainly">
+                      <div className="title">
+                        <h1>InsureChain</h1>
+                      </div>
+                      <div className="heading">
+                        <h3> Your One Stop Smart Savings Accounts DeFi Platform</h3>
+                      </div>
+                      <div className="btnVendor">
+                        <NavLink to={{
+                            pathname: '/vendor',
+                        }}>
+                          <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            Vendor
+                          </a>
+                        </NavLink>
+                      </div>
 
-                          <Card>
-                            <Card.Content>
-                              <Card.Header>Vendor 1</Card.Header>
-                              <Card.Meta>HF</Card.Meta>
-                              <Card.Description>
-                                <strong>HDFC</strong><br></br>
-                                <strong>Matic</strong>
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              <div className='ui two buttons'>
-                                    <Button onClick={this.handleSubmit2} basic color='blue'>
-                                    Login
-                                    </Button>
-                              </div>
-                            </Card.Content>
-                          </Card>
-                          <Card>
-                            <Card.Content>
-                              <Card.Header>Vendor 2</Card.Header>
-                              <Card.Meta>LC</Card.Meta>
-                              <Card.Description>
-                                <strong>LIC</strong><br></br>
-                                <strong>Goerli</strong>
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              <div className='ui two buttons'>
-                                    <Button onClick={this.handleSubmit1} basic color='blue'>
-                                    Login
-                                    </Button>
-                              </div>
-                            </Card.Content>
-                          </Card>
-                          
-                        </Card.Group>
-                        </div>
+                      <div className="btnUser">
+                        <NavLink to={{
+                            pathname: '/CreatePolicyDash',
+                        }}>
+                          <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            User
+                          </a>
+                        </NavLink>
                       </div>
                     </div>
+
+                    <section id="about">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <img src={insurechain} style={{width: "500px", height: "300px"}}/>
+                            {/* <video autoPlay muted loop id="video" width= "500" height="300">
+                              <source src={savifyvid} type="video/mp4">
+                              </source>
+                            </video> */}
+                          </div>  
+                          <div class ="col-md-6">
+                            <h2>About Us</h2>
+                            <div class="about-content">
+                              One Stop Smart Savings Account platform that provides the facility to a user to let SaviFi do the job of managing his fund’s hassle-free. We plan to enable this by automatically toggling the users' funds from one platform to another basis the interest rates being offered across various Defi platforms. We aim to also incorporate trending methods like Yield farming to leverage on Defi protocols and generate higher returns for our users.
+                            </div>
+                          </div>      
+                        </div>
+                      </div>
+                    </section>
                   </div>
+                  
+
+
+                  //   <div>
+                  //   <div align="center">
+                  //     <div style={{margin: "20px", display: "inline-block"}}>
+                  //       <div align= "left">
+                  //         <Card.Group>
+
+                  //         {/* <Card>
+                  //           <Card.Content>
+                  //             <Card.Header>Vendor 1</Card.Header>
+                  //             <Card.Meta>HF</Card.Meta>
+                  //             <Card.Description>
+                  //               <strong>HDFC</strong><br></br>
+                  //               <strong>Matic</strong>
+                  //             </Card.Description>
+                  //           </Card.Content>
+                  //           <Card.Content extra>
+                  //             <div className='ui two buttons'>
+                  //                   <Button onClick={this.handleSubmit2} basic color='blue'>
+                  //                   Sign Up
+                  //                   </Button>
+                  //             </div>
+                  //           </Card.Content>
+                  //         </Card> */}
+                          
+
+
+                  //         {/* <Card>
+                  //           <Card.Content>
+                  //             <Card.Header>Vendor 2</Card.Header>
+                  //             <Card.Meta>LC</Card.Meta>
+                  //             <Card.Description>
+                  //               <strong>LIC</strong><br></br>
+                  //               <strong>Goerli</strong>
+                  //             </Card.Description>
+                  //           </Card.Content>
+                  //           <Card.Content extra>
+                  //             <div className='ui two buttons'>
+                  //                   <Button onClick={this.handleSubmit1} basic color='blue'>
+                  //                   SignUp
+                  //                   </Button>
+                  //             </div>
+                  //           </Card.Content>
+                  //         </Card> */}
+                          
+                  //       </Card.Group>
+                  //       </div>
+                  //     </div>
+                  //   </div>
+                  // </div>
                 }/>
             </Switch>           
         </div>

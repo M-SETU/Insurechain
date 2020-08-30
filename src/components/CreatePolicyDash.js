@@ -21,7 +21,7 @@ const PolicyCard = props => (
     </td>
     <td>
         <Button onClick={() => { props.handleClaimButton(props.policyCard[0]) }} basic color='yellow'>
-          Claim
+          Raise Claim
         </Button>
         <Button onClick={() => { props.handlePortButton(props.policyCard[0]) }} basic color='pink'>
           Port
@@ -164,12 +164,12 @@ class CreatePolicyDash extends Component {
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
-    let a = await this.state.policy.methods.getPolicyTypes().call({from: this.state.account});
+    let a = await policy.methods.getPolicyTypes().call({from: this.state.account});
     this.setState({
       policyTypes: a
     })
 
-    let c = await this.state.policy.methods.getUserPolicies(
+    let c = await policy.methods.getUserPolicies(
       this.state.account)
     .call({from: this.state.account});
 
@@ -212,10 +212,12 @@ class CreatePolicyDash extends Component {
         .then ((receipt) => {
           console.log(receipt);
           this.hidePolicyModal();
+
         })
         .catch((err)=> {
           console.log(err);
           this.hidePolicyModal();
+          this.handlePoliciesLoop();
         });
       })
     } catch(err) {
@@ -254,6 +256,7 @@ class CreatePolicyDash extends Component {
         .then ((receipt) => {
           console.log(receipt);
           this.hideClaimModal();
+          this.handleClaimsLoop();
         })
         .catch((err)=> {
           console.log(err);
@@ -280,7 +283,9 @@ class CreatePolicyDash extends Component {
   }
 
   async handlePoliciesLoop(){
-    var ids = this.state.policyIdsArray;
+    var ids = await this.state.policy.methods.getUserPolicies(
+      this.state.account)
+    .call({from: this.state.account});
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
       let id = ids[i];
@@ -296,7 +301,8 @@ class CreatePolicyDash extends Component {
   }
 
   async handleClaimsLoop(){
-    var ids = this.state.policyIdsArray;
+    var ids = await this.state.policy.methods.getUserPolicies(
+      this.state.account)
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
       let details = await this.state.policy.methods.getPolicy(ids[i])
@@ -499,11 +505,11 @@ class CreatePolicyDash extends Component {
               <Card.Content extra>
                   <div className='ui two buttons' style={{paddingRight: "20px"}}>
                     <Button onClick={this.handlePolicySubmit} basic color='green'>
-                      BUY
+                      Buy
                     </Button>
                     <div style={{paddingRight: "20px"}}></div>
                     <Button onClick={this.hidePolicyModal} basic color='red' >
-                      CANCEL
+                      Cancel
                     </Button>
                   </div>
                 </Card.Content>
@@ -604,11 +610,11 @@ class CreatePolicyDash extends Component {
               <Card.Content extra>
                   <div className='ui two buttons' style={{paddingRight: "20px"}}>
                     <Button onClick={this.handleClaimSubmit} basic color='green'>
-                      BUY
+                      Claim
                     </Button>
                     <div style={{paddingRight: "20px"}}></div>
                     <Button onClick={this.hideClaimModal} basic color='red'>
-                      CANCEL
+                      Cancel
                     </Button>
                   </div>
                 </Card.Content>
@@ -624,7 +630,7 @@ class CreatePolicyDash extends Component {
               </div>
               <div style={{display:"inline-block", float: "right"}}>
                 <Button onClick={this.showPolicyModal} basic color='blue'>
-                  BUY POLICY
+                  Buy Policy
                 </Button>
               </div>
               <table className="ui celled table ">

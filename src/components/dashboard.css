@@ -1,0 +1,111 @@
+@import  url("https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css");
+@import url("https://code.jquery.com/jquery-3.5.1.slim.min.js"); 
+@import url("https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js");
+@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js");
+@import url("https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"); /*use for icon*/
+.scroll{
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    direction: right;
+}
+*{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    scroll-behavior: smooth;
+}
+
+.mainly{
+    width: 100%;
+    height: 70vh;
+    position: relative;
+    overflow: hidden;
+    background :linear-gradient(#edf9ff,#edf9ff);  
+}
+
+.title{
+    position: absolute;
+    top:25%;
+    margin-left: 38%;
+}
+.title h1{
+    color:rgb(38, 41, 231);
+    text-align: center; 
+    font-size:70px;
+
+}
+.heading{
+    position: absolute;
+    top:43%;
+    right:24%;
+    transform: transalte(-50%, 50%);
+}
+.heading h3{
+    color:rgb(0, 0, 0);
+    font-size:30px;
+    text-align: center; 
+}
+
+.btnVendor{
+    position: absolute;
+    top:60%;
+    right:49%;
+    /* transform: translate(-50%, 50%); */
+    border-radius: 15px;
+    align-content: center;
+}
+
+.btnUser{
+    position: absolute;
+    top:60%;
+    right:40%;
+    /* transform: translate(-50%, 50%); */
+    border-radius: 15px;
+    align-content: center;
+}
+
+.btnbtn{
+    text-decoration:none;
+    color:#fff;
+    padding-left:30px;
+    padding-right:30px;
+    padding-top:15px;
+    padding-bottom:15px;
+    background-color:#a70c4c;
+    border:1px solid #a70c4c;
+    transition:0.6s ease;
+    font-size: 25px;
+    border-radius: 15px;
+ 
+}
+
+.buttonstart btnbtn a:hover{
+    background-color: #ffffff;
+    color:#fff;
+    border-radius: 15px;
+}
+#about{
+    padding-top: 50px;
+    padding-bottom: 50px;
+    color: #575454;
+}
+
+#about .btn{
+    margin-top:20px;
+    margin-bottom:30px;
+    border-radius: 15px;
+}
+.about-content{
+    padding-top:20px;
+ 
+}
+#contact{
+    padding-top: 50px;
+    padding-bottom: 50 px;
+    color:#555;
+    text-align: center;
+}
+
+
+
+
