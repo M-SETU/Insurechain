@@ -1,7 +1,7 @@
 import { Button} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
-import Policy from '../abis/policy.json';
+import Policy from '../policy.json';
 import Portis from '@portis/web3';
 
 const ClaimCard = props => (
