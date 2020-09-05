@@ -6,56 +6,16 @@ import Portis from '@portis/web3';
 import ipfs from './ipfs.js'
 import Modal from "react-bootstrap/Modal";
 import Matic from "@maticnetwork/maticjs";
+import PolicyOptions from './PolicyOptions';
+import OptionCard from './OptionCard';
+import ClaimCard from './ClaimCard';
+import PolicyCard from './PolicyCard';
 const bn = require("bn.js");
 const Network = require("@maticnetwork/meta/network");
 const SCALING_FACTOR = new bn(10).pow(new bn(18));
 
 
-const PolicyCard = props => (
-  <tr>
-    <td data-label="policyID">{props.policyCard[0]}</td>
-    <td data-label="custID">{props.policyCard[2]}</td>
-    <td data-label="poltype">{props.policyCard[4]}</td>
-    <td data-label="hash">
-      <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>{props.policyCard[3]}</a>
-    </td>
-    <td>
-        <Button onClick={() => { props.handleClaimButton(props.policyCard[0]) }} basic color='yellow'>
-          Raise Claim
-        </Button>
-        <Button onClick={() => { props.handlePortButton(props.policyCard[0]) }} basic color='pink'>
-          Port
-        </Button>
-    </td>
-  </tr>
-)
 
-const OptionCard = props => (
-  <option value={props.opt}>
-    {props.opt}
-  </option>
-)
-
-const ClaimCard = props => (
-  <tr>
-    <td>{props.claimCard[0]}</td>
-    <td>{props.claimCard[7]}</td>
-    <td>{props.claimCard[1]}</td>
-    <td>{props.claimCard[2]}</td>
-    <td>{props.claimCard[3]}</td>
-    <td data-label="hash">
-      <a href={`https://ipfs.infura.io/ipfs/${props.claimCard[5]}`}>{props.claimCard[5]}</a>
-    </td>
-    <td>{props.claimCard[4]}</td>
-    <td>{props.claimCard[6]}</td>
-  </tr>
-)
-
-const PolicyOptions = props => (
-  <option value={props.opt}>
-    {props.opt}
-  </option>
-)
 
 
 class CreatePolicyDash extends Component {
@@ -208,7 +168,7 @@ class CreatePolicyDash extends Component {
         const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
         policy.methods.createPolicy(
           this.state.hash, this.state.policySelected)
-        .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+        .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
         .then ((receipt) => {
           console.log(receipt);
           this.hidePolicyModal();
@@ -286,7 +246,10 @@ class CreatePolicyDash extends Component {
     var ids = await this.state.policy.methods.getUserPolicies(
       this.state.account)
     .call({from: this.state.account});
-    var arr = [];
+    var arr = this.state.policiesList;
+
+   if(ids.length > this.state.policiesList){
+
     for(let i = 0; i <ids.length; i++) {
       let id = ids[i];
       let details = await this.state.policy.methods.getPolicy(id)
@@ -295,14 +258,18 @@ class CreatePolicyDash extends Component {
         arr.push(details);
       }
     }
-    this.setState({
+
+    await this.setState({
       policiesList: arr
     })
+    console.log(this.state.policiesList); 
+   }
   }
 
   async handleClaimsLoop(){
     var ids = await this.state.policy.methods.getUserPolicies(
       this.state.account)
+
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
       let details = await this.state.policy.methods.getPolicy(ids[i])
@@ -391,6 +358,7 @@ class CreatePolicyDash extends Component {
   }
 
   policyList() {
+    console.log("asa");
     return this.state.policiesList.map(currentpolicy => {
       return <PolicyCard policyCard={currentpolicy} 
       handleClaimButton = {this.handleClaimButton} 
