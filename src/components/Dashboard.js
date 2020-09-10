@@ -7,7 +7,6 @@ import logo from '../images/logos/Matic logo symbol.png';
 import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import Vendor from "./vendor.js";
-import Home from "./Home.js";
 import Modal from "react-bootstrap/Modal";
 import "./dashboard.css"
 import insurechain from '../images/logos/home-insurance-getty.jpg';
@@ -18,8 +17,6 @@ class Dashboard extends Component {
     constructor(props) {
       super(props)
       this.state = {
-        // displayAdmin: "hidden",
-        // displayUser: "hidden",
         account: '',
         policy:{},
         portis: {},
@@ -353,25 +350,51 @@ class Dashboard extends Component {
                       <div className="heading">
                         <h3> Your One Stop Smart Savings Accounts DeFi Platform</h3>
                       </div>
-                      <div className="btnVendor">
-                        <NavLink to={{
-                            pathname: '/vendor',
-                        }}>
-                          <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
-                            Vendor
-                          </a>
-                        </NavLink>
-                      </div>
+                      <div className="vendorCard1">
+                        <h3>HDFC</h3>
+                        <div className="btnVendor">
+                          <NavLink to={{
+                              pathname: '/vendor',
+                          }}>
+                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                              Vendor
+                            </a>
+                          </NavLink>
+                        </div>
 
-                      <div className="btnUser">
-                        <NavLink to={{
-                            pathname: '/CreatePolicyDash',
-                        }}>
-                          <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
-                            User
-                          </a>
-                        </NavLink>
+                        <div className="btnUser">
+                          <NavLink to={{
+                              pathname: '/CreatePolicyDash',
+                          }}>
+                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                              User
+                            </a>
+                          </NavLink>
+                        </div>
                       </div>
+                      <div className="vendorCard2">
+                        <h3>ICICI</h3>
+                        <div className="btnVendor1">
+                          <NavLink to={{
+                              pathname: '/vendor',
+                          }}>
+                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                              Vendor
+                            </a>
+                          </NavLink>
+                        </div>
+
+                        <div className="btnUser1">
+                          <NavLink to={{
+                              pathname: '/CreatePolicyDash',
+                          }}>
+                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                              User
+                            </a>
+                          </NavLink>
+                        </div>
+                      </div>
+                      
                     </div>
 
                     <section id="about">

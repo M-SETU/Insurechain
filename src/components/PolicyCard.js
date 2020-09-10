@@ -14,7 +14,7 @@ const PolicyCard = props => {
           <Button onClick={() => { props.handleClaimButton(props.policyCard[0]) }} basic color='yellow'>
             Raise Claim
           </Button>
-          <Button onClick={() => { props.handlePortButton(props.policyCard[0]) }} basic color='pink'>
+          <Button basic color='pink'>
             Port
           </Button>
       </td>

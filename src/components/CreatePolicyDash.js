@@ -286,83 +286,11 @@ class CreatePolicyDash extends Component {
     })
   }
 
-  async burned(id) {
-    
-    console.log('asaa');
-    const { matic, network } = await this.getMaticClient();
- 
-    console.log(matic);
-    console.log(network);
-    // burning erc721 tokens are also supported
-    //Matic chain address
-    const token = this.props.address;
-    console.log(this.props.address);
-    console.log(this.state.account);
-
-
-    // or provide the tokenId in case of an erc721
-    const tokenId = id;
-    const hash = await matic.startWithdrawForNFT(token, tokenId, { from:this.state.account});
-    await this.setState({
-        hash: hash.transactionHash
-    });
-    console.log(hash.transactionHash);
-    console.log(this.state.hash);
-    localStorage.setItem('hash',this.state.hash);
-    this.deactivatePolicy(id); 
-    setTimeout(this.port(), 1200000);   
-  }
-
-  async port(){
-    await this.withdrawer();
-    await this.exiter();
-    await this.depositer();
-  }  
-
-  async withdrawer() {
-      const hash1 = localStorage.getItem('hash');
-      console.log(hash1);  
-      const { matic, network } = await this.getMaticClient();
-      
-          // provide the burn tx hash
-      const chash = await matic.withdrawNFT(hash1, { from: this.state.account , gas: "2000000" });
-      console.log(chash.transactionHash);
-      localStorage.setItem('chash',chash.transactionHash);
-  }
-
-// Withdraw process is completed, funds will be transfered to your account after challege period is over.
-
-  async exiter() {
-      const { matic, network } = await this.getMaticClient();
-      
-      //Goerli chain address
-      const token = "0xD22b4C3D639d85C255449Dc535B523a214219E0E";
-      const phash = await matic.processExits(token, { from: this.state.account, gas: 7000000 })
-      console.log(phash.transactionHash);
-      localStorage.setItem('phash',phash.transactionHash);
-  }
-
-  async depositer(id){
-      const { matic, network } = await this.getMaticClient();
-      console.log(this.state.account)
-      const token = "0xD22b4C3D639d85C255449Dc535B523a214219E0";
-      const tokenId = id;
-
-      await matic.approveERC20TokensForDeposit(token, tokenId,{ from: this.state.account }).then((res) => {
-      console.log("approve hash: ", res.transactionHash);
-      });
-
-      await matic.safeDepositERC721Tokens(token, tokenId, { from: this.state.account }).then((res) => {
-      console.log("desposit hash: ", res.transactionHash);
-      });
-  }
 
   policyList() {
-    console.log("asa");
     return this.state.policiesList.map(currentpolicy => {
       return <PolicyCard policyCard={currentpolicy} 
       handleClaimButton = {this.handleClaimButton} 
-      handlePortButton = {this.burned}
       key={currentpolicy[0]}/>;
     })
   }
