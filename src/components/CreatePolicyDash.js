@@ -54,12 +54,7 @@ class CreatePolicyDash extends Component {
     this.handleClaimList = this.handleClaimList.bind(this);
     this.handlePolicyId = this.handlePolicyId.bind(this);
     this.handleClaimButton = this.handleClaimButton.bind(this);
-    this.depositer = this.depositer.bind(this);
-    this.withdrawer = this.withdrawer.bind(this);
-    this.burned = this.burned.bind(this);
-    this.exiter = this.exiter.bind(this);
     this.getMaticClient = this.getMaticClient.bind(this);
-    this.port = this.port.bind(this);
     this.deactivatePolicy = this.deactivatePolicy.bind(this);
   
   }
@@ -169,10 +164,17 @@ class CreatePolicyDash extends Component {
         policy.methods.createPolicy(
           this.state.hash, this.state.policySelected)
         .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
-        .then ((receipt) => {
+        .then (async (receipt) => {
           console.log(receipt);
           this.hidePolicyModal();
-
+          let c = await policy.methods.getUserPolicies(
+            this.state.account)
+          .call({from: this.state.account});
+      
+          await this.setState({
+            policyIdsArray: c,
+          });
+         await this.handlePoliciesLoop();
         })
         .catch((err)=> {
           console.log(err);

@@ -356,9 +356,9 @@ class Dashboard extends Component {
                           <NavLink to={{
                               pathname: '/vendor',
                           }}>
-                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            <p onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
                               Vendor
-                            </a>
+                            </p>
                           </NavLink>
                         </div>
 
@@ -366,9 +366,9 @@ class Dashboard extends Component {
                           <NavLink to={{
                               pathname: '/CreatePolicyDash',
                           }}>
-                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            <p onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
                               User
-                            </a>
+                            </p>
                           </NavLink>
                         </div>
                       </div>
@@ -378,9 +378,9 @@ class Dashboard extends Component {
                           <NavLink to={{
                               pathname: '/vendor',
                           }}>
-                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            <p onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
                               Vendor
-                            </a>
+                            </p>
                           </NavLink>
                         </div>
 
@@ -388,9 +388,9 @@ class Dashboard extends Component {
                           <NavLink to={{
                               pathname: '/CreatePolicyDash',
                           }}>
-                            <a onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            <p onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
                               User
-                            </a>
+                            </p>
                           </NavLink>
                         </div>
                       </div>
@@ -398,18 +398,18 @@ class Dashboard extends Component {
                     </div>
 
                     <section id="about">
-                      <div class="container">
-                        <div class="row">
-                          <div class="col-md-6">
+                      <div className="container">
+                        <div className="row">
+                          <div className="col-md-6">
                             <img src={insurechain} style={{width: "500px", height: "300px"}}/>
                             {/* <video autoPlay muted loop id="video" width= "500" height="300">
                               <source src={savifyvid} type="video/mp4">
                               </source>
                             </video> */}
                           </div>  
-                          <div class ="col-md-6">
+                          <div className ="col-md-6">
                             <h2>About Us</h2>
-                            <div class="about-content">
+                            <div className="about-content">
                               One Stop Smart Savings Account platform that provides the facility to a user to let SaviFi do the job of managing his fund’s hassle-free. We plan to enable this by automatically toggling the users' funds from one platform to another basis the interest rates being offered across various Defi platforms. We aim to also incorporate trending methods like Yield farming to leverage on Defi protocols and generate higher returns for our users.
                             </div>
                           </div>      
