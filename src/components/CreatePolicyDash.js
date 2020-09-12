@@ -70,9 +70,8 @@ class CreatePolicyDash extends Component {
         portis: this.props.portis,
         account: this.props.account
       })
-      await this.loadBlockchainData();
-      await this.handlePoliciesLoop();
-      await this.handleClaimsLoop();    
+      this.loadBlockchainData()
+  
     }
   }
 
@@ -93,6 +92,8 @@ class CreatePolicyDash extends Component {
     this.setState({
       policyIdsArray: c,
     })
+    await this.handlePoliciesLoop();
+    await this.handleClaimsLoop();
   }
 
   async handleFileChange(event){
@@ -127,16 +128,13 @@ class CreatePolicyDash extends Component {
           this.state.hash, this.state.policySelected)
         .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
         .then (async (receipt) => {
-          console.log(receipt);
           this.hidePolicyModal();
           let c = await policy.methods.getUserPolicies(
             this.state.account)
           .call({from: this.state.account});
-          console.log(c);
           await this.setState({
             policyIdsArray: c,
           });
-          
          await this.handlePoliciesLoop();
         })
         .catch((err)=> {
@@ -178,9 +176,14 @@ class CreatePolicyDash extends Component {
           this.state.amount,
           this.state.claimHash)
         .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-        .then ((receipt) => {
-          console.log(receipt);
+        .then (async (receipt) => {
           this.hideClaimModal();
+          let c = await policy.methods.getUserPolicies(
+            this.state.account)
+          .call({from: this.state.account});
+          await this.setState({
+            policyIdsArray: c,
+          });
           this.handleClaimsLoop();
         })
         .catch((err)=> {
@@ -226,14 +229,13 @@ class CreatePolicyDash extends Component {
    await this.setState({
     policiesList: arr
   })
-  console.log(this.state.policiesList); 
   }
 
   async handleClaimsLoop(){
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     var ids = await policy.methods.getUserPolicies(
       this.state.account)
-
+    .call({from: this.state.account});
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
       let details = await policy.methods.getPolicy(ids[i])
@@ -246,7 +248,6 @@ class CreatePolicyDash extends Component {
           arr.push(cl);
         }
       }
-      
     }
     this.setState({
       claimsList: arr
