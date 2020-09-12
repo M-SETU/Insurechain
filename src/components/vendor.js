@@ -1,7 +1,8 @@
 import { Button} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
-import Policy from '../policy.json';
+import Policy from '../abis/policy_1.json';
+import Consortium from '../abis/consortium.json';
 import Portis from '@portis/web3';
 
 const ClaimCard = props => (
@@ -80,10 +81,10 @@ class Vendor extends Component {
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
-    let b = await this.state.policy.methods.getPolicyIds()
+    let b = await policy.methods.getPolicyIds()
     .call({from: this.state.account});
 
-    let c = await this.state.policy.methods.getAllClaimIds()
+    let c = await policy.methods.getAllClaimIds()
     .call({from: this.state.account});
 
     this.setState({
@@ -93,7 +94,8 @@ class Vendor extends Component {
   }
 
   async claimApprove (id){
-    await this.state.policy.methods.approveClaim(
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+    await policy.methods.approveClaim(
       id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then ((receipt) => {
@@ -105,7 +107,8 @@ class Vendor extends Component {
   }
 
   async claimReject (id){
-    await this.state.policy.methods.rejectClaim(
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+    await policy.methods.rejectClaim(
       id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then ((receipt) => {
@@ -123,10 +126,10 @@ class Vendor extends Component {
   async handleLoop(){
 
     var pol_ids = this.state.policyIds;
-    
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     var arr1 = [];
     for(let i = 0; i <pol_ids.length; i++) {
-      let details = await this.state.policy.methods.getPolicy(pol_ids[i])
+      let details = await policy.methods.getPolicy(pol_ids[i])
         .call({from: this.state.account});
       arr1.push(details);
     }
@@ -134,7 +137,7 @@ class Vendor extends Component {
     var claim_ids = this.state.claimIds;
     var arr2 = [];
     for(let i = 0; i <claim_ids.length; i++) {
-      let details = await this.state.policy.methods.getClaim(claim_ids[i])
+      let details = await policy.methods.getClaim(claim_ids[i])
         .call({from: this.state.account});
       arr2.push(details);
     }

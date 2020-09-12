@@ -1,7 +1,8 @@
 import { Button, Card, Form, Input} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3';
-import Policy from '../policy.json';
+import Policy from '../abis/policy_1.json';
+import Consortium from '../abis/consortium.json';
 import Portis from '@portis/web3';
 import ipfs from './ipfs.js'
 import Modal from "react-bootstrap/Modal";
@@ -13,10 +14,6 @@ import PolicyCard from './PolicyCard';
 const bn = require("bn.js");
 const Network = require("@maticnetwork/meta/network");
 const SCALING_FACTOR = new bn(10).pow(new bn(18));
-
-
-
-
 
 class CreatePolicyDash extends Component {
 
@@ -41,7 +38,8 @@ class CreatePolicyDash extends Component {
       policy:{},
       claimsList: [],
       showPolicyModal: false,
-      showClaimModal: false
+      showClaimModal: false,
+      goerliAddress: "0xa550E150915E3F01C7aC2503BFa0e9Dd60205da1",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -54,7 +52,6 @@ class CreatePolicyDash extends Component {
     this.handleClaimList = this.handleClaimList.bind(this);
     this.handlePolicyId = this.handlePolicyId.bind(this);
     this.handleClaimButton = this.handleClaimButton.bind(this);
-    this.getMaticClient = this.getMaticClient.bind(this);
     this.deactivatePolicy = this.deactivatePolicy.bind(this);
   
   }
@@ -79,45 +76,9 @@ class CreatePolicyDash extends Component {
     }
   }
 
-  async getMaticClient(_network = "testnet", _version = "mumbai") {
-    console.log({
-        network: _network,
-        version: _version,
-        parentProvider: this.state.portisGoerli.provider,
-        maticProvider: this.state.portisMumbai.provider,  
-        parentDefaultOptions:  this.state.account , 
-        maticDefaultOptions: this.state.account,
-    }); 
-
-    const network = new Network(_network, _version);
-    const matic = new Matic({
-        network: _network,
-        version: _version,
-        parentProvider: this.state.portisGoerli.provider,
-        maticProvider: this.state.portisMumbai.provider,  
-        parentDefaultOptions:  this.state.account , 
-        maticDefaultOptions: this.state.account,
-    });
-    await matic.initialize();       
-    return { matic, network };
-  }
-
   async loadBlockchainData(){
-    const portisMumbai = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
-        nodeUrl: 'https://rpc-mumbai.matic.today', 
-        chainId: 80001
-    });
-    const portisGoerli = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
-        nodeUrl: 'https://rpc.goerli.mudit.blog/', 
-        chainId: 5
-    });
-    this.setState({
-        portisMumbai: portisMumbai,
-        portisGoerli: portisGoerli
-    })
 
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
-    console.log(this.props.address);  
     this.setState({policy});
 
     let a = await policy.methods.getPolicyTypes().call({from: this.state.account});
@@ -247,14 +208,15 @@ class CreatePolicyDash extends Component {
   }
 
   async handlePoliciesLoop(){
-    var ids = await this.state.policy.methods.getUserPolicies(
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+    var ids = await policy.methods.getUserPolicies(
       this.state.account)
     .call({from: this.state.account});
   
    let arr = [];
     for(let i = 0; i <ids.length; i++) {
       let id = ids[i];
-      let details = await this.state.policy.methods.getPolicy(id)
+      let details = await policy.methods.getPolicy(id)
         .call({from: this.state.account});
       if(details[6]==true){
         arr.push(details);
@@ -268,19 +230,23 @@ class CreatePolicyDash extends Component {
   }
 
   async handleClaimsLoop(){
-    var ids = await this.state.policy.methods.getUserPolicies(
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+    var ids = await policy.methods.getUserPolicies(
       this.state.account)
 
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
-      let details = await this.state.policy.methods.getPolicy(ids[i])
+      let details = await policy.methods.getPolicy(ids[i])
         .call({from: this.state.account});
-      let allclaims = details[5];
-      for (let j = 0; j<allclaims.length;j++){
-        let cl = await this.state.policy.methods.getClaim(allclaims[j])
-        .call({from: this.state.account});
-        arr.push(cl);
+      if(details[6]==true){
+        let allclaims = details[5];
+        for (let j = 0; j<allclaims.length;j++){
+          let cl = await policy.methods.getClaim(allclaims[j])
+          .call({from: this.state.account});
+          arr.push(cl);
+        }
       }
+      
     }
     this.setState({
       claimsList: arr

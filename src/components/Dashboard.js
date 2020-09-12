@@ -33,43 +33,43 @@ class Dashboard extends Component {
         login: false,
         loginText: "Login",
         owner : "",
-        showNewCustomer: false,
-        showOldCustomer: false,
+        showUser: false,
         showVendor: false,
         loginButtonDisabled: true,
-        copyVis: "hidden"
+
       };
 
         this.login = this.login.bind(this);
         this.loadWeb3 = this.loadWeb3.bind(this);
         this.handleSubmit1 = this.handleSubmit1.bind(this);
         this.handleSubmit2 = this.handleSubmit2.bind(this);
-        this.newCustomerCheck = this.newCustomerCheck.bind(this);
     }
     async handleSubmit1() {
         await this.setState({
-          name: "LIC",
-          network: "goerli",
-          address: "0xD22b4C3D639d85C255449Dc535B523a214219E0E",
+          name: "HDFC",
+          network: "maticMumbai",
+          address:"0xa550E150915E3F01C7aC2503BFa0e9Dd60205da1",
+          otherVendorAddress: "",
           click: true,
           config: {
-            nodeUrl: 'https://rpc.goerli.mudit.blog/', 
-            chainId: 5
-            }
+            nodeUrl: 'https://rpc-mumbai.matic.today', 
+            chainId: 80001
+          },
         })
         this.login();
     }
     
     async handleSubmit2() {
         await this.setState({
-            name: "HDFC",
-            network: "maticMumbai",
-            address:"0x21C5111620aEd2Fe7885c96C4b72fBf89095A085",
-            click: true,
-            config: {
-                nodeUrl: 'https://rpc-mumbai.matic.today', 
-                chainId: 80001
-            },
+          name: "HDFC",
+          network: "maticGoa",
+          address:"",
+          otherVendorAddress: "",
+          click: true,
+          config: {
+            nodeUrl: 'https://rpc-60001.matic.today', 
+            chainId: 60001
+          },
         })
         this.login();
     }
@@ -83,17 +83,9 @@ class Dashboard extends Component {
                 login: true
             })
             if(this.state.account == this.state.owner){
-              // await this.setState({
-              //   // displayAdmin: "visible",
-              //   // displayUser: "hidden"
-              // })
               this.showVendorModal();
             }else{
-              // await this.setState({
-              //   // displayAdmin: "hidden",
-              //   // displayUser: "visible"
-              // })
-              await this.newCustomerCheck();
+              this.showUserModal();
             }
             if(this.state.account!==''){
                 await this.setState({
@@ -111,8 +103,6 @@ class Dashboard extends Component {
                 login: false,
                 loginText: "Login",
                 account: '',
-                // displayAdmin: "hidden",
-                // displayUser: "hidden",
                 loginButtonDisabled: true,
                 copyVis: "hidden"
             })
@@ -120,8 +110,6 @@ class Dashboard extends Component {
         } catch {
             await this.state.portis.logout(() => {});
             await this.setState({
-              // displayAdmin: "hidden",
-              // displayUser: "hidden",
               account: '',
               login: false,
               loginText: "Login",
@@ -134,27 +122,23 @@ class Dashboard extends Component {
       
     }
 
-    async newCustomerCheck(){
-      const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
-      let isOldCustomer = await policy.methods.checkNewCustomer().call({from: this.state.account});
-      if(isOldCustomer){
-        this.showOldCustomerModal();
-      }
-      else{
-        let customerId = await policy.methods.createNewCustomer()
-          .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-        this.showNewCustomerModal();
-      }
-    }
   
     async loadWeb3() {
       const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.config);
+      const portisGoerli = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
+        nodeUrl: 'https://rpc.goerli.mudit.blog/', 
+        chainId: 5
+      });
+
       this.setState({
-        portis: portis
+        portis: portis,
+        portisGoerli: portisGoerli
       })
       const web3 = new Web3(portis.provider);
+      const web3Goerli = new Web3(portisGoerli.provider);
       this.setState({ 
-          web3: web3 })
+          web3: web3,
+          web3Goerli: web3Goerli })
       let acc = await web3.eth.getAccounts();
       this.setState({
         account: acc[0]
@@ -182,37 +166,27 @@ class Dashboard extends Component {
       });
     };
 
-    hideNewCustomerModal = (e) => {
+    hideUserModal = (e) => {
       this.setState({
-        showNewCustomer: false,
+        showUser: false,
       });
     };
   
-    showNewCustomerModal = (e) => {
+    showUserModal = (e) => {
       this.setState({
-        showNewCustomer: true,
+        showUser: true,
       });
     };
 
-    hideOldCustomerModal = (e) => {
-      this.setState({
-        showOldCustomer: false,
-      });
-    };
-  
-    showOldCustomerModal = (e) => {
-      this.setState({
-        showOldCustomer: true,
-      });
-    };
+
   
     render() {
       return (
         <div>
             <header>
               <Modal
-                show={this.state.showNewCustomer}
-                onHide={this.hideNewCustomerModal}
+                show={this.state.showUser}
+                onHide={this.hideUserModal}
               >
                 <Modal.Header>
                   <Modal.Title><b>Welcome to the Dapp</b></Modal.Title>
@@ -224,33 +198,12 @@ class Dashboard extends Component {
                 <Modal.Footer>
                   <Card.Content extra>
                       <div className='ui two buttons' style={{paddingRight: "20px"}}>
-                        <Button onClick={this.hideNewCustomerModal} basic color='green'>
+                        <Button onClick={this.hideUserModal} basic color='green'>
                           Ok
                         </Button>
     
                       </div>
                     </Card.Content>
-                </Modal.Footer>
-              </Modal>
-              <Modal
-                show={this.state.showOldCustomer}
-                onHide={this.hideOldCustomerModal}
-              >
-                <Modal.Header>
-                  <Modal.Title><b>Welcome Back</b></Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                {this.state.account}
-                </Modal.Body>
-                  
-                <Modal.Footer>
-                <Card.Content extra>
-                    <div className='ui two buttons' style={{paddingRight: "20px"}}>
-                      <Button onClick={this.hideOldCustomerModal} basic color='green'>
-                        Ok
-                      </Button>
-                    </div>
-                  </Card.Content>
                 </Modal.Footer>
               </Modal>
               <Modal
@@ -301,11 +254,6 @@ class Dashboard extends Component {
                     </div>
                     
                     <div className= "col-7" style={{fontSize:"15px", position:"right", color:"white", visibility: this.state.copyVis}} align="right">
-                      {/* <CopyToClipboard text={this.state.account}>
-                        <Button basic color='yellow'>
-                          Copy
-                        </Button>
-                      </CopyToClipboard> */}
                         {this.state.account} 
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}} align = "Right">
@@ -326,20 +274,27 @@ class Dashboard extends Component {
                     () => <Vendor
                         address={this.state.address} 
                         web3={this.state.web3} 
+                        web3Goerli = {this.state.web3Goerli}
                         account = {this.state.account}
                         portis = {this.state.portis}
+                        portisGoerli = {this.state.portisGoerli}
                         loginstatus = {this.state.login}
                         config = {this.state.config}
-                        owner = {this.state.owner}/>}/>
+                        owner = {this.state.owner}
+                        otherVendor = {this.state.otherVendor}/>}/>
 
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 
                         address={this.state.address} 
                         web3={this.state.web3} 
+                        web3Goerli = {this.state.web3Goerli}
                         account = {this.state.account}
                         portis = {this.state.portis}
-                        loginstatus = {this.state.login} 
-                        config = {this.state.config}/>}/>
+                        portisGoerli = {this.state.portisGoerli}
+                        loginstatus = {this.state.login}
+                        config = {this.state.config}
+                        owner = {this.state.owner}
+                        otherVendor = {this.state.otherVendor}/>}/>
 
                 <Route path="/" render={() => 
                   <div> 
@@ -356,7 +311,7 @@ class Dashboard extends Component {
                           <NavLink to={{
                               pathname: '/vendor',
                           }}>
-                            <p onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            <p onClick={this.handleSubmit1} className="btnbtn" style={{color: "white"}}>
                               Vendor
                             </p>
                           </NavLink>
@@ -366,7 +321,7 @@ class Dashboard extends Component {
                           <NavLink to={{
                               pathname: '/CreatePolicyDash',
                           }}>
-                            <p onClick={this.handleSubmit2} className="btnbtn" style={{color: "white"}}>
+                            <p onClick={this.handleSubmit1} className="btnbtn" style={{color: "white"}}>
                               User
                             </p>
                           </NavLink>
@@ -402,10 +357,6 @@ class Dashboard extends Component {
                         <div className="row">
                           <div className="col-md-6">
                             <img src={insurechain} style={{width: "500px", height: "300px"}}/>
-                            {/* <video autoPlay muted loop id="video" width= "500" height="300">
-                              <source src={savifyvid} type="video/mp4">
-                              </source>
-                            </video> */}
                           </div>  
                           <div className ="col-md-6">
                             <h2>About Us</h2>
@@ -417,58 +368,6 @@ class Dashboard extends Component {
                       </div>
                     </section>
                   </div>
-                  
-
-
-                  //   <div>
-                  //   <div align="center">
-                  //     <div style={{margin: "20px", display: "inline-block"}}>
-                  //       <div align= "left">
-                  //         <Card.Group>
-
-                  //         {/* <Card>
-                  //           <Card.Content>
-                  //             <Card.Header>Vendor 1</Card.Header>
-                  //             <Card.Meta>HF</Card.Meta>
-                  //             <Card.Description>
-                  //               <strong>HDFC</strong><br></br>
-                  //               <strong>Matic</strong>
-                  //             </Card.Description>
-                  //           </Card.Content>
-                  //           <Card.Content extra>
-                  //             <div className='ui two buttons'>
-                  //                   <Button onClick={this.handleSubmit2} basic color='blue'>
-                  //                   Sign Up
-                  //                   </Button>
-                  //             </div>
-                  //           </Card.Content>
-                  //         </Card> */}
-                          
-
-
-                  //         {/* <Card>
-                  //           <Card.Content>
-                  //             <Card.Header>Vendor 2</Card.Header>
-                  //             <Card.Meta>LC</Card.Meta>
-                  //             <Card.Description>
-                  //               <strong>LIC</strong><br></br>
-                  //               <strong>Goerli</strong>
-                  //             </Card.Description>
-                  //           </Card.Content>
-                  //           <Card.Content extra>
-                  //             <div className='ui two buttons'>
-                  //                   <Button onClick={this.handleSubmit1} basic color='blue'>
-                  //                   SignUp
-                  //                   </Button>
-                  //             </div>
-                  //           </Card.Content>
-                  //         </Card> */}
-                          
-                  //       </Card.Group>
-                  //       </div>
-                  //     </div>
-                  //   </div>
-                  // </div>
                 }/>
             </Switch>           
         </div>
