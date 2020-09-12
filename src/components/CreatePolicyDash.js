@@ -1,6 +1,6 @@
 import { Button, Card, Form, Input} from 'semantic-ui-react'
 import React, { Component } from 'react'
-import Web3 from 'web3'
+import Web3 from 'web3';
 import Policy from '../policy.json';
 import Portis from '@portis/web3';
 import ipfs from './ipfs.js'
@@ -75,7 +75,7 @@ class CreatePolicyDash extends Component {
       })
       await this.loadBlockchainData();
       await this.handlePoliciesLoop();
-      await this.handleClaimsLoop();
+      await this.handleClaimsLoop();    
     }
   }
 
@@ -117,6 +117,7 @@ class CreatePolicyDash extends Component {
     })
 
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+    console.log(this.props.address);  
     this.setState({policy});
 
     let a = await policy.methods.getPolicyTypes().call({from: this.state.account});
@@ -149,7 +150,7 @@ class CreatePolicyDash extends Component {
     }
   }
 
-  async handlePolicySubmit (event){
+  async handlePolicySubmit(event){
     event.preventDefault()
     try{
       console.log("Submitting file to ipfs...")
@@ -170,14 +171,15 @@ class CreatePolicyDash extends Component {
           let c = await policy.methods.getUserPolicies(
             this.state.account)
           .call({from: this.state.account});
-      
+          console.log(c);
           await this.setState({
             policyIdsArray: c,
           });
+          
          await this.handlePoliciesLoop();
         })
         .catch((err)=> {
-          console.log(err);
+          console.log(err); 
           this.hidePolicyModal();
           this.handlePoliciesLoop();
         });
@@ -196,7 +198,7 @@ class CreatePolicyDash extends Component {
     this.showClaimModal()
   }
 
-  async handleClaimSubmit (){
+  async handleClaimSubmit(){
     try{
       console.log("Submitting file to ipfs...")
       ipfs.add(this.state.buffer, (error, result) => {
@@ -221,7 +223,7 @@ class CreatePolicyDash extends Component {
           this.handleClaimsLoop();
         })
         .catch((err)=> {
-          console.log(err);
+          console.log(err);   
         });
       })
     }
@@ -248,10 +250,8 @@ class CreatePolicyDash extends Component {
     var ids = await this.state.policy.methods.getUserPolicies(
       this.state.account)
     .call({from: this.state.account});
-    var arr = this.state.policiesList;
-
-   if(ids.length > this.state.policiesList){
-
+  
+   let arr = [];
     for(let i = 0; i <ids.length; i++) {
       let id = ids[i];
       let details = await this.state.policy.methods.getPolicy(id)
@@ -259,13 +259,12 @@ class CreatePolicyDash extends Component {
       if(details[6]==true){
         arr.push(details);
       }
+  
     }
-
-    await this.setState({
-      policiesList: arr
-    })
-    console.log(this.state.policiesList); 
-   }
+   await this.setState({
+    policiesList: arr
+  })
+  console.log(this.state.policiesList); 
   }
 
   async handleClaimsLoop(){
@@ -286,7 +285,7 @@ class CreatePolicyDash extends Component {
     this.setState({
       claimsList: arr
     })
-  }
+  }   
 
 
   policyList() {
