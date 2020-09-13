@@ -10,6 +10,12 @@ import PortCard from './PortCard';
 import ClaimCard from './ClaimCard';
 import PolicyCard from './PolicyCard';
 
+
+const NodeRSA = require('node-rsa');
+const key = new NodeRSA({b: 512});
+var encrypted;
+var decrypted;
+
 class CreatePolicyDash extends Component {
 
   constructor(props) {
@@ -74,6 +80,12 @@ class CreatePolicyDash extends Component {
       this.loadBlockchainData()
   
     }
+
+    const text = "{'tokenid': '12345','dob': '30-02-1999','aadhar': 'verified','pancard': 'verified'}"
+      encrypted = key.encrypt(text, 'base64');
+      console.log('encrypted: ', encrypted);
+      decrypted = key.decrypt(encrypted, 'utf8'); 
+      console.log('decrypted: ', decrypted);
   }
 
   async loadBlockchainData(){
