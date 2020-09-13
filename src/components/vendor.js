@@ -38,7 +38,17 @@ const PortCard = props => (
       <td data-label="policyID">{props.portCard[0]}</td>
       <td data-label="vendor">{props.portCard[3]}</td>
       <td data-label="status">{props.portCard[5]}</td>
-      {props.handleTransferAction(props.portCard[5], props.portCard[0], props.portCard[3])}
+      <td>
+        <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='yellow'>
+          Approve
+        </Button>
+        <Button onClick={() => {props.handleRejectRequestButton(props.portCard[5])}} basic color='yellow'>
+          Reject
+        </Button>
+        <Button onClick={() => {props.handleTransferRequestButton(props.portCard[5])}} basic color='yellow'>
+          Transfer
+        </Button>
+      </td>
     </tr>
 )
 
@@ -65,6 +75,10 @@ class Vendor extends Component {
     this.handleClaimButton = this.handleClaimButton.bind(this);
     this.claimReject = this.claimReject.bind(this);
     this.claimApprove = this.claimApprove.bind(this);
+    this.handleApproveRequestButton = this.handleApproveRequestButton.bind(this);
+    this.handleRejectRequestButton = this.handleRejectRequestButton.bind(this);
+    this.handleTransferRequestButton = this.handleTransferRequestButton.bind(this);
+
   
   }
   async componentWillMount() {
@@ -202,29 +216,37 @@ class Vendor extends Component {
     }
   }
 
-  async handleTransferAction(value, id, newVendor){
-    if(value==="active" && this.state.account == newVendor){
-      return (<td>
-        <Button onClick={() => { this.handleAcceptPortButton(id) }} basic color='yellow'>
-          Accept
-        </Button>
-        <Button onClick={() => { this.handleRejectPortButton(id) }} basic color='yellow'>
-          Reject
-        </Button>
-    </td>)
-    }
-    else if(value==="approved"){
-      return (<td>
-        Waiting for user to transfer
-    </td>)
-    }
-    else if(value === "completed"  && this.state.account == newVendor){
-      return (<Button onClick={() => { this.handleTransferButton(id) }} basic color='yellow'>
-      Transfer
-    </Button>)
+  async handleApproveRequestButton(pol){
+    if(pol[5] ==="active" && this.state.account === pol[3]){
+      this.handleRequestApprove(pol[0]);
+    } else if (this.state.account !== pol[3]) {
+      window.alert("You are not newVendor");
     }
     else{
-      return (<td></td>)
+      window.alert("Request Already Approved");
+    }
+  }
+
+  async handleRejectRequestButton(pol){
+    if(pol[5] === "active" && this.state.account === pol[3]){
+      this.handleRequestReject(pol[0]);
+    } else if (this.state.account !== pol[3]) {
+      window.alert("You are not newVendor");
+    }
+    else{
+      window.alert("Request Already Approved");
+    }
+  }
+
+  async handleTransferRequestButton(pol){
+    if(pol[5] === "active" && this.state.account === pol[3]){
+      this.handleRequestReject(pol[0]);
+      window.alert("Request Not approved Yet");
+    } else if (this.state.account !== pol[3]) {
+      window.alert("You are not newVendor");
+    }
+    else if(pol[5] === "completed" && this.state.account === pol[3]){
+      this.handleRequestTransfer(pol);
     }
   }
 
@@ -245,7 +267,9 @@ class Vendor extends Component {
   handlePortList() {
     return this.state.portsList.map(currentport => {
       return <PortCard portCard={currentport} 
-      handleTransferAction = {this.handleTransferAction} 
+      handleApproveRequestButton = {this.handleApproveRequestButton} 
+      handleRejectRequestButton = {this.handleRejectRequestButton} 
+      handleTransferRequestButton = {this.handleTransferRequestButton} 
       key={currentport[0]}/>;
     })
   }

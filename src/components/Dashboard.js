@@ -49,7 +49,8 @@ class Dashboard extends Component {
           name: "HDFC",
           network: "maticMumbai",
           address:"0x92a0822B3D5EEb54426EAD58798d6Cd7363D83E9",
-          otherVendorAddress: "",
+          myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
+          otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           click: true,
           config: {
             nodeUrl: 'https://rpc-mumbai.matic.today', 
@@ -63,12 +64,17 @@ class Dashboard extends Component {
         await this.setState({
           name: "HDFC",
           network: "maticGoa",
-          address:"",
-          otherVendorAddress: "",
+          address:"0xf534668bAd1eB18f0dA334fDcfb3cd5405a22274",
+          myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
+          otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           click: true,
+          // config: {
+          //   nodeUrl: 'https://rpc-60001.matic.today', 
+          //   chainId: 60001
+          // },
           config: {
-            nodeUrl: 'https://rpc-60001.matic.today', 
-            chainId: 60001
+            nodeUrl: 'https://rpc-mumbai.matic.today', 
+            chainId: 80001
           },
         })
         this.login();
@@ -278,8 +284,8 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         portisGoerli = {this.state.portisGoerli}
-                        owner = {this.state.owner}
-                        otherVendor = {this.state.otherVendor}
+                        myOwner = {this.state.myOwner}
+                        otherVendorOwner = {this.state.otherVendorOwner}
                         loginStatus = {this.state.login}/>}/>
 
                 <Route path="/CreatePolicyDash" component={
@@ -290,8 +296,8 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         portisGoerli = {this.state.portisGoerli}
-                        owner = {this.state.owner}
-                        otherVendor = {this.state.otherVendor}
+                        myOwner = {this.state.myOwner}
+                        otherVendorOwner = {this.state.otherVendorOwner}
                         loginStatus = {this.state.login}/>}/>
 
                 <Route path="/" render={() => 
