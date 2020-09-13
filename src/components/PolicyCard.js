@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Form, Input} from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
 
 const PolicyCard = props => {
     return(
@@ -14,7 +14,7 @@ const PolicyCard = props => {
           <Button onClick={() => { props.handleClaimButton(props.policyCard[0]) }} basic color='yellow'>
             Raise Claim
           </Button>
-          <Button basic color='pink'>
+          <Button onClick={() => { props.handlePortButton(props.policyCard) }} basic color='pink'>
             Port
           </Button>
       </td>

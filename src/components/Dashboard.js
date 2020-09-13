@@ -48,7 +48,7 @@ class Dashboard extends Component {
         await this.setState({
           name: "HDFC",
           network: "maticMumbai",
-          address:"0xa550E150915E3F01C7aC2503BFa0e9Dd60205da1",
+          address:"0x92a0822B3D5EEb54426EAD58798d6Cd7363D83E9",
           otherVendorAddress: "",
           click: true,
           config: {
@@ -82,7 +82,7 @@ class Dashboard extends Component {
             await this.setState({
                 login: true
             })
-            if(this.state.account == this.state.owner){
+            if(this.state.account === this.state.owner){
               this.showVendorModal();
             }else{
               this.showUserModal();
@@ -278,10 +278,9 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         portisGoerli = {this.state.portisGoerli}
-                        loginstatus = {this.state.login}
-                        config = {this.state.config}
                         owner = {this.state.owner}
-                        otherVendor = {this.state.otherVendor}/>}/>
+                        otherVendor = {this.state.otherVendor}
+                        loginStatus = {this.state.login}/>}/>
 
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 
@@ -291,10 +290,9 @@ class Dashboard extends Component {
                         account = {this.state.account}
                         portis = {this.state.portis}
                         portisGoerli = {this.state.portisGoerli}
-                        loginstatus = {this.state.login}
-                        config = {this.state.config}
                         owner = {this.state.owner}
-                        otherVendor = {this.state.otherVendor}/>}/>
+                        otherVendor = {this.state.otherVendor}
+                        loginStatus = {this.state.login}/>}/>
 
                 <Route path="/" render={() => 
                   <div> 

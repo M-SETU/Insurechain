@@ -1,9 +1,7 @@
 import { Button} from 'semantic-ui-react'
 import React, { Component } from 'react'
-import Web3 from 'web3'
 import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
-import Portis from '@portis/web3';
 
 const ClaimCard = props => (
   <tr>
@@ -35,6 +33,15 @@ const PolicyCard = props => (
   </tr>
 )
 
+const PortCard = props => (
+    <tr>
+      <td data-label="policyID">{props.portCard[0]}</td>
+      <td data-label="vendor">{props.portCard[3]}</td>
+      <td data-label="status">{props.portCard[5]}</td>
+      {props.handleTransferAction(props.portCard[5], props.portCard[0], props.portCard[3])}
+    </tr>
+)
+
 class Vendor extends Component {
 
   constructor(props) {
@@ -47,8 +54,10 @@ class Vendor extends Component {
       claimIds: [],
       policiesList: [],
       claimsList: [],
+      portsList: [],
       web3: {},
-      address: ""
+      address: "",
+      goerliAddress: "0x410C9ea4AB8bfF5dA3751f8bDF0902D313A5d4b7"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -66,10 +75,13 @@ class Vendor extends Component {
           policy: this.props.policy,
           web3: this.props.web3,
           portis: this.props.portis,
-          account: this.props.account
+          portisGoerli: this.props.portisGoerli,
+          account: this.props.account,
+          web3Goerli: this.props.web3Goerli,
+          otherVendor: this.props.otherVendor,
         })
-        await this.loadBlockchainData();
-        await this.handleLoop();
+        this.loadBlockchainData();
+        
       }
     }
     catch {
@@ -91,6 +103,8 @@ class Vendor extends Component {
       policyIds: b,
       claimIds: c
     })
+    await this.handleLoop();
+    await this.handlePortsLoop();
   }
 
   async claimApprove (id){
@@ -98,8 +112,9 @@ class Vendor extends Component {
     await policy.methods.approveClaim(
       id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-    .then ((receipt) => {
+    .then (async (receipt) => {
       console.log(receipt);
+      await this.loadBlockchainData();
     })
     .catch((err)=> {
       console.log(err);
@@ -111,8 +126,9 @@ class Vendor extends Component {
     await policy.methods.rejectClaim(
       id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-    .then ((receipt) => {
+    .then (async (receipt) => {
       console.log(receipt);
+      await this.loadBlockchainData();
     })
     .catch((err)=> {
       console.log(err);
@@ -147,6 +163,23 @@ class Vendor extends Component {
     })
   }
 
+  async handlePortsLoop(){
+    const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+    var ids = await policy.methods.getAllIds()
+    .call({from: this.state.account});
+    var arr = [];
+    for(let i = 0; i <ids.length; i++) {
+      let details = await policy.methods.getPortPolicyDetails(ids[i])
+        .call({from: this.state.account});
+      if(details){
+          arr.push(details);
+        }
+      }
+    this.setState({
+      portsList: arr
+    })
+  } 
+
   handleClaimButton(id, status){
     if(status==="unprocessed"){
       return (<td>
@@ -169,6 +202,32 @@ class Vendor extends Component {
     }
   }
 
+  async handleTransferAction(value, id, newVendor){
+    if(value==="active" && this.state.account == newVendor){
+      return (<td>
+        <Button onClick={() => { this.handleAcceptPortButton(id) }} basic color='yellow'>
+          Accept
+        </Button>
+        <Button onClick={() => { this.handleRejectPortButton(id) }} basic color='yellow'>
+          Reject
+        </Button>
+    </td>)
+    }
+    else if(value==="approved"){
+      return (<td>
+        Waiting for user to transfer
+    </td>)
+    }
+    else if(value === "completed"  && this.state.account == newVendor){
+      return (<Button onClick={() => { this.handleTransferButton(id) }} basic color='yellow'>
+      Transfer
+    </Button>)
+    }
+    else{
+      return (<td></td>)
+    }
+  }
+
   handlePolicyList() {
     return this.state.policiesList.map(currentpolicy => {
       return <PolicyCard policyCard={currentpolicy} key={currentpolicy[0]}/>;
@@ -183,6 +242,14 @@ class Vendor extends Component {
     })
   }
 
+  handlePortList() {
+    return this.state.portsList.map(currentport => {
+      return <PortCard portCard={currentport} 
+      handleTransferAction = {this.handleTransferAction} 
+      key={currentport[0]}/>;
+    })
+  }
+  
 
   render() {
     if(this.props.loginstatus===true && this.state.account === this.props.owner){
@@ -224,7 +291,25 @@ class Vendor extends Component {
                     { this.handleClaimList() }
                   </tbody>
                 </table>
-        </div>   
+        </div> 
+
+        <br></br>
+          <div style={{margin: "30px"}}>
+              <div style={{fontSize:"25px"}} align = "center"><strong>All Port Requests</strong></div>
+              <table className="ui celled table ">
+                <thead>
+                  <tr>
+                    <th>PolicyId</th>
+                    <th>New Vendor</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  { this.handlePortList() }
+                </tbody>
+              </table>
+          </div>    
       </div>
       )
     }else{

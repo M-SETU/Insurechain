@@ -1,19 +1,14 @@
 import { Button, Card, Form, Input} from 'semantic-ui-react'
 import React, { Component } from 'react'
-import Web3 from 'web3';
 import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
-import Portis from '@portis/web3';
 import ipfs from './ipfs.js'
 import Modal from "react-bootstrap/Modal";
-import Matic from "@maticnetwork/maticjs";
 import PolicyOptions from './PolicyOptions';
 import OptionCard from './OptionCard';
+import PortCard from './PortCard';
 import ClaimCard from './ClaimCard';
 import PolicyCard from './PolicyCard';
-const bn = require("bn.js");
-const Network = require("@maticnetwork/meta/network");
-const SCALING_FACTOR = new bn(10).pow(new bn(18));
 
 class CreatePolicyDash extends Component {
 
@@ -37,9 +32,10 @@ class CreatePolicyDash extends Component {
       claimHash: '',
       policy:{},
       claimsList: [],
+      portsList: [],
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0xa550E150915E3F01C7aC2503BFa0e9Dd60205da1",
+      goerliAddress: "0x410C9ea4AB8bfF5dA3751f8bDF0902D313A5d4b7",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -56,27 +52,32 @@ class CreatePolicyDash extends Component {
   
   }
   async componentWillMount() {
+    
     let today = new Date();
     let date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate() + '-' + today.getHours() +':' + today.getMinutes();
     this.setState({
       claimDate: date
     })
-
-    if(this.props.loginstatus === true)
+    
+    if(this.props.loginStatus === true)
     {
       await this.setState({
         policy: this.props.policy,
         web3: this.props.web3,
         portis: this.props.portis,
-        account: this.props.account
+        portisGoerli: this.props.portisGoerli,
+        account: this.props.account,
+        web3Goerli: this.props.web3Goerli,
+        otherVendor: this.props.otherVendor,
       })
+      
       this.loadBlockchainData()
   
     }
   }
 
   async loadBlockchainData(){
-
+    
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     this.setState({policy});
 
@@ -92,8 +93,10 @@ class CreatePolicyDash extends Component {
     this.setState({
       policyIdsArray: c,
     })
+    
     await this.handlePoliciesLoop();
     await this.handleClaimsLoop();
+    await this.handlePortsLoop();
   }
 
   async handleFileChange(event){
@@ -141,6 +144,7 @@ class CreatePolicyDash extends Component {
           console.log(err); 
           this.hidePolicyModal();
           this.handlePoliciesLoop();
+          this.handlePortsLoop();
         });
       })
     } catch(err) {
@@ -221,7 +225,7 @@ class CreatePolicyDash extends Component {
       let id = ids[i];
       let details = await policy.methods.getPolicy(id)
         .call({from: this.state.account});
-      if(details[6]==true){
+      if(details[6]===true){
         arr.push(details);
       }
   
@@ -240,7 +244,7 @@ class CreatePolicyDash extends Component {
     for(let i = 0; i <ids.length; i++) {
       let details = await policy.methods.getPolicy(ids[i])
         .call({from: this.state.account});
-      if(details[6]==true){
+      if(details[6]===true){
         let allclaims = details[5];
         for (let j = 0; j<allclaims.length;j++){
           let cl = await policy.methods.getClaim(allclaims[j])
@@ -252,13 +256,58 @@ class CreatePolicyDash extends Component {
     this.setState({
       claimsList: arr
     })
-  }   
+  } 
 
+  async handlePortsLoop(){
+    const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+    var ids = await policy.methods.getAllIds()
+    .call({from: this.state.account});
+    var arr = [];
+    for(let i = 0; i <ids.length; i++) {
+      let details = await policy.methods.getPortPolicyDetails(ids[i])
+        .call({from: this.state.account});
+      if(details){
+          arr.push(details);
+        }
+      }
+    this.setState({
+      portsList: arr
+    })
+  } 
+  
+  async handleTransfersButton(id){
+
+  }
+
+  async handlePortButton(policy){
+
+  }
+
+  async handleTransferAction(value, id){
+    if(value==="active"){
+      return (<td>
+        Waiting to get appproved
+    </td>)
+    }
+    else if(value==="approved"){
+      return (<td>
+        <Button onClick={() => { this.handleTransferButton(id) }} basic color='yellow'>
+          Transfer
+        </Button>
+    </td>)
+    }
+    else if(value === "completed"){
+      return (<td>
+        In process. Check Back later
+      </td>)
+    }
+  }
 
   policyList() {
     return this.state.policiesList.map(currentpolicy => {
       return <PolicyCard policyCard={currentpolicy} 
       handleClaimButton = {this.handleClaimButton} 
+      handlePortButton = {this.handlePortButton} 
       key={currentpolicy[0]}/>;
     })
   }
@@ -282,6 +331,14 @@ class CreatePolicyDash extends Component {
   handleClaimList() {
     return this.state.claimsList.map(currentclaim => {
       return <ClaimCard claimCard={currentclaim} key={currentclaim[0]}/>;
+    })
+  }
+
+  handlePortList() {
+    return this.state.portsList.map(currentport => {
+      return <PortCard portCard={currentport} 
+      handleTransferAction = {this.handleTransferAction} 
+      key={currentport[0]}/>;
     })
   }
 
@@ -532,6 +589,27 @@ class CreatePolicyDash extends Component {
                 </thead>
                 <tbody>
                   { this.handleClaimList() }
+                </tbody>
+              </table>
+          </div>  
+
+          <br></br>
+          <div style={{padding:"20px"}}>
+            <div style={{fontSize:"20px", position:"center"}} align = "center"></div>
+              <div style={{fontSize:"20px", position:"center", display:"inline-block", paddingLeft: "20px"}} align = "center">
+                <strong>My Port Requests</strong>
+              </div>
+              <table className="ui celled table ">
+                <thead>
+                  <tr>
+                    <th>PolicyId</th>
+                    <th>New Vendor</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  { this.handlePortList() }
                 </tbody>
               </table>
           </div>  
