@@ -270,15 +270,16 @@ class CreatePolicyDash extends Component {
     const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
     var ids = await policy.methods.getAllIds()
     .call({from: this.state.account});
-    
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
-      let details = await policy.methods.getPortPolicyDetails(ids[i])
-        .call({from: this.state.account});
-      if(details && this.state.account === details[4]){  
-          arr.push(details);
+      if(ids[i]!="0"){
+        let details = await policy.methods.getPortPolicyDetails(ids[i])
+          .call({from: this.state.account});
+        if(details && this.state.account === details[4]){  
+            arr.push(details);
         }
       }
+    }
     await this.setState({
       portsList: arr
     })

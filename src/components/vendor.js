@@ -40,6 +40,8 @@ const PortCard = props => (
     <tr>
       <td data-label="policyID">{props.portCard[0]}</td>
       <td data-label="vendor">{props.portCard[3]}</td>
+      <td data-label="policyType">{props.portCard[6]}</td>
+      <td data-label="hycHash">{props.portCard[7]}</td>
       <td data-label="status">{props.portCard[5]}</td>
       <td>
         <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='green'>
@@ -186,12 +188,21 @@ class Vendor extends Component {
     .call({from: this.state.account});
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
-      let details = await policy.methods.getPortPolicyDetails(ids[i])
-        .call({from: this.state.account});
-      if(details){
-          arr.push(details);
+      if(ids[i]!="0"){
+
+        let details = await policy.methods.getPortPolicyDetails(ids[i])
+          .call({from: this.state.account});
+        if(details){ 
+            const decrypted = cryptr.decrypt(details[1]); 
+            const obj = JSON.parse(decrypted);
+            const kycHash = obj['kycHash'];
+            const policyType = obj['policyType'];
+            details.push(policyType);
+            details.push(kycHash); 
+            arr.push(details);
         }
       }
+    }
     this.setState({
       portsList: arr
     })
@@ -275,7 +286,7 @@ class Vendor extends Component {
         await this.setState({
           policyIdsArray: c,
         });
-        await this.handlePoliciesLoop();
+        await this.handleLoop();
         await this.handlePortsLoop();
       })
       .catch((err)=> {
@@ -399,6 +410,8 @@ class Vendor extends Component {
                   <tr>
                     <th>PolicyId</th>
                     <th>New Vendor</th>
+                    <th>PolicyType</th>
+                    <th>KycHash</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
