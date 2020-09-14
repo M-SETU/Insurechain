@@ -1,7 +1,7 @@
 import { Button, Card} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Web3 from 'web3'
-import Policy from '../policy.json';
+import Policy from '../abis/policy_1.json';
 import Portis from '@portis/web3';
 import logo from '../images/logos/Matic logo symbol.png';
 import {Route, Switch, NavLink } from 'react-router-dom';

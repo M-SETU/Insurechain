@@ -10,9 +10,8 @@ import PortCard from './PortCard';
 import ClaimCard from './ClaimCard';
 import PolicyCard from './PolicyCard';
 
-
-const NodeRSA = require('node-rsa');
-const key = new NodeRSA({b: 512});
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('myTotalySecretKey');
 
 class CreatePolicyDash extends Component {
 
@@ -39,7 +38,7 @@ class CreatePolicyDash extends Component {
       portsList: [],
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0x410C9ea4AB8bfF5dA3751f8bDF0902D313A5d4b7",
+      goerliAddress: "0xcbDd77e274a4e19c47C3e180198eE3E1177A4169",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -56,6 +55,7 @@ class CreatePolicyDash extends Component {
     this.handlePortButton = this.handlePortButton.bind(this);
     this.handleTransfer = this.handleTransfer.bind(this);
     this.handlePortList = this.handlePortList.bind(this);
+    this.handleTransferButton = this.handleTransferButton.bind(this);
   
   }
   async componentWillMount() {
@@ -275,7 +275,7 @@ class CreatePolicyDash extends Component {
     for(let i = 0; i <ids.length; i++) {
       let details = await policy.methods.getPortPolicyDetails(ids[i])
         .call({from: this.state.account});
-      if(details){  
+      if(details && this.state.account === details[4]){  
           arr.push(details);
         }
       }
@@ -295,6 +295,7 @@ class CreatePolicyDash extends Component {
       policy.methods.burn(id)
       .send({from: this.state.account, gas:500000, gasPrice:10000000000})
       .then(async (rec) => {
+        console.log(rec);
         let c = await policy.methods.getUserPolicies(
           this.state.account)
         .call({from: this.state.account});
@@ -315,7 +316,7 @@ class CreatePolicyDash extends Component {
 
   }
   
-  async handleTransferButton(status, id){
+  async handleTransferButton(pol, status, id){
     if(status==="active"){
       window.alert("Waiting to get appproved")
     }
@@ -332,14 +333,16 @@ class CreatePolicyDash extends Component {
     const policyOwner = pol[1];
     const oldvendor = this.props.myOwner;
     const newvendor = this.state.otherVendorOwner;
-    const text = "{kycHash: '" + pol[3] + "', policyType: '" + pol[4] + "'}";
-    const encryptedData = key.encrypt(text, 'base64');
+    const text = '{"kycHash": "' + pol[3] + '", "policyType": "' + pol[4] + '"}';
+    const encryptedString = cryptr.encrypt(text);
+    //const encryptedData = key.encrypt(text, 'base64');
+    console.log(encryptedString);
     const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
     policy.methods.startPort(
       id,
       oldvendor,
       newvendor,
-      encryptedData)
+      encryptedString)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then (async (receipt) => {
       console.log(receipt);

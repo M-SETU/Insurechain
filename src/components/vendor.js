@@ -3,6 +3,9 @@ import React, { Component } from 'react'
 import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
 
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('myTotalySecretKey');
+
 const ClaimCard = props => (
   <tr>
     <td>{props.claimCard[0]}</td>
@@ -39,13 +42,13 @@ const PortCard = props => (
       <td data-label="vendor">{props.portCard[3]}</td>
       <td data-label="status">{props.portCard[5]}</td>
       <td>
-        <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='yellow'>
+        <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='green'>
           Approve
         </Button>
-        <Button onClick={() => {props.handleRejectRequestButton(props.portCard[5])}} basic color='yellow'>
+        <Button onClick={() => {props.handleRejectRequestButton(props.portCard)}} basic color='red'>
           Reject
         </Button>
-        <Button onClick={() => {props.handleTransferRequestButton(props.portCard[5])}} basic color='yellow'>
+        <Button onClick={() => {props.handleTransferRequestButton(props.portCard)}} basic color='yellow'>
           Transfer
         </Button>
       </td>
@@ -67,7 +70,7 @@ class Vendor extends Component {
       portsList: [],
       web3: {},
       address: "",
-      goerliAddress: "0x410C9ea4AB8bfF5dA3751f8bDF0902D313A5d4b7"
+      goerliAddress: "0xcbDd77e274a4e19c47C3e180198eE3E1177A4169"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -83,7 +86,7 @@ class Vendor extends Component {
   }
   async componentWillMount() {
     try{
-      if(this.props.loginstatus === true)
+      if(this.props.loginStatus === true)
       {
         await this.setState({
           policy: this.props.policy,
@@ -216,6 +219,75 @@ class Vendor extends Component {
     }
   }
 
+  async handleRequestApprove(id){
+    const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+    policy.methods.approveRequest(
+      id)
+    .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+    .then (async (receipt) => {
+      console.log(receipt);
+      this.handlePortsLoop();
+    })
+    .catch((err)=> {
+      console.log(err);   
+    });
+  }
+
+  async handleRequestReject(id){
+    const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+    policy.methods.deleteRequest(
+      id)
+    .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+    .then (async (receipt) => {
+      console.log(receipt);
+      this.handlePortsLoop();
+    })
+    .catch((err)=> {
+      console.log(err);   
+    });
+  }
+
+  async handleRequestTransfer(pol){
+    const decrypted = cryptr.decrypt(pol[1]); 
+    const obj = JSON.parse(decrypted);
+    const kycHash = obj['kycHash'];
+    const policyType = obj['policyType'];
+
+    const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+    policy.methods.deleteRequest(
+      pol[0])
+    .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+    .then (async (receipt) => {
+      console.log(receipt);
+      const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+      policy.methods.addPortData(
+        pol[4],
+        pol[0],
+        kycHash,
+        policyType
+        )
+      .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+      .then(async (rec) => {
+        console.log(rec);
+        let c = await policy.methods.getUserPolicies(
+          this.state.account)
+        .call({from: this.state.account});
+        await this.setState({
+          policyIdsArray: c,
+        });
+        await this.handlePoliciesLoop();
+        await this.handlePortsLoop();
+      })
+      .catch((err)=> {
+        console.log(err);
+      })
+      this.handlePortsLoop();
+    })
+    .catch((err)=> {
+      console.log(err);   
+    });
+  }
+
   async handleApproveRequestButton(pol){
     if(pol[5] ==="active" && this.state.account === pol[3]){
       this.handleRequestApprove(pol[0]);
@@ -240,13 +312,15 @@ class Vendor extends Component {
 
   async handleTransferRequestButton(pol){
     if(pol[5] === "active" && this.state.account === pol[3]){
-      this.handleRequestReject(pol[0]);
       window.alert("Request Not approved Yet");
     } else if (this.state.account !== pol[3]) {
       window.alert("You are not newVendor");
     }
     else if(pol[5] === "completed" && this.state.account === pol[3]){
       this.handleRequestTransfer(pol);
+    }
+    else{
+      window.alert("waiting to be completed");
     }
   }
 
@@ -276,7 +350,7 @@ class Vendor extends Component {
   
 
   render() {
-    if(this.props.loginstatus===true && this.state.account === this.props.owner){
+    if(this.props.loginStatus===true && this.state.account === this.props.myOwner){
       return (
         <div>
           <div style={{margin:"30px"}}>

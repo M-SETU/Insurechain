@@ -8,7 +8,7 @@ const PortCard = props => {
             <td data-label="vendor">{props.portCard[3]}</td>
             <td data-label="status">{props.portCard[5]}</td>
             <td>
-                <Button onClick={() => {props.handleTransferButton(props.portCard[5],props.portCard[0])}} basic color='yellow'>
+                <Button onClick={() => {props.handleTransferButton(props.portCard, props.portCard[5],props.portCard[0])}} basic color='yellow'>
                 Transfer
                 </Button>
             </td>
