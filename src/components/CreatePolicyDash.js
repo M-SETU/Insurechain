@@ -38,7 +38,7 @@ class CreatePolicyDash extends Component {
       portsList: [],
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0xcbDd77e274a4e19c47C3e180198eE3E1177A4169",
+      goerliAddress: "0xAC7EE7d2fEeD4c3c09414557A89cA6A209410a70",
     };
 
     this.handleChange = this.handleChange.bind(this);

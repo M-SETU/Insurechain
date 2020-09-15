@@ -40,8 +40,8 @@ const PortCard = props => (
     <tr>
       <td data-label="policyID">{props.portCard[0]}</td>
       <td data-label="vendor">{props.portCard[3]}</td>
-      <td data-label="policyType">{props.portCard[6]}</td>
-      <td data-label="hycHash">{props.portCard[7]}</td>
+      {/* <td data-label="policyType">{props.portCard[6]}</td>
+      <td data-label="hycHash">{props.portCard[7]}</td> */}
       <td data-label="status">{props.portCard[5]}</td>
       <td>
         <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='green'>
@@ -72,7 +72,7 @@ class Vendor extends Component {
       portsList: [],
       web3: {},
       address: "",
-      goerliAddress: "0xcbDd77e274a4e19c47C3e180198eE3E1177A4169"
+      goerliAddress: "0xAC7EE7d2fEeD4c3c09414557A89cA6A209410a70"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -193,12 +193,12 @@ class Vendor extends Component {
         let details = await policy.methods.getPortPolicyDetails(ids[i])
           .call({from: this.state.account});
         if(details){ 
-            const decrypted = cryptr.decrypt(details[1]); 
-            const obj = JSON.parse(decrypted);
-            const kycHash = obj['kycHash'];
-            const policyType = obj['policyType'];
-            details.push(policyType);
-            details.push(kycHash); 
+            // const decrypted = cryptr.decrypt(details[1]); 
+            // const obj = JSON.parse(decrypted);
+            // const kycHash = obj['kycHash'];
+            // const policyType = obj['policyType'];
+            // details.push(policyType);
+            // details.push(kycHash); 
             arr.push(details);
         }
       }
@@ -410,8 +410,8 @@ class Vendor extends Component {
                   <tr>
                     <th>PolicyId</th>
                     <th>New Vendor</th>
-                    <th>PolicyType</th>
-                    <th>KycHash</th>
+                    {/* <th>PolicyType</th>
+                    <th>KycHash</th> */}
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
