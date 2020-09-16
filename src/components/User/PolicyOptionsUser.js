@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PolicyOptions = props => {
+const PolicyOptionsUser = props => {
     return(
     <option value={props.opt}>
       {props.opt}
@@ -8,4 +8,4 @@ const PolicyOptions = props => {
   )
 }
 
-export default PolicyOptions;
+export default PolicyOptionsUser;

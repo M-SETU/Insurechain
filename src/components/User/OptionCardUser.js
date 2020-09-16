@@ -1,9 +1,9 @@
 import React from 'react';
 
-const OptionCard = props => {
+const OptionCardUser = props => {
  return[<option value={props.opt}>
       {props.opt}
     </option>];
 }
 
-  export default OptionCard;
+  export default OptionCardUser;

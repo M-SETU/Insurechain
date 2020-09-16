@@ -2,61 +2,17 @@ import { Button} from 'semantic-ui-react'
 import React, { Component } from 'react'
 import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
+import PortCardVendor from './Vendor/PortCardVendor';
+import ClaimCardVendor from './Vendor/ClaimCardVendor';
+import PolicyCardvendor from './Vendor/PolicyCardVendor';
 
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotalySecretKey');
 
-const ClaimCard = props => (
-  <tr>
-    <td>{props.claimCard[0]}</td>
-    <td>{props.claimCard[7]}</td>
-    <td>{props.claimCard[1]}</td>
-    <td>{props.claimCard[2]}</td>
-    <td>{props.claimCard[3]}</td>
-    <td data-label="hash">
-      <a href={`https://ipfs.infura.io/ipfs/${props.claimCard[5]}`}>{props.claimCard[5]}</a>
-    </td>
-    <td>{props.claimCard[4]}</td>
-    <td>{props.claimCard[6]}</td>
-    { 
-      props.handleClaimButton(props.claimCard[0], props.claimCard[6])
-    }
 
-  </tr>
-)
 
-const PolicyCard = props => (
-  <tr>
-    <td data-label="policyid">{props.policyCard[0]}</td>
-    <td data-label="custID">{props.policyCard[2]}</td>
-    <td data-label="poltype">{props.policyCard[4]}</td>
-    <td data-label="hash">
-      <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>View Document</a>
-    </td>
-    <td>
-      <a href={`https://mumbai-explorer.matic.today/tx/${localStorage.getItem('mintHash')}/token_transfers`} target="_blank">Hash</a>
-    </td>
-  </tr>
-)
 
-const PortCard = props => (
-    <tr>
-      <td data-label="policyID">{props.portCard[0]}</td>
-      <td data-label="vendor">{props.portCard[3]}</td>
-      <td data-label="status">{props.portCard[5]}</td>
-      <td>
-        <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='green'>
-          Approve
-        </Button>
-        <Button onClick={() => {props.handleRejectRequestButton(props.portCard)}} basic color='red'>
-          Reject
-        </Button>
-        <Button onClick={() => {props.handleTransferRequestButton(props.portCard)}} basic color='yellow'>
-          OnBoard
-        </Button>
-      </td>
-    </tr>
-)
+
 
 class Vendor extends Component {
 
@@ -337,13 +293,13 @@ class Vendor extends Component {
 
   handlePolicyList() {
     return this.state.policiesList.map(currentpolicy => {
-      return <PolicyCard policyCard={currentpolicy} key={currentpolicy[0]}/>;
+      return <PolicyCardvendor policyCard={currentpolicy} key={currentpolicy[0]}/>;
     })
   }
 
   handleClaimList() {
     return this.state.claimsList.map(currentclaim => {
-      return <ClaimCard claimCard={currentclaim} 
+      return <ClaimCardVendor claimCard={currentclaim} 
         handleClaimButton = {this.handleClaimButton}
         key={currentclaim[0]}/>;
     })
@@ -351,7 +307,7 @@ class Vendor extends Component {
 
   handlePortList() {
     return this.state.portsList.map(currentport => {
-      return <PortCard portCard={currentport} 
+      return <PortCardVendor portCard={currentport} 
       handleApproveRequestButton = {this.handleApproveRequestButton} 
       handleRejectRequestButton = {this.handleRejectRequestButton} 
       handleTransferRequestButton = {this.handleTransferRequestButton} 
@@ -369,11 +325,11 @@ class Vendor extends Component {
                 <table className="ui celled table ">
                   <thead>
                   <tr>
-                    <th>Policy ID</th>
-                    <th>Customer ID</th>
-                    <th>Policy Type</th>
-                    <th>KYC Documents</th>
-                    <th>Hash</th>
+                    <th style={{textAlign:"center"}}>Policy ID</th>
+                    <th style={{textAlign:"center"}}>Customer ID</th>
+                    <th style={{textAlign:"center"}}>Policy Type</th>
+                    <th style={{textAlign:"center"}}>KYC Documents</th>
+                    <th style={{textAlign:"center"}}>Hash</th>
                   </tr></thead>
                   <tbody>
                     { this.handlePolicyList() }
@@ -386,15 +342,15 @@ class Vendor extends Component {
                 <table className="ui celled table">
                   <thead>
                     <tr>
-                      <th>Claim ID</th>
-                      <th>Policy ID</th>
-                      <th>Date</th>
-                      <th>Hospital Name</th>
-                      <th>Description</th>
-                      <th>Documents</th>
-                      <th>Amount</th>
-                      <th>Status</th>
-                      <th>Action</th>
+                      <th style={{textAlign:"center"}}>Claim ID</th>
+                      <th style={{textAlign:"center"}}>Policy ID</th>
+                      <th style={{textAlign:"center"}}>Date</th>
+                      <th style={{textAlign:"center"}}> Hospital Name</th>
+                      <th style={{textAlign:"center"}}>Description</th>
+                      <th style={{textAlign:"center"}}>Documents</th>
+                      <th style={{textAlign:"center"}}>Amount</th>
+                      <th style={{textAlign:"center"}}>Status</th>
+                      <th style={{textAlign:"center"}}>Action</th>
                     </tr>
                   </thead>
                   <tbody>

@@ -4,11 +4,11 @@ import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
 import ipfs from './ipfs.js'
 import Modal from "react-bootstrap/Modal";
-import PolicyOptions from './PolicyOptions';
-import OptionCard from './OptionCard';
-import PortCard from './PortCard';
-import ClaimCard from './ClaimCard';
-import PolicyCard from './PolicyCard';
+import PolicyOptionsUser from './User/PolicyOptionsUser';
+import OptionCardUser from './User/OptionCardUser';
+import PortCardUser from './User/PortCardUser';
+import ClaimCardUser from './User/ClaimCardUser';
+import PolicyCardUser from './User/PolicyCardUser';
 
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotalySecretKey');
@@ -361,7 +361,7 @@ class CreatePolicyDash extends Component {
 
   policyList() {
     return this.state.policiesList.map(currentpolicy => {
-      return <PolicyCard policyCard={currentpolicy} 
+      return <PolicyCardUser policyCard={currentpolicy} 
       handleClaimButton = {this.handleClaimButton} 
       handlePortButton = {this.handlePortButton} 
       key={currentpolicy[0]}/>;
@@ -370,13 +370,13 @@ class CreatePolicyDash extends Component {
 
   optionsList() {
     return this.state.policyTypes.map(currenttype => {
-      return <OptionCard opt={currenttype} key={currenttype}/>;
+      return <OptionCardUser opt={currenttype} key={currenttype}/>;
     })
   }
 
   policyOptionsList() {
     return this.state.policyIdsArray.map(currentpol => {
-      return <PolicyOptions opt={currentpol} key={currentpol}/>;
+      return <PolicyOptionsUser opt={currentpol} key={currentpol}/>;
     })
   }
 
@@ -386,13 +386,13 @@ class CreatePolicyDash extends Component {
 
   handleClaimList() {
     return this.state.claimsList.map(currentclaim => {
-      return <ClaimCard claimCard={currentclaim} key={currentclaim[0]}/>;
+      return <ClaimCardUser claimCard={currentclaim} key={currentclaim[0]}/>;
     })
   }
 
   handlePortList() {
     return this.state.portsList.map(currentport => {
-      return <PortCard portCard={currentport} 
+      return <PortCardUser portCard={currentport} 
       handleTransferButton = {this.handleTransferButton} 
       key={currentport[0]}/>;
     })
@@ -634,14 +634,14 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>Claim ID</th>
-                    <th>Policy ID</th>
-                    <th>Date</th>
-                    <th>Hospital Name</th>
-                    <th>Description</th>
-                    <th>Docs</th>
-                    <th>Amount</th>
-                    <th>Status</th>
+                    <th style={{textAlign:"center"}}>Claim ID</th>
+                    <th style={{textAlign:"center"}}>Policy ID</th>
+                    <th style={{textAlign:"center"}}>Date</th>
+                    <th style={{textAlign:"center"}}>Hospital Name</th>
+                    <th style={{textAlign:"center"}}>Description</th>
+                    <th style={{textAlign:"center"}}>Docs</th>
+                    <th style={{textAlign:"center"}}>Amount</th>
+                    <th style={{textAlign:"center"}}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -659,11 +659,11 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>Policy ID</th>
-                    <th>New Vendor</th>
-                    <th>Status</th>
-                    <th>Hash</th>
-                    <th>Action</th>
+                    <th style={{textAlign:"center"}}>Policy ID</th>
+                    <th style={{textAlign:"center"}}>New Vendor</th>
+                    <th style={{textAlign:"center"}}>Status</th>
+                    <th style={{textAlign:"center"}}>Hash</th>
+                    <th style={{textAlign:"center"}}>Action</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const ClaimCard = props => {
+const ClaimCardUser = props => {
 return(<tr>
       <td>{props.claimCard[0]}</td>
       <td>{props.claimCard[7]}</td>
@@ -16,5 +16,5 @@ return(<tr>
     </tr>);
 }
 
-export default ClaimCard;
+export default ClaimCardUser;
   

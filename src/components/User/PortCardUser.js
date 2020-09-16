@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react'
 
-const PortCard = props => {
+const PortCardUser = props => {
     return(
         <tr>
             <td data-label="policyID">{props.portCard[0]}</td>
@@ -19,4 +19,4 @@ const PortCard = props => {
     );
   };
 
-  export default PortCard;
+  export default PortCardUser;

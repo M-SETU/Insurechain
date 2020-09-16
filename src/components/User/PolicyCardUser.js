@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react'
 
-const PolicyCard = props => {
+const PolicyCardUser = props => {
     return(
       <tr>
       <td data-label="policyID">{props.policyCard[0]}</td>
@@ -25,4 +25,4 @@ const PolicyCard = props => {
     );
   };
 
-  export default PolicyCard;
+  export default PolicyCardUser;
