@@ -29,7 +29,7 @@
     margin-left: 38%;
 }
 .title h1{
-    color:rgb(38, 41, 231);
+    color:#f5ef49;
     text-align: center; 
     font-size:70px;
 
@@ -41,7 +41,7 @@
     transform: transalte(-50%, 50%);
 }
 .heading h3{
-    color:rgb(0, 0, 0);
+    color:#f5ef49;
     font-size:30px;
     text-align: center; 
 }

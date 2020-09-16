@@ -36,7 +36,8 @@ class Dashboard extends Component {
         showUser: false,
         showVendor: false,
         loginButtonDisabled: true,
-        heading: "None"
+        heading: "None",
+        
       };
 
         this.login = this.login.bind(this);
@@ -48,7 +49,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "WellCare New York",
           network: "maticMumbai",
-          address:"0x2A397e0f55E9Fe3D1215163Ca4838a1581fE190A",
+          address:"0x67a0508F5F29aF463f3c650228C1122C78aBeb98",
           myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           click: true,
@@ -64,7 +65,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "Health Net California",
           network: "maticMumbai",
-          address:"0x8314e2b1f804fddCC199F295FBe226040038967E",
+          address:"0xc6E7B799aC59298C1bbD423Cd62d55d7A6Eb4572",
           myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           click: true,

@@ -4,11 +4,11 @@ import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
 import ipfs from './ipfs.js'
 import Modal from "react-bootstrap/Modal";
-import PolicyOptions from './PolicyOptions';
-import OptionCard from './OptionCard';
-import PortCard from './PortCard';
-import ClaimCard from './ClaimCard';
-import PolicyCard from './PolicyCard';
+import PolicyOptionsUser from './User/PolicyOptionsUser';
+import OptionCardUser from './User/OptionCardUser';
+import PortCardUser from './User/PortCardUser';
+import ClaimCardUser from './User/ClaimCardUser';
+import PolicyCardUser from './User/PolicyCardUser';
 
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotalySecretKey');
@@ -19,6 +19,7 @@ class CreatePolicyDash extends Component {
     super(props)
     this.state = {
       buffer: null,
+      name: '',
       account: '',
       hash: '',
       policySelected: 'None',
@@ -39,6 +40,10 @@ class CreatePolicyDash extends Component {
       showPolicyModal: false,
       showClaimModal: false,
       goerliAddress: "0x4Ce44d92273bc9cd4efF18E2dC4acB731B3a0738",
+      vendorMapping: {
+        "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
+        "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
+      }
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -55,7 +60,6 @@ class CreatePolicyDash extends Component {
     this.handlePortButton = this.handlePortButton.bind(this);
     this.handleTransfer = this.handleTransfer.bind(this);
     this.handlePortList = this.handlePortList.bind(this);
-    this.handleTransferButton = this.handleTransferButton.bind(this);
   
   }
   async componentWillMount() {
@@ -136,8 +140,8 @@ class CreatePolicyDash extends Component {
         this.setState({ hash: result[0].hash })
         const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
         policy.methods.createPolicy(
-          this.state.hash, this.state.policySelected)
-        .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
+          this.state.hash, this.state.policySelected, this.state.name.toUpperCase())
+        .send({from: this.state.account, gas:600000, gasPrice:15000000000})   
         .then (async (receipt) => {
           console.log(receipt);
           localStorage.setItem("mint1Hash",receipt['transactionHash']);
@@ -209,7 +213,6 @@ class CreatePolicyDash extends Component {
       console.log(err);
     }
   }
-
 
   handleChange (evt) {
     this.setState({ [evt.target.name]: evt.target.value });
@@ -299,7 +302,7 @@ class CreatePolicyDash extends Component {
       .send({from: this.state.account, gas:500000, gasPrice:10000000000})
       .then(async (rec) => {
         console.log(rec);
-        localStorage.setItem("burnHash",rec['transactionHash']);
+        //localStorage.setItem("burnHash",rec['transactionHash']);
         let c = await policy.methods.getUserPolicies(
           this.state.account)
         .call({from: this.state.account});
@@ -319,25 +322,13 @@ class CreatePolicyDash extends Component {
     });
 
   }
-  
-  async handleTransferButton(pol, status, id){
-    if(status==="active"){
-      window.alert("Waiting to get appproved")
-    }
-    else if(status==="approved"){
-      await this.handleTransfer(id);
-    }
-    else if(status === "completed"){
-      window.alert("In process. Check Back later")
-    }
-  }
 
   async handlePortButton(pol){
     const id = pol[0];
     const policyOwner = pol[1];
     const oldvendor = this.props.myOwner;
     const newvendor = this.state.otherVendorOwner;
-    const text = '{"kycHash": "' + pol[3] + '", "policyType": "' + pol[4] + '"}';
+    const text = '{"kycHash": "' + pol[3] + '", "policyType": "' + pol[4] + '", "name": "' + pol[7] + '"}';
     const encryptedString = cryptr.encrypt(text);
     //const encryptedData = key.encrypt(text, 'base64');
     console.log(encryptedString);
@@ -355,13 +346,11 @@ class CreatePolicyDash extends Component {
     .catch((err)=> {
       console.log(err);   
     });
-    //decrypted = key.decrypt(encrypted, 'utf8'); 
-    //console.log('decrypted: ', decrypted);
   }
 
   policyList() {
     return this.state.policiesList.map(currentpolicy => {
-      return <PolicyCard policyCard={currentpolicy} 
+      return <PolicyCardUser policyCard={currentpolicy} 
       handleClaimButton = {this.handleClaimButton} 
       handlePortButton = {this.handlePortButton} 
       key={currentpolicy[0]}/>;
@@ -370,13 +359,13 @@ class CreatePolicyDash extends Component {
 
   optionsList() {
     return this.state.policyTypes.map(currenttype => {
-      return <OptionCard opt={currenttype} key={currenttype}/>;
+      return <OptionCardUser opt={currenttype} key={currenttype}/>;
     })
   }
 
   policyOptionsList() {
     return this.state.policyIdsArray.map(currentpol => {
-      return <PolicyOptions opt={currentpol} key={currentpol}/>;
+      return <PolicyOptionsUser opt={currentpol} key={currentpol}/>;
     })
   }
 
@@ -386,14 +375,15 @@ class CreatePolicyDash extends Component {
 
   handleClaimList() {
     return this.state.claimsList.map(currentclaim => {
-      return <ClaimCard claimCard={currentclaim} key={currentclaim[0]}/>;
+      return <ClaimCardUser claimCard={currentclaim} key={currentclaim[0]}/>;
     })
   }
 
   handlePortList() {
     return this.state.portsList.map(currentport => {
-      return <PortCard portCard={currentport} 
-      handleTransferButton = {this.handleTransferButton} 
+      return <PortCardUser portCard={currentport} 
+      handleTransferButton = {this.handleTransfer} 
+      vendorMapping = {this.state.vendorMapping}
       key={currentport[0]}/>;
     })
   }
@@ -462,6 +452,20 @@ class CreatePolicyDash extends Component {
                     </Form.Group>
                   </Form>
                 </div>
+                <div >
+                    <Form>
+                      <Form.Group widths='equal'>
+                        <Form.Field
+                          id='form-input-control-hospitalname'
+                          control={Input}
+                          label='Name'
+                          placeholder='Name'
+                          name="name"
+                          onChange={this.handleChange}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </div>
                 <div >
                   <Form>
                     <Form.Group widths='equal'>
@@ -617,12 +621,13 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                 <tr>
-                  <th>Policy ID</th>
-                  <th>Customer ID</th>
-                  <th>Policy Type</th>
-                  <th>KYC Documents</th>
-                  <th>Hash</th>
-                  <th>Action</th>
+                  <th style={{textAlign:"center"}}>Policy ID</th>
+                  <th style={{textAlign:"center"}}>Customer ID</th>
+                  <th style={{textAlign:"center"}}>Applicant Name</th>
+                  <th style={{textAlign:"center"}}>Policy Type</th>
+                  <th style={{textAlign:"center"}}>KYC Documents</th>
+                  <th style={{textAlign:"center"}}>Application Type</th>
+                  <th style={{textAlign:"center"}}>Action</th>
                 </tr></thead>
                 <tbody>
                   { this.policyList() }
@@ -638,14 +643,14 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>Claim ID</th>
-                    <th>Policy ID</th>
-                    <th>Date</th>
-                    <th>Hospital Name</th>
-                    <th>Description</th>
-                    <th>Docs</th>
-                    <th>Amount</th>
-                    <th>Status</th>
+                    <th style={{textAlign:"center"}}>Claim ID</th>
+                    <th style={{textAlign:"center"}}>Policy ID</th>
+                    <th style={{textAlign:"center"}}>Date</th>
+                    <th style={{textAlign:"center"}}>Hospital Name</th>
+                    <th style={{textAlign:"center"}}>Description</th>
+                    <th style={{textAlign:"center"}}>Documents</th>
+                    <th style={{textAlign:"center"}}>Amount</th>
+                    <th style={{textAlign:"center"}}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -663,11 +668,10 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>Policy ID</th>
-                    <th>New Vendor</th>
-                    <th>Status</th>
-                    <th>Hash</th>
-                    <th>Action</th>
+                    <th style={{textAlign:"center"}}>Policy ID</th>
+                    <th style={{textAlign:"center"}}>New Vendor</th>
+                    <th style={{textAlign:"center"}}>Status</th>
+                    <th style={{textAlign:"center"}}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
