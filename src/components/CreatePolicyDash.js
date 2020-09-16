@@ -613,10 +613,10 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                 <tr>
-                  <th>Policy Id</th>
+                  <th>Policy ID</th>
                   <th>Customer ID</th>
                   <th>Policy Type</th>
-                  <th>KYC Hash</th>
+                  <th>KYC Documents</th>
                   <th>Hash</th>
                   <th>Action</th>
                 </tr></thead>
@@ -634,8 +634,8 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>ClaimId</th>
-                    <th>PolicyId</th>
+                    <th>Claim ID</th>
+                    <th>Policy ID</th>
                     <th>Date</th>
                     <th>Hospital Name</th>
                     <th>Description</th>
@@ -659,7 +659,7 @@ class CreatePolicyDash extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>PolicyId</th>
+                    <th>Policy ID</th>
                     <th>New Vendor</th>
                     <th>Status</th>
                     <th>Hash</th>

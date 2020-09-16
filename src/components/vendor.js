@@ -31,7 +31,7 @@ const PolicyCard = props => (
     <td data-label="custID">{props.policyCard[2]}</td>
     <td data-label="poltype">{props.policyCard[4]}</td>
     <td data-label="hash">
-      <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>{props.policyCard[3]}</a>
+      <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>View Document</a>
     </td>
     <td>
       <a href={`https://mumbai-explorer.matic.today/tx/${localStorage.getItem('mintHash')}/token_transfers`} target="_blank">Hash</a>
@@ -44,7 +44,6 @@ const PortCard = props => (
       <td data-label="policyID">{props.portCard[0]}</td>
       <td data-label="vendor">{props.portCard[3]}</td>
       <td data-label="status">{props.portCard[5]}</td>
-      
       <td>
         <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='green'>
           Approve
@@ -370,10 +369,10 @@ class Vendor extends Component {
                 <table className="ui celled table ">
                   <thead>
                   <tr>
-                    <th>Policy Id</th>
+                    <th>Policy ID</th>
                     <th>Customer ID</th>
                     <th>Policy Type</th>
-                    <th>KYC Hash</th>
+                    <th>KYC Documents</th>
                     <th>Hash</th>
                   </tr></thead>
                   <tbody>
@@ -387,12 +386,12 @@ class Vendor extends Component {
                 <table className="ui celled table">
                   <thead>
                     <tr>
-                      <th>ClaimId</th>
-                      <th>PolicyId</th>
+                      <th>Claim ID</th>
+                      <th>Policy ID</th>
                       <th>Date</th>
                       <th>Hospital Name</th>
                       <th>Description</th>
-                      <th>Docs</th>
+                      <th>Documents</th>
                       <th>Amount</th>
                       <th>Status</th>
                       <th>Action</th>
@@ -410,7 +409,7 @@ class Vendor extends Component {
               <table className="ui celled table ">
                 <thead>
                   <tr>
-                    <th>PolicyId</th>
+                    <th>Policy ID</th>
                     <th>New Vendor</th>
                     <th>Status</th>
                     
