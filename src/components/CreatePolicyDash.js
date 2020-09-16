@@ -600,7 +600,11 @@ class CreatePolicyDash extends Component {
         </div>
         <br></br>
           </div>
+
           <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
+            <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
+              <strong>{this.props.heading}</strong>
+            </div>
             <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center"></div>
               <div style={{fontSize:"20px", display:"inline-block", paddingLeft: "20px"}}>
                 <strong>My Policies</strong>

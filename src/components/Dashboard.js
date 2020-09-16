@@ -36,7 +36,7 @@ class Dashboard extends Component {
         showUser: false,
         showVendor: false,
         loginButtonDisabled: true,
-
+        heading: "None"
       };
 
         this.login = this.login.bind(this);
@@ -46,7 +46,7 @@ class Dashboard extends Component {
     }
     async handleSubmit1() {
         await this.setState({
-          name: "HDFC",
+          heading: "WellCare New York",
           network: "maticMumbai",
           address:"0x2A397e0f55E9Fe3D1215163Ca4838a1581fE190A",
           myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
@@ -62,7 +62,7 @@ class Dashboard extends Component {
     
     async handleSubmit2() {
         await this.setState({
-          name: "ICICi",
+          heading: "Health Net California",
           network: "maticMumbai",
           address:"0x8314e2b1f804fddCC199F295FBe226040038967E",
           myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
@@ -278,6 +278,7 @@ class Dashboard extends Component {
 
                 <Route path="/vendor" component={
                     () => <Vendor
+                        heading={this.state.heading}
                         address={this.state.address} 
                         web3={this.state.web3} 
                         web3Goerli = {this.state.web3Goerli}
@@ -290,6 +291,7 @@ class Dashboard extends Component {
 
                 <Route path="/CreatePolicyDash" component={
                     () => <CreatePolicyDash 
+                        heading={this.state.heading}
                         address={this.state.address} 
                         web3={this.state.web3} 
                         web3Goerli = {this.state.web3Goerli}
@@ -310,7 +312,7 @@ class Dashboard extends Component {
                         <h3> Your One Stop Smart Savings Accounts DeFi Platform</h3>
                       </div>
                       <div className="vendorCard1">
-                        <h3>HDFC</h3>
+                        <h3>WellCare New York</h3>
                         <div className="btnVendor">
                           <NavLink to={{
                               pathname: '/vendor',
@@ -332,7 +334,7 @@ class Dashboard extends Component {
                         </div>
                       </div>
                       <div className="vendorCard2">
-                        <h3>ICICI</h3>
+                        <h3>Health Net California</h3>
                         <div className="btnVendor1">
                           <NavLink to={{
                               pathname: '/vendor',

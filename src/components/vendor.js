@@ -364,6 +364,9 @@ class Vendor extends Component {
     if(this.props.loginStatus===true && this.state.account === this.props.myOwner){
       return (
         <div>
+          <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
+            <strong>{this.props.heading}</strong>
+          </div>
           <div style={{margin:"30px"}}>
                 <div style={{fontSize:"25px"}} align = "center"><strong>All Policies</strong></div>
                 <table className="ui celled table ">
@@ -427,6 +430,10 @@ class Vendor extends Component {
       return (
           <div style={{position: "center", fontSize: "30px", color: "black"}} align="center">
           <br></br><br></br>
+          <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
+            <strong>{this.props.heading}</strong>
+          </div>
+          <br></br>
           <strong>You Should be Vendor</strong><br></br><br></br>
           Login with Vendor Account
       </div>
