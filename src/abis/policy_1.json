@@ -93,6 +93,24 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "_claimId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_action",
+				"type": "string"
+			}
+		],
+		"name": "actionClaim",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "_owner",
 				"type": "address"
@@ -110,6 +128,11 @@
 			{
 				"internalType": "string",
 				"name": "_policyType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_applicantName",
 				"type": "string"
 			}
 		],
@@ -145,19 +168,6 @@
 			}
 		],
 		"name": "approve",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_claimId",
-				"type": "uint256"
-			}
-		],
-		"name": "approveClaim",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -310,6 +320,11 @@
 				"internalType": "string",
 				"name": "_policyType",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_applicantName",
+				"type": "string"
 			}
 		],
 		"name": "createPolicy",
@@ -321,32 +336,6 @@
 			}
 		],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_policyType",
-				"type": "string"
-			}
-		],
-		"name": "createPolicyType",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getAllClaimIds",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -488,6 +477,16 @@
 						"internalType": "bool",
 						"name": "active",
 						"type": "bool"
+					},
+					{
+						"internalType": "string",
+						"name": "applicantName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "typeOfApplication",
+						"type": "string"
 					}
 				],
 				"internalType": "struct cryptoPolicy.policy",
@@ -552,25 +551,6 @@
 			}
 		],
 		"name": "getUserPolicies",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_policyId",
-				"type": "uint256"
-			}
-		],
-		"name": "getUserPolicyClaimIds",
 		"outputs": [
 			{
 				"internalType": "uint256[]",
@@ -676,22 +656,19 @@
 				"internalType": "bool",
 				"name": "active",
 				"type": "bool"
+			},
+			{
+				"internalType": "string",
+				"name": "applicantName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "typeOfApplication",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_claimId",
-				"type": "uint256"
-			}
-		],
-		"name": "rejectClaim",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
