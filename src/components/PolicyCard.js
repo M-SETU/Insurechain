@@ -11,6 +11,9 @@ const PolicyCard = props => {
         <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>{props.policyCard[3]}</a>
       </td>
       <td>
+        <a href={`https://mumbai-explorer.matic.today/tx/${localStorage.getItem('mint1Hash')}/token_transfers`} target="_blank">Hash</a>
+      </td>
+      <td>
           <Button onClick={() => { props.handleClaimButton(props.policyCard[0]) }} basic color='yellow'>
             Raise Claim
           </Button>

@@ -38,7 +38,7 @@ class CreatePolicyDash extends Component {
       portsList: [],
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0xAC7EE7d2fEeD4c3c09414557A89cA6A209410a70",
+      goerliAddress: "0x4Ce44d92273bc9cd4efF18E2dC4acB731B3a0738",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -139,6 +139,8 @@ class CreatePolicyDash extends Component {
           this.state.hash, this.state.policySelected)
         .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
         .then (async (receipt) => {
+          console.log(receipt);
+          localStorage.setItem("mint1Hash",receipt['transactionHash']);
           this.hidePolicyModal();
           let c = await policy.methods.getUserPolicies(
             this.state.account)
@@ -297,6 +299,7 @@ class CreatePolicyDash extends Component {
       .send({from: this.state.account, gas:500000, gasPrice:10000000000})
       .then(async (rec) => {
         console.log(rec);
+        localStorage.setItem("burnHash",rec['transactionHash']);
         let c = await policy.methods.getUserPolicies(
           this.state.account)
         .call({from: this.state.account});
@@ -614,6 +617,7 @@ class CreatePolicyDash extends Component {
                   <th>Customer ID</th>
                   <th>Policy Type</th>
                   <th>KYC Hash</th>
+                  <th>Hash</th>
                   <th>Action</th>
                 </tr></thead>
                 <tbody>
@@ -658,6 +662,7 @@ class CreatePolicyDash extends Component {
                     <th>PolicyId</th>
                     <th>New Vendor</th>
                     <th>Status</th>
+                    <th>Hash</th>
                     <th>Action</th>
                   </tr>
                 </thead>

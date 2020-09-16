@@ -48,7 +48,7 @@ class Dashboard extends Component {
         await this.setState({
           name: "HDFC",
           network: "maticMumbai",
-          address:"0xe969E7bb19195cb5f833Dfd8aC09FD2343A11013",
+          address:"0x2A397e0f55E9Fe3D1215163Ca4838a1581fE190A",
           myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           click: true,
@@ -64,7 +64,7 @@ class Dashboard extends Component {
         await this.setState({
           name: "ICICi",
           network: "maticMumbai",
-          address:"0x867A0bD06a5059a0e179290BFE220Cf5E0a93450",
+          address:"0x8314e2b1f804fddCC199F295FBe226040038967E",
           myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           click: true,

@@ -33,6 +33,9 @@ const PolicyCard = props => (
     <td data-label="hash">
       <a href={`https://ipfs.infura.io/ipfs/${props.policyCard[3]}`}>{props.policyCard[3]}</a>
     </td>
+    <td>
+      <a href={`https://mumbai-explorer.matic.today/tx/${localStorage.getItem('mintHash')}/token_transfers`} target="_blank">Hash</a>
+    </td>
   </tr>
 )
 
@@ -40,9 +43,8 @@ const PortCard = props => (
     <tr>
       <td data-label="policyID">{props.portCard[0]}</td>
       <td data-label="vendor">{props.portCard[3]}</td>
-      {/* <td data-label="policyType">{props.portCard[6]}</td>
-      <td data-label="hycHash">{props.portCard[7]}</td> */}
       <td data-label="status">{props.portCard[5]}</td>
+      
       <td>
         <Button onClick={() => {props.handleApproveRequestButton(props.portCard)}} basic color='green'>
           Approve
@@ -51,7 +53,7 @@ const PortCard = props => (
           Reject
         </Button>
         <Button onClick={() => {props.handleTransferRequestButton(props.portCard)}} basic color='yellow'>
-          Transfer
+          OnBoard
         </Button>
       </td>
     </tr>
@@ -72,7 +74,7 @@ class Vendor extends Component {
       portsList: [],
       web3: {},
       address: "",
-      goerliAddress: "0xAC7EE7d2fEeD4c3c09414557A89cA6A209410a70"
+      goerliAddress: "0x4Ce44d92273bc9cd4efF18E2dC4acB731B3a0738"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -193,12 +195,6 @@ class Vendor extends Component {
         let details = await policy.methods.getPortPolicyDetails(ids[i])
           .call({from: this.state.account});
         if(details){ 
-            // const decrypted = cryptr.decrypt(details[1]); 
-            // const obj = JSON.parse(decrypted);
-            // const kycHash = obj['kycHash'];
-            // const policyType = obj['policyType'];
-            // details.push(policyType);
-            // details.push(kycHash); 
             arr.push(details);
         }
       }
@@ -265,6 +261,7 @@ class Vendor extends Component {
     const policyType = obj['policyType'];
 
     const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+    console.log(pol[0]);
     policy.methods.deleteRequest(
       pol[0])
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
@@ -280,19 +277,23 @@ class Vendor extends Component {
       .send({from: this.state.account, gas:500000, gasPrice:10000000000})
       .then(async (rec) => {
         console.log(rec);
-        let c = await policy.methods.getUserPolicies(
-          this.state.account)
+        localStorage.setItem("mintHash",rec['transactionHash']);
+        let b = await policy.methods.getPolicyIds()
         .call({from: this.state.account});
-        await this.setState({
-          policyIdsArray: c,
-        });
+
+        let c = await policy.methods.getAllClaimIds()
+        .call({from: this.state.account});
+
+        this.setState({
+          policyIds: b,
+          claimIds: c
+        })
         await this.handleLoop();
         await this.handlePortsLoop();
       })
       .catch((err)=> {
         console.log(err);
       })
-      this.handlePortsLoop();
     })
     .catch((err)=> {
       console.log(err);   
@@ -373,6 +374,7 @@ class Vendor extends Component {
                     <th>Customer ID</th>
                     <th>Policy Type</th>
                     <th>KYC Hash</th>
+                    <th>Hash</th>
                   </tr></thead>
                   <tbody>
                     { this.handlePolicyList() }
@@ -410,9 +412,8 @@ class Vendor extends Component {
                   <tr>
                     <th>PolicyId</th>
                     <th>New Vendor</th>
-                    {/* <th>PolicyType</th>
-                    <th>KycHash</th> */}
                     <th>Status</th>
+                    
                     <th>Action</th>
                   </tr>
                 </thead>
