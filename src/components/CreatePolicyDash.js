@@ -43,7 +43,9 @@ class CreatePolicyDash extends Component {
       vendorMapping: {
         "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
         "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
-      }
+      },
+      showPortRequest: false,
+      showPortTransfer: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -60,6 +62,10 @@ class CreatePolicyDash extends Component {
     this.handlePortButton = this.handlePortButton.bind(this);
     this.handleTransfer = this.handleTransfer.bind(this);
     this.handlePortList = this.handlePortList.bind(this);
+    this.hidePortRequestModal = this.hidePortRequestModal.bind(this);
+    this.showPortRequestModal = this.showPortRequestModal.bind(this);
+    this.hidePortTransferModal = this.hidePortTransferModal.bind(this);
+    this.showPortTransferModal = this.showPortTransferModal.bind(this);
   
   }
   async componentWillMount() {
@@ -292,38 +298,42 @@ class CreatePolicyDash extends Component {
   } 
 
   async handleTransfer(id){
-    const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
-    policyGoerli.methods.completeRequest(id)
+    await this.showPortTransferModal();
+    const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
+    policy.methods.burn(id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-    .then (async (receipt) => {
-      console.log(receipt);
-      const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
-      policy.methods.burn(id)
+    .then(async (rec) => {
+      console.log(rec);
+      const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+      policyGoerli.methods.completeRequest(id)
       .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-      .then(async (rec) => {
-        console.log(rec);
-        //localStorage.setItem("burnHash",rec['transactionHash']);
+      .then (async (receipt) => {
+        console.log(receipt);
         let c = await policy.methods.getUserPolicies(
           this.state.account)
         .call({from: this.state.account});
         await this.setState({
           policyIdsArray: c,
         });
+        await this.hidePortTransferModal();
         await this.handlePoliciesLoop();
         await this.handlePortsLoop();
       })
-      .catch((err)=> {
-        console.log(err);
-      })
-      
+      .catch(async (err)=> {
+        await this.hidePortTransferModal();
+        console.log(err);   
+      });  
     })
-    .catch((err)=> {
-      console.log(err);   
-    });
+    .catch(async (err)=> {
+      await this.hidePortTransferModal();
+      console.log(err);
+    })
+    
 
   }
 
   async handlePortButton(pol){
+    await this.showPortRequestModal();
     const id = pol[0];
     const policyOwner = pol[1];
     const oldvendor = this.props.myOwner;
@@ -341,11 +351,14 @@ class CreatePolicyDash extends Component {
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then (async (receipt) => {
       console.log(receipt);
+      await this.hidePortRequestModal();
       this.handlePortsLoop();
     })
-    .catch((err)=> {
+    .catch(async (err)=> {
+      await this.hidePortRequestModal();
       console.log(err);   
     });
+    
   }
 
   policyList() {
@@ -412,6 +425,29 @@ class CreatePolicyDash extends Component {
     });
   };
 
+  hidePortRequestModal = (e) => {
+    this.setState({
+      showPortRequest: false,
+    });
+  };
+
+  showPortRequestModal = (e) => {
+    this.setState({
+      showPortRequest: true,
+    });
+  };
+
+  hidePortTransferModal = (e) => {
+    this.setState({
+      showPortTransfer: false,
+    });
+  };
+
+  showPortTransferModal = (e) => {
+    this.setState({
+      showPortTransfer: true,
+    });
+  };
 
   render() {
 
@@ -602,6 +638,34 @@ class CreatePolicyDash extends Component {
             </Modal.Footer>
           </Modal>
         </div>
+
+        <div align="center">
+          <Modal
+            show={this.state.showPortRequest}
+            onHide={this.hidePortRequestModal}
+          >
+            <Modal.Header>
+              <Modal.Title><b>Initiating Request...</b></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              You will have to accept a transaction
+            </Modal.Body>
+          </Modal>
+        </div>
+        <div align="center">
+          <Modal
+            show={this.state.showPortTransfer}
+            onHide={this.hidePortTransferModal}
+          >
+            <Modal.Header>
+              <Modal.Title><b>Initiating Transfer...</b></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              You will have to accept 2 transaction
+            </Modal.Body>
+          </Modal>
+        </div>
+
         <br></br>
           </div>
 

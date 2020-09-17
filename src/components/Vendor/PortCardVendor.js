@@ -16,12 +16,17 @@ const PortCardVendor = props => {
     "completed": false
   }
 
+  const statusMessage = {
+    "active": "Waiting for Approval",
+    "approved": "Waiting to Initiate Transfer by Owner",
+    "completed": "Awaiting OnBoard"
+  }
 
   return (
     <tr>
       <td data-label="policyID" style={{textAlign:"center"}}>{props.portCard[0]}</td>
       <td data-label="vendor" style={{textAlign:"center"}}>{props.vendorMapping[props.portCard[3]]}</td>
-      <td data-label="status" style={{textAlign:"center"}}>{props.portCard[5]}</td>
+      <td data-label="status" style={{textAlign:"center"}}>{statusMessage[props.portCard[5]]}</td>
       <td style={{textAlign:"center"}}>
         <Button 
           onClick={() => {props.handleApproveRequestButton(props.portCard[0])}} 

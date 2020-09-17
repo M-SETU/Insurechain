@@ -10,6 +10,10 @@ import Vendor from "./vendor.js";
 import Modal from "react-bootstrap/Modal";
 import "./dashboard.css"
 import insurechain from '../images/logos/home-insurance-getty.jpg';
+import insuranc from "../images/logos/43951.jpg";
+import question from "../images/logos/64627.jpg";
+import customer from "../images/logos/2650149.jpg";
+import MainImage from "../images/logos/help.png";
 
 
 class Dashboard extends Component {
@@ -310,7 +314,10 @@ class Dashboard extends Component {
                         <h1>InsureChain</h1>
                       </div>
                       <div className="heading">
-                        <h3> Your One Stop Smart Savings Accounts DeFi Platform</h3>
+                        <h3> Your One Stop Smart Insurance Policy</h3>
+                      </div>
+                      <div className="main-image">
+                        <img src={MainImage}></img>
                       </div>
                       <div className="vendorCard1">
                         <h3>WellCare New York</h3>
@@ -362,8 +369,136 @@ class Dashboard extends Component {
                     <section id="about">
                       <div className="container">
                         <div className="row">
+                          
+                          <div className ="row">
+                            <h2 style={{marginLeft:"-50px"}}>Key Benefits</h2>
+                            <div className="about-content">We plan to enable this by automatically toggling the users' funds from one platform to another basis the interest rates being offered across various Defi platforms. We aim to also incorporate trending methods like Yield farming
+                            </div>
+                          </div>   
+                          <div className="next-content">
+<div className="section1">
+                          <div class="ui link cards">
+                          <div class="card">
+    <div class="image">
+      <img src={insuranc}></img>
+    </div>
+    <div class="content">
+      <div class="header">
+Lowest Price
+</div>
+      <div class="meta">
+        <a>
+Guaranteed</a>
+      </div>
+      <div class="description">
+        Matthew is an interior designer living in New York.
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+        Joined in 2013
+      </span>
+      <span>
+        <i class="user icon"></i>
+        75 Friends
+      </span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="image">
+      <img src={insuranc}></img>
+    </div>
+    <div class="content">
+      <div class="header">
+Unbiased Advice</div>
+      <div class="meta">
+        <span class="date">
+
+
+Keeping customers first
+
+</span>
+      </div>
+      <div class="description">
+        Molly is a personal assistant living in Paris.
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+        Joined in 2011
+      </span>
+      <span>
+        <i class="user icon"></i>
+        35 Friends
+      </span>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="image">
+      <img src={insuranc}></img>
+    </div>
+    <div class="content">
+      <div class="header">
+100% Reliable</div>
+      <div class="meta">
+        <span class="date">Regulated by IRDAI</span>
+      </div>
+      <div class="description">
+        Molly is a personal assistant living in Paris.
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+        Joined in 2011
+      </span>
+      <span>
+        <i class="user icon"></i>
+        35 Friends
+      </span>
+    </div>
+  </div>
+
+  
+  </div>
+  </div>
+  </div>
+
+                        </div>
+                      </div>
+                    </section>
+
+
+                    <section id="about1">
+                      <div className="container">
+                        <div className="row">
+                         
+                          <div className ="row">
+
+                            <div className="col-md-6">
+                            <h2>What Our Customers Are Saying </h2>
+                            <div className="about-content">
+                              One Stop Smart Savings Account platform that provides the facility to a user to let SaviFi do the job of managing his fund’s hassle-free. We plan to enable this by automatically toggling the users' funds from one platform to another basis the interest rates being offered across various Defi platforms. We aim to also incorporate trending methods like Yield farming to leverage on Defi protocols and generate higher returns for our users.
+                            </div>
+                            </div>
+
+                            <div className="col-md-6">
+                            <img src={customer} style={{width: "500px", height: "400px"}}/>
+                          </div>  
+                          </div>      
+                        </div>
+                      </div>
+                    </section>
+
+             
+
+                    <section id="about">
+                      <div className="container">
+                        <div className="row">
                           <div className="col-md-6">
-                            <img src={insurechain} style={{width: "500px", height: "300px"}}/>
+                            <img src={insuranc} style={{width: "500px", height: "400px"}}/>
                           </div>  
                           <div className ="col-md-6">
                             <h2>About Us</h2>
@@ -374,6 +509,90 @@ class Dashboard extends Component {
                         </div>
                       </div>
                     </section>
+
+
+                
+                    <section id="about1">
+                      <div className="container">
+                        <div className="row">
+                         
+                          <div className ="row">
+
+                            <div className="col-md-6">
+                            <h2>Have a question?
+Here to help. </h2>
+                            <div className="about-content">
+                              One Stop Smart Savings Account platform that provides the facility to a user to let SaviFi do the job of managing his fund’s hassle-free. We plan to enable this by automatically toggling the users' funds from one platform to another basis the interest rates being offered across various Defi platforms. We aim to also incorporate trending methods like Yield farming to leverage on Defi protocols and generate higher returns for our users.
+                            </div>
+                            </div>
+
+                            <div className="col-md-6">
+                            <img src={question} style={{width: "500px", height: "400px"}}/>
+                          </div>  
+                          </div>      
+                        </div>
+                      </div>
+                    </section>
+
+                 
+    <footer class="site-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <h6>About</h6>
+            <p class="text-justify">Scanfcode.com <i>CODE WANTS TO BE SIMPLE </i> is an initiative  to help the upcoming programmers with the code. Scanfcode focuses on providing the most efficient code or snippets as the code wants to be simple. We will help programmers build up concepts in different programming languages that include C, C++, Java, HTML, CSS, Bootstrap, JavaScript, PHP, Android, SQL and Algorithm.</p>
+          </div>
+
+          <div class="col-xs-6 col-md-3">
+            <h6>Categories</h6>
+            <ul class="footer-links">
+              <li><a href="http://scanfcode.com/category/c-language/">C</a></li>
+              <li><a href="http://scanfcode.com/category/front-end-development/">UI Design</a></li>
+              <li><a href="http://scanfcode.com/category/back-end-development/">PHP</a></li>
+              <li><a href="http://scanfcode.com/category/java-programming-language/">Java</a></li>
+              <li><a href="http://scanfcode.com/category/android/">Android</a></li>
+              <li><a href="http://scanfcode.com/category/templates/">Templates</a></li>
+            </ul>
+          </div>
+
+          <div class="col-xs-6 col-md-3">
+            <h6>Quick Links</h6>
+            <ul class="footer-links">
+              <li><a href="http://scanfcode.com/about/">About Us</a></li>
+              <li><a href="http://scanfcode.com/contact/">Contact Us</a></li>
+              <li><a href="http://scanfcode.com/contribute-at-scanfcode/">Contribute</a></li>
+              <li><a href="http://scanfcode.com/privacy-policy/">Privacy Policy</a></li>
+              <li><a href="http://scanfcode.com/sitemap/">Sitemap</a></li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-sm-6 col-xs-12">
+            <p class="copyright-text">Copyright &copy; 2017 All Rights Reserved by 
+         <a href="#">Scanfcode</a>.
+            </p>
+          </div>
+
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <ul class="social-icons">
+              <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+              <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+              <li><a class="dribbble" href="#"><i class="fa fa-dribbble"></i></a></li>
+              <li><a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>   
+            </ul>
+          </div>
+        </div>
+      </div>
+</footer>
+
+
+
+
+
+                    
                   </div>
                 }/>
             </Switch>           

@@ -1,5 +1,6 @@
 import { Button} from 'semantic-ui-react'
 import React, { Component } from 'react'
+import Modal from "react-bootstrap/Modal";
 import Policy from '../abis/policy_1.json';
 import Consortium from '../abis/consortium.json';
 import PortCardVendor from './Vendor/PortCardVendor';
@@ -28,7 +29,10 @@ class Vendor extends Component {
       vendorMapping: {
         "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
         "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
-      }
+      },
+      showAcceptPortRequest: false,
+      showRejectPortRequest: false,
+      showPortOnBoarding: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -37,8 +41,13 @@ class Vendor extends Component {
     this.handleRequestApprove = this.handleRequestApprove.bind(this);
     this.handleRequestReject = this.handleRequestReject.bind(this);
     this.handleRequestTransfer = this.handleRequestTransfer.bind(this);
+    this.hideAcceptPortRequestModal = this.hideAcceptPortRequestModal.bind(this);
+    this.showAcceptPortRequestModal = this.showAcceptPortRequestModal.bind(this);
+    this.hideRejectPortRequestModal = this.hideRejectPortRequestModal.bind(this);
+    this.showRejectPortRequestModal = this.showRejectPortRequestModal.bind(this);
+    this.hidePortOnBoardingModal = this.hidePortOnBoardingModal.bind(this);
+    this.showPortOnBoardingModal = this.showPortOnBoardingModal.bind(this);
 
-  
   }
   async componentWillMount() {
     try{
@@ -141,48 +150,49 @@ class Vendor extends Component {
   } 
 
   async handleRequestApprove(id){
+    await this.showAcceptPortRequestModal();
     const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
     policy.methods.approveRequest(
       id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then (async (receipt) => {
       console.log(receipt);
+      await this.hideAcceptPortRequestModal();
       this.handlePortsLoop();
     })
-    .catch((err)=> {
+    .catch(async (err)=> {
+      await this.hideAcceptPortRequestModal();
       console.log(err);   
     });
   }
 
   async handleRequestReject(id){
+    await this.showRejectPortRequestModal();
     const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
     policy.methods.deleteRequest(
       id)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})
     .then (async (receipt) => {
       console.log(receipt);
+      await this.hideRejectPortRequestModal();
       this.handlePortsLoop();
     })
-    .catch((err)=> {
+    .catch(async (err)=> {
+      await this.hideRejectPortRequestModal();
       console.log(err);   
     });
   }
 
   async handleRequestTransfer(pol){
+    await this.showPortOnBoardingModal();
+
     const decrypted = cryptr.decrypt(pol[1]); 
     const obj = JSON.parse(decrypted);
     const kycHash = obj['kycHash'];
     const policyType = obj['policyType'];
     const name = obj['name'];
 
-    const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
-    console.log(pol[0]);
-    policy.methods.deleteRequest(
-      pol[0])
-    .send({from: this.state.account, gas:500000, gasPrice:10000000000})
-    .then (async (receipt) => {
-      console.log(receipt);
-      const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
+    const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
       policy.methods.addPortData(
         pol[4],
         pol[0],
@@ -193,22 +203,34 @@ class Vendor extends Component {
       .send({from: this.state.account, gas:600000, gasPrice:15000000000})
       .then(async (rec) => {
         console.log(rec);
-        localStorage.setItem("mintHash",rec['transactionHash']);
-        let b = await policy.methods.getPolicyIds()
-        .call({from: this.state.account});
-        this.setState({
-          policyIds: b,
+        const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+        policyGoerli.methods.deleteRequest(
+          pol[0])
+        .send({from: this.state.account, gas:500000, gasPrice:10000000000})
+        .then (async (receipt) => {
+          console.log(receipt);
+          let b = await policy.methods.getPolicyIds()
+            .call({from: this.state.account});
+            this.setState({
+              policyIds: b,
+            })
+            await this.hidePortOnBoardingModal();
+            await this.handleLoop();
+            await this.handlePortsLoop();
         })
-        await this.handleLoop();
-        await this.handlePortsLoop();
+        .catch(async (err)=> {
+          await this.hidePortOnBoardingModal();
+          console.log(err);   
+        });
       })
-      .catch((err)=> {
+      .catch(async (err)=> {
+        await this.hidePortOnBoardingModal();
         console.log(err);
       })
-    })
-    .catch((err)=> {
-      console.log(err);   
-    });
+
+
+
+    
   }
 
   handlePolicyList() {
@@ -235,6 +257,42 @@ class Vendor extends Component {
       key={currentport[0]}/>;
     })
   }
+
+  hideAcceptPortRequestModal = (e) => {
+    this.setState({
+      showAcceptPortRequest: false,
+    });
+  };
+
+  showAcceptPortRequestModal = (e) => {
+    this.setState({
+      showAcceptPortRequest: true,
+    });
+  };
+
+  hideRejectPortRequestModal = (e) => {
+    this.setState({
+      showRejectPortRequest: false,
+    });
+  };
+
+  showRejectPortRequestModal = (e) => {
+    this.setState({
+      showRejectPortRequest: true,
+    });
+  };
+
+  hidePortOnBoardingModal = (e) => {
+    this.setState({
+      showPortOnBoarding: false,
+    });
+  };
+
+  showPortOnBoardingModal = (e) => {
+    this.setState({
+      showPortOnBoarding: true,
+    });
+  };
   
   render() {
     if(this.props.loginStatus===true && this.state.account === this.props.myOwner){
@@ -244,6 +302,41 @@ class Vendor extends Component {
           <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
             <strong>{this.props.heading}</strong>
           </div>
+
+          <div align="center">
+            <Modal
+              show={this.state.showAcceptPortRequest}
+              onHide={this.hideAcceptPortRequestModal}
+            >
+              <Modal.Header>
+                <Modal.Title><b>Approving Request...</b></Modal.Title>
+              </Modal.Header>
+            </Modal>
+          </div>
+          <div align="center">
+            <Modal
+              show={this.state.showRejectPortRequest}
+              onHide={this.hideRejectPortRequestModal}
+            >
+              <Modal.Header>
+                <Modal.Title><b>Rejecting Request...</b></Modal.Title>
+              </Modal.Header>
+            </Modal>
+          </div>
+          <div align="center">
+          <Modal
+              show={this.state.showPortOnBoarding}
+              onHide={this.hidePortOnBoardingModal}
+            >
+              <Modal.Header>
+                <Modal.Title><b>OnBoarding Policy</b></Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                You will have to accept 2 transaction
+              </Modal.Body>
+            </Modal>
+          </div>
+
           <div style={{margin:"30px"}}>
                 <div style={{fontSize:"25px"}} align = "center"><strong>All Policies</strong></div>
                 <table className="ui celled table ">

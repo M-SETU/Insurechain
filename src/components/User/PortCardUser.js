@@ -9,7 +9,7 @@ const PortCardUser = props => {
         "completed": true
     }
     const statusMessage = {
-        "active": "Waiting for " + props.vendorMapping[props.portCard[3]] + " to Approve or Reject",
+        "active": "Waiting for " + props.vendorMapping[props.portCard[3]] + " to Approve",
         "approved": "Waiting to Initiate Transfer",
         "completed": "Awaiting OnBoard by " + props.vendorMapping[props.portCard[3]]
     }
