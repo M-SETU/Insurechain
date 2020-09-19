@@ -98,6 +98,11 @@
 				"type": "uint256"
 			},
 			{
+				"internalType": "uint256",
+				"name": "_policyId",
+				"type": "uint256"
+			},
+			{
 				"internalType": "string",
 				"name": "_action",
 				"type": "string"
@@ -132,7 +137,7 @@
 			},
 			{
 				"internalType": "string",
-				"name": "_applicantName",
+				"name": "_typeOfApplication",
 				"type": "string"
 			}
 		],
@@ -226,87 +231,13 @@
 			},
 			{
 				"internalType": "string",
-				"name": "_claimDate",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_hospitalName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_description",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_claimdocs",
+				"name": "_documentHash",
 				"type": "string"
 			}
 		],
 		"name": "claimPolicy",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "claims",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "claimId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "claimDate",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "hospitalName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "claimDocumentHash",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "status",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "policyId",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -319,11 +250,6 @@
 			{
 				"internalType": "string",
 				"name": "_policyType",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_applicantName",
 				"type": "string"
 			}
 		],
@@ -352,67 +278,6 @@
 				"internalType": "address",
 				"name": "",
 				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_claimId",
-				"type": "uint256"
-			}
-		],
-		"name": "getClaim",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "claimId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "claimDate",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "hospitalName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "description",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "claimDocumentHash",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "status",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "policyId",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct cryptoPolicy.claim",
-				"name": "",
-				"type": "tuple"
 			}
 		],
 		"stateMutability": "view",
@@ -469,19 +334,19 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint256[]",
+						"internalType": "uint256[2][]",
 						"name": "claimIds",
-						"type": "uint256[]"
+						"type": "uint256[2][]"
+					},
+					{
+						"internalType": "string[2][]",
+						"name": "claimsDetails",
+						"type": "string[2][]"
 					},
 					{
 						"internalType": "bool",
 						"name": "active",
 						"type": "bool"
-					},
-					{
-						"internalType": "string",
-						"name": "applicantName",
-						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -656,11 +521,6 @@
 				"internalType": "bool",
 				"name": "active",
 				"type": "bool"
-			},
-			{
-				"internalType": "string",
-				"name": "applicantName",
-				"type": "string"
 			},
 			{
 				"internalType": "string",

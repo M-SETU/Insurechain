@@ -9,7 +9,6 @@ import CreatePolicyDash from "./CreatePolicyDash.js";
 import Vendor from "./vendor.js";
 import Modal from "react-bootstrap/Modal";
 import "./dashboard.css"
-import insurechain from '../images/logos/home-insurance-getty.jpg';
 import insuranc from "../images/logos/43951.jpg";
 import question from "../images/logos/64627.jpg";
 import customer from "../images/logos/2650149.jpg";
@@ -22,7 +21,6 @@ class Dashboard extends Component {
       super(props)
       this.state = {
         account: '',
-        policy:{},
         portis: {},
         web3: {},
         name: "",
@@ -40,7 +38,7 @@ class Dashboard extends Component {
         showUser: false,
         showVendor: false,
         loginButtonDisabled: true,
-        heading: "None",
+        heading: "Matic",
         
       };
 
@@ -53,7 +51,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "WellCare New York",
           network: "maticMumbai",
-          address:"0x67a0508F5F29aF463f3c650228C1122C78aBeb98",
+          address:"0x1ccBD4086216a2cab24Ca009EF742a4c686F8Db5",
           myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           click: true,
@@ -69,7 +67,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "Health Net California",
           network: "maticMumbai",
-          address:"0xc6E7B799aC59298C1bbD423Cd62d55d7A6Eb4572",
+          address:"0xb4bfc13F13736E80A15464483707E3Aba97B69d3",
           myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           click: true,
@@ -141,24 +139,20 @@ class Dashboard extends Component {
         chainId: 5
       });
 
-      this.setState({
+      await this.setState({
         portis: portis,
         portisGoerli: portisGoerli
       })
       const web3 = new Web3(portis.provider);
       const web3Goerli = new Web3(portisGoerli.provider);
-      this.setState({ 
+      await this.setState({ 
           web3: web3,
           web3Goerli: web3Goerli })
       let acc = await web3.eth.getAccounts();
-      this.setState({
+      await this.setState({
         account: acc[0]
       })
-      console.log(this.state.account);
-      const policy = new this.state.web3.eth.Contract(Policy, this.state.address);
-      this.setState({
-          policy: policy
-      });
+      const policy = new web3.eth.Contract(Policy, this.state.address);
       let owner = await policy.methods.getOwner().call({from: this.state.account});
       this.setState({
         owner: owner
@@ -249,7 +243,7 @@ class Dashboard extends Component {
                         color: "white",
                         top: "22px",
                         fontSize: "20px",
-                        fontFamily: "arial"}}>Matic</b>
+                        fontFamily: "arial"}}>{this.state.heading}</b>
                       </NavLink> 
                     </div>
                     
@@ -377,85 +371,85 @@ class Dashboard extends Component {
                           </div>   
                           <div className="next-content">
 <div className="section1">
-                          <div class="ui link cards">
-                          <div class="card">
-    <div class="image">
+                          <div className="ui link cards">
+                          <div className="card">
+    <div className="image">
       <img src={insuranc}></img>
     </div>
-    <div class="content">
-      <div class="header">
+    <div className="content">
+      <div className="header">
 Lowest Price
 </div>
-      <div class="meta">
+      <div className="meta">
         <a>
 Guaranteed</a>
       </div>
-      <div class="description">
+      <div className="description">
         Matthew is an interior designer living in New York.
       </div>
     </div>
-    <div class="extra content">
-      <span class="right floated">
+    <div className="extra content">
+      <span className="right floated">
         Joined in 2013
       </span>
       <span>
-        <i class="user icon"></i>
+        <i className="user icon"></i>
         75 Friends
       </span>
     </div>
   </div>
 
-  <div class="card">
-    <div class="image">
+  <div className="card">
+    <div className="image">
       <img src={insuranc}></img>
     </div>
-    <div class="content">
-      <div class="header">
+    <div className="content">
+      <div className="header">
 Unbiased Advice</div>
-      <div class="meta">
-        <span class="date">
+      <div className="meta">
+        <span className="date">
 
 
 Keeping customers first
 
 </span>
       </div>
-      <div class="description">
+      <div className="description">
         Molly is a personal assistant living in Paris.
       </div>
     </div>
-    <div class="extra content">
-      <span class="right floated">
+    <div className="extra content">
+      <span className="right floated">
         Joined in 2011
       </span>
       <span>
-        <i class="user icon"></i>
+        <i className="user icon"></i>
         35 Friends
       </span>
     </div>
   </div>
 
 
-  <div class="card">
-    <div class="image">
+  <div className="card">
+    <div className="image">
       <img src={insuranc}></img>
     </div>
-    <div class="content">
-      <div class="header">
+    <div className="content">
+      <div className="header">
 100% Reliable</div>
-      <div class="meta">
-        <span class="date">Regulated by IRDAI</span>
+      <div className="meta">
+        <span className="date">Regulated by IRDAI</span>
       </div>
-      <div class="description">
+      <div className="description">
         Molly is a personal assistant living in Paris.
       </div>
     </div>
-    <div class="extra content">
-      <span class="right floated">
+    <div className="extra content">
+      <span className="right floated">
         Joined in 2011
       </span>
       <span>
-        <i class="user icon"></i>
+        <i className="user icon"></i>
         35 Friends
       </span>
     </div>
@@ -535,17 +529,17 @@ Here to help. </h2>
                     </section>
 
                  
-    <footer class="site-footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12 col-md-6">
+    <footer className="site-footer">
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-12 col-md-6">
             <h6>About</h6>
-            <p class="text-justify">Scanfcode.com <i>CODE WANTS TO BE SIMPLE </i> is an initiative  to help the upcoming programmers with the code. Scanfcode focuses on providing the most efficient code or snippets as the code wants to be simple. We will help programmers build up concepts in different programming languages that include C, C++, Java, HTML, CSS, Bootstrap, JavaScript, PHP, Android, SQL and Algorithm.</p>
+            <p className="text-justify">Scanfcode.com <i>CODE WANTS TO BE SIMPLE </i> is an initiative  to help the upcoming programmers with the code. Scanfcode focuses on providing the most efficient code or snippets as the code wants to be simple. We will help programmers build up concepts in different programming languages that include C, C++, Java, HTML, CSS, Bootstrap, JavaScript, PHP, Android, SQL and Algorithm.</p>
           </div>
 
-          <div class="col-xs-6 col-md-3">
+          <div className="col-xs-6 col-md-3">
             <h6>Categories</h6>
-            <ul class="footer-links">
+            <ul className="footer-links">
               <li><a href="http://scanfcode.com/category/c-language/">C</a></li>
               <li><a href="http://scanfcode.com/category/front-end-development/">UI Design</a></li>
               <li><a href="http://scanfcode.com/category/back-end-development/">PHP</a></li>
@@ -555,9 +549,9 @@ Here to help. </h2>
             </ul>
           </div>
 
-          <div class="col-xs-6 col-md-3">
+          <div className="col-xs-6 col-md-3">
             <h6>Quick Links</h6>
-            <ul class="footer-links">
+            <ul className="footer-links">
               <li><a href="http://scanfcode.com/about/">About Us</a></li>
               <li><a href="http://scanfcode.com/contact/">Contact Us</a></li>
               <li><a href="http://scanfcode.com/contribute-at-scanfcode/">Contribute</a></li>
@@ -568,20 +562,20 @@ Here to help. </h2>
         </div>
         
       </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-8 col-sm-6 col-xs-12">
-            <p class="copyright-text">Copyright &copy; 2017 All Rights Reserved by 
+      <div className="container">
+        <div className="row">
+          <div className="col-md-8 col-sm-6 col-xs-12">
+            <p className="copyright-text">Copyright &copy; 2017 All Rights Reserved by 
          <a href="#">Scanfcode</a>.
             </p>
           </div>
 
-          <div class="col-md-4 col-sm-6 col-xs-12">
-            <ul class="social-icons">
-              <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-              <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-              <li><a class="dribbble" href="#"><i class="fa fa-dribbble"></i></a></li>
-              <li><a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>   
+          <div className="col-md-4 col-sm-6 col-xs-12">
+            <ul className="social-icons">
+              <li><a className="facebook" href="#"><i className="fa fa-facebook"></i></a></li>
+              <li><a className="twitter" href="#"><i className="fa fa-twitter"></i></a></li>
+              <li><a className="dribbble" href="#"><i className="fa fa-dribbble"></i></a></li>
+              <li><a className="linkedin" href="#"><i className="fa fa-linkedin"></i></a></li>   
             </ul>
           </div>
         </div>

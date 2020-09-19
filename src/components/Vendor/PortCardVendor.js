@@ -1,52 +1,24 @@
 import React from 'react';
 
-import { Button } from 'semantic-ui-react'
-
-
 const PortCardVendor = props => {
-
-  const approverejectButton = {
-    "active": false,
-    "approved": true,
-    "completed": true
-  }
-  const onBoardButton = {
-    "active": true,
-    "approved": true,
-    "completed": false
-  }
-
-  const statusMessage = {
-    "active": "Waiting for Approval",
-    "approved": "Waiting to Initiate Transfer by Owner",
-    "completed": "Awaiting OnBoard"
-  }
 
   return (
     <tr>
       <td data-label="policyID" style={{textAlign:"center"}}>{props.portCard[0]}</td>
-      <td data-label="vendor" style={{textAlign:"center"}}>{props.vendorMapping[props.portCard[3]]}</td>
-      <td data-label="status" style={{textAlign:"center"}}>{statusMessage[props.portCard[5]]}</td>
-      <td style={{textAlign:"center"}}>
-        <Button 
-          onClick={() => {props.handleApproveRequestButton(props.portCard[0])}} 
-          basic color='green'
-          disabled = {approverejectButton[props.portCard[5]]}>
-          Approve
-        </Button>
-        <Button 
-          onClick={() => {props.handleRejectRequestButton(props.portCard[0])}} 
-          basic color='red'
-          disabled = {approverejectButton[props.portCard[5]]}>
-          Reject
-        </Button>
-        <Button 
-          onClick={() => {props.handleTransferRequestButton(props.portCard)}} 
-          basic color='yellow'
-          disabled = {onBoardButton[props.portCard[5]]}>
-          OnBoard
-        </Button>
-      </td>
+      <td data-label="newvendor" style={{textAlign:"center"}}>{props.vendorMapping[props.portCard[3]]}</td>
+      <td data-label="oldvendor" style={{textAlign:"center"}}>{props.vendorMapping[props.portCard[2]]}</td>
+      <td data-label="details" style={{textAlign:"center"}}>{props.portCard[1]}</td>
+      <td data-label="policyType" style={{textAlign:"center"}}>{props.portCard[4]}</td>
+      <td data-label="status" style={{textAlign:"center"}}>{props.portCard[6]}</td>
+      { 
+        props.handlePortButtons(
+          props.portCard[2], 
+          props.portCard[3], 
+          props.portCard[0],
+          props.portCard[6], 
+          props.portCard[1], 
+          props.portCard[4])
+      }
     </tr>
   )
 };
