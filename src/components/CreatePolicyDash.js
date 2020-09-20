@@ -9,8 +9,8 @@ import PortCardUser from './User/PortCardUser';
 import ClaimCardUser from './User/ClaimCardUser';
 import PolicyCardUser from './User/PolicyCardUser';
 
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr('myTotalySecretKey');
+// const Cryptr = require('cryptr');
+// const cryptr = new Cryptr('myTotalySecretKey');
 
 class CreatePolicyDash extends Component {
 
@@ -39,7 +39,7 @@ class CreatePolicyDash extends Component {
       email: '',
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0x7eF2931Bc983e5f59a5A70Eb33548BAA6BB62397",
+      goerliAddress: "0xFBE216F00527212d0B4939e4bACBf52cfD61d1fe",
       vendorMapping: {
         "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
         "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
@@ -62,7 +62,7 @@ class CreatePolicyDash extends Component {
     this.handlePortList = this.handlePortList.bind(this);
   
   }
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     
     let today = new Date();
     let date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate() + '-' + today.getHours() +':' + today.getMinutes();
@@ -634,9 +634,6 @@ class CreatePolicyDash extends Component {
         </div>
         <div>
           <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
-            <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
-              <strong>{this.props.heading}</strong>
-            </div>
             <br></br>
             <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center"></div>
               <div style={{fontSize:"20px", display:"inline-block", paddingLeft: "20px"}}>

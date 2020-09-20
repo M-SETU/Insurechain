@@ -1,122 +1,40 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/GSN/GSNRecipient.sol";
-
-contract cryptoPolicy is ERC721UpgradeSafe, GSNRecipientUpgradeSafe {
-    struct claim {
-        uint256 claimId;
-        string claimDate;
-        string hospitalName;
-        string description;
-        uint256 amount;
-        string claimDocumentHash;
-        string status;
-        uint256 policyId;
-    }
-
+contract cryptoPolicy is ERC721 {
     struct policy {
         uint256 policyId;
         address owner;
         uint256 customerId;
         string kycHash;
         string policyType;
-        uint256[] claimIds;
+        uint256[2][] claimIds;
+        string[2][] claimsDetails;
         bool active;
+        string typeOfApplication;
     }
 
     string[] policyTypes;
     uint256[] allPolicyIds;
-    uint256[] allClaimIds;
     mapping(address => uint256[]) public userPolicies;
     mapping(address => uint256) public userCustomerId;
     mapping(uint256 => policy) public policies;
-    mapping(uint256 => claim) public claims;
     address public admin;
-    uint256 private non;
+    uint256 private nonce;
 
-    constructor(string memory _name, string memory _symbol) public {
-        __ERC721_init(_name, _symbol);
-        admin = _msgSender();
-        policyTypes.push("Smart");
-        policyTypes.push("360");
-        policyTypes.push("Personal");
-        policyTypes.push("Family");
-        uint256 randomnumber = uint256(
-            keccak256(abi.encodePacked(now, _msgSender(), non))
-        ) % 100000;
-        randomnumber = randomnumber + 1;
-        non++;
-        userCustomerId[_msgSender()] = randomnumber;
-    }
-
-    function acceptRelayedCall(
-        address relay,
-        address from,
-        bytes calldata encodedFunction,
-        uint256 transactionFee,
-        uint256 gasPrice,
-        uint256 gasLimit,
-        uint256 nonce,
-        bytes calldata approvalData,
-        uint256 maxPossibleCharge
-    ) external override view returns (uint256, bytes memory) {
-        // approve ALL calls!
-        return _approveRelayedCall();
-    }
-
-    function _msgSender()
-        internal
-        override(ContextUpgradeSafe, GSNRecipientUpgradeSafe)
-        view
-        returns (address payable)
+    constructor(string memory _name, string memory _symbol)
+        public
+        ERC721(_name, _symbol)
     {
-        return GSNRecipientUpgradeSafe._msgSender();
-    }
-
-    function _msgData()
-        internal
-        override(ContextUpgradeSafe, GSNRecipientUpgradeSafe)
-        view
-        returns (bytes memory)
-    {
-        return GSNRecipientUpgradeSafe._msgData();
-    }
-
-    function _preRelayedCall(bytes memory context)
-        internal
-        override
-        returns (bytes32)
-    {}
-
-    function _postRelayedCall(
-        bytes memory context,
-        bool,
-        uint256 actualCharge,
-        bytes32
-    ) internal override {}
-
-    function checkNewCustomer() public view returns (bool) {
-        if (userCustomerId[_msgSender()] == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    function createNewCustomer() external returns (uint256) {
-        uint256 randomnumber = uint256(
-            keccak256(abi.encodePacked(now, _msgSender(), non))
-        ) % 100000;
-        randomnumber = randomnumber + 1;
-        non++;
-        userCustomerId[_msgSender()] = randomnumber;
-    }
-
-    function createPolicyType(string memory _policyType) public {
-        require(_msgSender() == admin, "only admin");
-        policyTypes.push(_policyType);
+        admin = msg.sender;
+        policyTypes.push("Affinity Plan");
+        policyTypes.push("Essential Plan");
+        policyTypes.push("Wellness Plan");
+        // policyTypes.push("Gold 80 Community Care");
+        // policyTypes.push("Platinum 90 Community Care");
+        // policyTypes.push("Silver Value Enhanced Care");
+        // policyTypes.push("Minimum Coverage Enhanced Care");
     }
 
     function getPolicyTypes() public view returns (string[] memory) {
@@ -128,7 +46,7 @@ contract cryptoPolicy is ERC721UpgradeSafe, GSNRecipientUpgradeSafe {
     }
 
     function getPolicyIds() public view returns (uint256[] memory) {
-        require(_msgSender() == admin, "only admin");
+        require(msg.sender == admin, "only admin");
         return allPolicyIds;
     }
 
@@ -137,104 +55,118 @@ contract cryptoPolicy is ERC721UpgradeSafe, GSNRecipientUpgradeSafe {
         view
         returns (uint256[] memory)
     {
-        require(_msgSender() == _address);
+        require(msg.sender == _address);
         return userPolicies[_address];
     }
 
     function getUserCustomerId(address _address) public view returns (uint256) {
-        require(_msgSender() == _address);
+        require(msg.sender == _address);
         return userCustomerId[_address];
     }
 
     function getPolicy(uint256 _policyId) public view returns (policy memory) {
-        if (
-            _msgSender() == admin || _msgSender() == policies[_policyId].owner
-        ) {
+        if (msg.sender == admin || msg.sender == policies[_policyId].owner) {
             return policies[_policyId];
         } else {
             revert("Not Owner or Admin");
         }
     }
 
-    function getClaim(uint256 _claimId) public view returns (claim memory) {
-        return claims[_claimId];
-    }
-
-    function getAllClaimIds() public view returns (uint256[] memory) {
-        require(_msgSender() == admin, "only admin");
-        return allClaimIds;
-    }
-
-    function getUserPolicyClaimIds(uint256 _policyId)
-        public
-        view
-        returns (uint256[] memory)
-    {
-        require(_msgSender() == policies[_policyId].owner);
-        return policies[_policyId].claimIds;
-    }
-
     function createPolicy(
         string calldata _documentHash,
         string calldata _policyType
-    ) external {
+    ) external returns (uint256) {
         uint256 policyId = uint256(
-            keccak256(abi.encodePacked(now, _msgSender(), non))
+            keccak256(abi.encodePacked(now, msg.sender, nonce))
         ) % 100000;
-        policyId = policyId + 1;
-        non++;
+        nonce++;
+        if (userCustomerId[msg.sender] == 0) {
+            uint256 custId = uint256(
+                keccak256(abi.encodePacked(now, msg.sender, nonce))
+            ) % 100000;
+            custId = custId + 1;
+            userCustomerId[msg.sender] = custId;
+            nonce++;
+        }
 
-        policies[policyId].customerId = userCustomerId[_msgSender()];
-        userPolicies[_msgSender()].push(policyId);
+        policyId = policyId + 1;
+        policyId = 10100000 + policyId;
+
+        policies[policyId].customerId = userCustomerId[msg.sender];
+        userPolicies[msg.sender].push(policyId);
         policies[policyId].policyId = policyId;
-        policies[policyId].owner = _msgSender();
+        policies[policyId].owner = msg.sender;
         policies[policyId].kycHash = _documentHash;
         policies[policyId].active = true;
         policies[policyId].policyType = _policyType;
+        policies[policyId].typeOfApplication = "New Policy";
         allPolicyIds.push(policyId);
-        _mint(_msgSender(), policyId);
+        _mint(msg.sender, policyId);
+        return policyId;
     }
 
     function burn(uint256 _policyId) external {
-        require(_msgSender() == policies[_policyId].owner);
+        require(msg.sender == policies[_policyId].owner);
         policies[_policyId].active = false;
+        _burn(_policyId);
     }
 
-    function claimPolicy(
-        uint256 _policyId,
-        string calldata _claimDate,
-        string calldata _hospitalName,
-        string calldata _description,
-        uint256 _amount,
-        string calldata _claimdocs
-    ) external {
-        require(userCustomerId[_msgSender()] == policies[_policyId].customerId);
+    function claimPolicy(uint256 _policyId, string memory _documentHash)
+        external
+    {
+        require(userCustomerId[msg.sender] == policies[_policyId].customerId);
         uint256 id = uint256(
-            keccak256(abi.encodePacked(now, _msgSender(), non))
+            keccak256(abi.encodePacked(now, msg.sender, nonce))
         ) % 100000;
         id = id + 1;
-        non++;
-        claims[id] = claim(
-            id,
-            _claimDate,
-            _hospitalName,
-            _description,
-            _amount,
-            _claimdocs,
-            "unprocessed",
-            _policyId
-        );
-        policies[_policyId].claimIds.push(id);
-        allClaimIds.push(id);
+        nonce++;
+        policies[_policyId].claimIds.push([id, _policyId]);
+        policies[_policyId].claimsDetails.push([_documentHash, "Unprocessed"]);
     }
 
-    function approveClaim(uint256 _claimId) external {
-        require(_msgSender() == admin, "only admin");
-        claims[_claimId].status = "Approved";
+    function actionClaim(
+        uint256 _claimId,
+        uint256 _policyId,
+        string memory _action
+    ) external {
+        require(msg.sender == admin, "only admin");
+        for (uint256 i = 0; i < policies[_policyId].claimIds.length; i++) {
+            if (policies[_policyId].claimIds[i][0] == _claimId) {
+                policies[_policyId].claimsDetails[i][1] = _action;
+                break;
+            }
+        }
     }
 
-    function rejectClaim(uint256 _claimId) external {
-        require(_msgSender() == admin, "only admin");
-        claims[_claimId].status = "Rejected";
+    function addPortData(
+        address _owner,
+        uint256 _policyId,
+        string memory _kycHash,
+        string memory _policyType,
+        string memory _typeOfApplication,
+        uint256[2][] memory _claimIds,
+        string[2][] memory _claimDetails
+    ) external {
+        require(msg.sender == admin);
+        if (userCustomerId[_owner] == 0) {
+            uint256 custId = uint256(
+                keccak256(abi.encodePacked(now, _owner, nonce))
+            ) % 100000;
+            custId = custId + 1;
+            userCustomerId[_owner] = custId;
+            nonce++;
+        }
+        policies[_policyId].customerId = userCustomerId[_owner];
+        userPolicies[_owner].push(_policyId);
+        policies[_policyId].policyId = _policyId;
+        policies[_policyId].owner = _owner;
+        policies[_policyId].kycHash = _kycHash;
+        policies[_policyId].active = true;
+        policies[_policyId].policyType = _policyType;
+        policies[_policyId].typeOfApplication = _typeOfApplication;
+        policies[_policyId].claimIds = _claimIds;
+        policies[_policyId].claimsDetails = _claimDetails;
+        allPolicyIds.push(_policyId);
+        _mint(_owner, _policyId);
     }
 }

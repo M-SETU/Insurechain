@@ -139,6 +139,16 @@
 				"internalType": "string",
 				"name": "_typeOfApplication",
 				"type": "string"
+			},
+			{
+				"internalType": "uint256[2][]",
+				"name": "_claimIds",
+				"type": "uint256[2][]"
+			},
+			{
+				"internalType": "string[2][]",
+				"name": "_claimDetails",
+				"type": "string[2][]"
 			}
 		],
 		"name": "addPortData",

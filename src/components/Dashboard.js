@@ -51,7 +51,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "WellCare New York",
           network: "maticMumbai",
-          address:"0x1ccBD4086216a2cab24Ca009EF742a4c686F8Db5",
+          address:"0xCC9A80211E0106f4c67641dFDdf16820dA2c961f",
           myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           click: true,
@@ -67,7 +67,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "Health Net California",
           network: "maticMumbai",
-          address:"0xb4bfc13F13736E80A15464483707E3Aba97B69d3",
+          address:"0x93f27085AB3892E72E76451be0fB165fC2899e1c",
           myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           click: true,

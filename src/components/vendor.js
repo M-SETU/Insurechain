@@ -7,8 +7,8 @@ import ClaimCardVendor from './Vendor/ClaimCardVendor';
 import PolicyCardvendor from './Vendor/PolicyCardVendor';
 import ipfs from './ipfs.js'
 import { Button } from 'semantic-ui-react'
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr('myTotalySecretKey');
+// const Cryptr = require('cryptr');
+// const cryptr = new Cryptr('myTotalySecretKey');
 
 class Vendor extends Component {
 
@@ -25,7 +25,7 @@ class Vendor extends Component {
       portsList: [],
       web3: {},
       address: "",
-      goerliAddress: "0x7eF2931Bc983e5f59a5A70Eb33548BAA6BB62397",
+      goerliAddress: "0xFBE216F00527212d0B4939e4bACBf52cfD61d1fe",
       vendorMapping: {
         "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
         "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
@@ -53,7 +53,8 @@ class Vendor extends Component {
     this.hideCompletePortingModal = this.hideCompletePortingModal.bind(this);
 
   }
-  async componentWillMount() {
+
+  async UNSAFE_componentWillMount() {
     try{
       if(this.props.loginStatus === true)
       {
@@ -148,7 +149,7 @@ class Vendor extends Component {
     .call({from: this.state.account});
     var arr = [];
     for(let i = 0; i <ids.length; i++) {
-      if(ids[i]!="0"){
+      if(ids[i]!=="0"){
 
         let details = await policy.methods.getPortPolicyDetails(ids[i])
           .call({from: this.state.account});
@@ -199,7 +200,7 @@ class Vendor extends Component {
       const pi = await ipfs.add(det);
 
       const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
-      policyGoerli.methods.requestDetails(id, pi)
+      policyGoerli.methods.sendDetails(id, pi)
       .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
       .then (async (receipt) => {
         console.log(receipt);
@@ -464,9 +465,6 @@ class Vendor extends Component {
       return (
         <div>
           <br></br>
-          <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
-            <strong>{this.props.heading}</strong>
-          </div>
          
           <div align="center">
           <Modal
@@ -586,9 +584,6 @@ class Vendor extends Component {
       return (
           <div style={{position: "center", fontSize: "30px", color: "black"}} align="center">
           <br></br><br></br>
-          <div style={{fontSize:"20px", position:"center",PaddingBottom: "10px"}} align = "center">
-            <strong>{this.props.heading}</strong>
-          </div>
           <br></br>
           <strong>You Should be Vendor</strong><br></br><br></br>
           Login with Vendor Account

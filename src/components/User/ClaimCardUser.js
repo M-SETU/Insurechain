@@ -1,5 +1,4 @@
 import React from 'react';
-import ipfs from '../ipfs.js'
 
 const ClaimCardUser = props => {
 
