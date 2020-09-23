@@ -8,6 +8,7 @@ import OptionCardUser from './User/OptionCardUser';
 import PortCardUser from './User/PortCardUser';
 import ClaimCardUser from './User/ClaimCardUser';
 import PolicyCardUser from './User/PolicyCardUser';
+import Calendar from 'react-calendar';
 
 // const Cryptr = require('cryptr');
 // const cryptr = new Cryptr('myTotalySecretKey');
@@ -17,6 +18,7 @@ class CreatePolicyDash extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      dateOfBirth: new Date(),
       buffer: [],
       account: '',
       hash: '',
@@ -39,7 +41,7 @@ class CreatePolicyDash extends Component {
       email: '',
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0xFBE216F00527212d0B4939e4bACBf52cfD61d1fe",
+      goerliAddress: "0x96e78929dD5fBbaB0ab6AeF097B97dd97728952d",
       vendorMapping: {
         "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
         "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
@@ -62,10 +64,13 @@ class CreatePolicyDash extends Component {
     this.handlePortList = this.handlePortList.bind(this);
   
   }
+
+  onChange = date => this.setState({ dateOfBirth :date })
+
   async UNSAFE_componentWillMount() {
     
     let today = new Date();
-    let date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate() + '-' + today.getHours() +':' + today.getMinutes();
+    let date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
     this.setState({
       claimDate: date
     })
@@ -163,11 +168,13 @@ class CreatePolicyDash extends Component {
   async handlePolicySubmit(event){
     event.preventDefault();
     try{
+      console.log(this.state.dateOfBirth.date)
       let result  = await ipfs.add(this.state.buffer)
       console.log('Ipfs result', result)
       this.setState({ hash: result })
       const personalDetails = JSON.stringify({
         name: this.state.name.toUpperCase(), 
+        dateOfBirth: this.state.dateOfBirth.getFullYear() + '/' + (this.state.dateOfBirth.getMonth() + 1) + '/' + this.state.dateOfBirth.getDate(),
         email: this.state.email,
         kycHash: result
       });
@@ -417,7 +424,24 @@ class CreatePolicyDash extends Component {
                         </Form.Group>
                       </Form>
                     </div>
-                  
+                    <div>
+                      <Form>
+                        <Form.Group>
+                          <Form.Field
+                            id='form-input-control-documenthash'
+                            control={Input}
+                            label='Date Of Birth'
+                            name="hash"
+                          >
+                            <Calendar
+                              onChange={this.onChange}
+                              value={this.state.dateOfBirth}
+                            />
+                          </Form.Field>
+                        </Form.Group>
+                      </Form>
+                    </div>
+                    
                   <div >
                     <Form>
                       <Form.Group widths='equal'>
@@ -656,6 +680,7 @@ class CreatePolicyDash extends Component {
                   <th style={{textAlign:"center"}}>Customer ID</th>
                   <th style={{textAlign:"center"}}>Name</th>
                   <th style={{textAlign:"center"}}>Email ID</th>
+                  <th style={{textAlign:"center"}}>DOB</th>
                   <th style={{textAlign:"center"}}>Policy Type</th>
                   <th style={{textAlign:"center"}}>KYC Documents</th>
                   <th style={{textAlign:"center"}}>Application Type</th>
@@ -702,7 +727,6 @@ class CreatePolicyDash extends Component {
                     <th style={{textAlign:"center"}}>Policy ID</th>
                     <th style={{textAlign:"center"}}>New Vendor</th>
                     <th style={{textAlign:"center"}}>Old Vendor</th>
-                    <th style={{textAlign:"center"}}>Details</th>
                     <th style={{textAlign:"center"}}>Policy Type</th>
                     <th style={{textAlign:"center"}}>Status</th>
                   </tr>

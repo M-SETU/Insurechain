@@ -8,6 +8,7 @@ const PolicyCardUser = props => {
       <td data-label="custID" style={{textAlign:"center"}}>{props.policyCard[2]}</td>
       <td data-label="name" style={{textAlign:"center"}}>{props.policyCard[3]["name"]}</td>
       <td data-label="emailId" style={{textAlign:"center"}}>{props.policyCard[3]["email"]}</td>
+      <td data-label="dateOfBirth" style={{textAlign:"center"}}>{props.policyCard[3]["dateOfBirth"]}</td>
       <td data-label="poltype" style={{textAlign:"center"}}>{props.policyCard[4]}</td>
       <td data-label="hash" style={{textAlign:"center"}}>
         <a href={`https://${props.policyCard[3]["kycHash"]}.ipfs.infura-ipfs.io`}>View Document</a>

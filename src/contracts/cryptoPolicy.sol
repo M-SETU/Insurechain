@@ -28,12 +28,12 @@ contract cryptoPolicy is ERC721 {
         ERC721(_name, _symbol)
     {
         admin = msg.sender;
-        policyTypes.push("Affinity Plan");
-        policyTypes.push("Essential Plan");
-        policyTypes.push("Wellness Plan");
-        // policyTypes.push("Gold 80 Community Care");
-        // policyTypes.push("Platinum 90 Community Care");
-        // policyTypes.push("Silver Value Enhanced Care");
+        // policyTypes.push("Affinity Plan");
+        // policyTypes.push("Essential Plan");
+        // policyTypes.push("Wellness Plan");
+        policyTypes.push("Gold 80 Community Care");
+        policyTypes.push("Platinum 90 Community Care");
+        policyTypes.push("Silver Value Enhanced Care");
         // policyTypes.push("Minimum Coverage Enhanced Care");
     }
 
@@ -106,7 +106,7 @@ contract cryptoPolicy is ERC721 {
     }
 
     function burn(uint256 _policyId) external {
-        require(msg.sender == policies[_policyId].owner);
+        require(msg.sender == admin);
         policies[_policyId].active = false;
         _burn(_policyId);
     }

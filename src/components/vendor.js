@@ -25,7 +25,7 @@ class Vendor extends Component {
       portsList: [],
       web3: {},
       address: "",
-      goerliAddress: "0xFBE216F00527212d0B4939e4bACBf52cfD61d1fe",
+      goerliAddress: "0x96e78929dD5fBbaB0ab6AeF097B97dd97728952d",
       vendorMapping: {
         "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
         "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
@@ -43,6 +43,7 @@ class Vendor extends Component {
     this.claimAction = this.claimAction.bind(this);
     this.handlePortButtons = this.handlePortButtons.bind(this);
     this.requestDetails = this.requestDetails.bind(this);
+    this.handleStatusComment = this.handleStatusComment.bind(this);
     this.hideSendDetailsModal = this.hideSendDetailsModal.bind(this);
     this.showSendDetailsModal = this.showSendDetailsModal.bind(this);
     this.hideOnboardDetailsModal = this.hideOnboardDetailsModal.bind(this);
@@ -304,6 +305,30 @@ class Vendor extends Component {
 
   }
 
+  handleStatusComment(oldVendor, newVendor, status){
+    if(oldVendor===this.state.account){
+      const statusmapping = {
+        "Application Submitted": "Port Requested by User",
+        "Request Initiated": "Details Requested by "+this.state.vendorMapping[newVendor],
+        "Details Sent": "Details sent to "+ this.state.vendorMapping[newVendor],
+        "Approved": "Application Approved by "+ this.state.vendorMapping[newVendor]+", waiting for completion",
+      }
+      return(<td data-label="status" style={{textAlign:"center"}}>
+        {statusmapping[status]}
+      </td>)
+    } else {
+      const statusmapping = {
+        "Application Submitted": "Application Received",
+        "Request Initiated": "Details Requested to "+ this.state.vendorMapping[oldVendor],
+        "Details Sent": "Details Received by "+ this.state.vendorMapping[oldVendor] + ", Awaiting Onboard",
+        "Approved": "Application Onboarded, awaiting completion by "+this.state.vendorMapping[oldVendor]
+      }
+      return(<td data-label="status" style={{textAlign:"center"}}>
+        {statusmapping[status]}
+      </td>)
+    }
+  }
+
   handlePortButtons(oldVendor, newVendor, id, status, details, policyType){
     if(oldVendor===this.state.account){
       const sdb = {
@@ -395,6 +420,7 @@ class Vendor extends Component {
       return <PortCardVendor portCard={currentport} 
       vendorMapping = {this.state.vendorMapping}
       handlePortButtons = {this.handlePortButtons}
+      handleStatusComment = {this.handleStatusComment}
       key={currentport[0]}/>;
     })
   }
@@ -526,6 +552,7 @@ class Vendor extends Component {
                     <th style={{textAlign:"center"}}>Customer ID</th>
                     <th style={{textAlign:"center"}}>Name</th>
                     <th style={{textAlign:"center"}}>Email ID</th>
+                    <th style={{textAlign:"center"}}>DOB</th>
                     <th style={{textAlign:"center"}}>Policy Type</th>
                     <th style={{textAlign:"center"}}>KYC Documents</th>
                     <th style={{textAlign:"center"}}>Application Type</th>

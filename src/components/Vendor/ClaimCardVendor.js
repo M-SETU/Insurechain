@@ -16,7 +16,7 @@ const ClaimCardVendor = props => {
         <td style={{textAlign:"center"}}>{props.claimCard[2]["claimDate"]}</td>
         <td style={{textAlign:"center"}}>{props.claimCard[2]["hospitalName"]}</td>
         <td style={{textAlign:"center"}}>{props.claimCard[2]["description"]}</td>
-        <td style={{textAlign:"center"}}>{props.claimCard[2]["amount"]}</td>
+        <td style={{textAlign:"center"}}>{"$" +props.claimCard[2]["amount"]}</td>
         <td data-label="hash" style={{textAlign:"center"}}>
           <a href={`https://${props.claimCard[2]["claimHash"]}.ipfs.infura-ipfs.io`}>View Document</a>
         </td>

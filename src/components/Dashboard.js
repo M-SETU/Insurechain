@@ -20,6 +20,7 @@ class Dashboard extends Component {
     constructor(props) {
       super(props)
       this.state = {
+        email: '',
         account: '',
         portis: {},
         web3: {},
@@ -51,7 +52,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "WellCare New York",
           network: "maticMumbai",
-          address:"0xCC9A80211E0106f4c67641dFDdf16820dA2c961f",
+          address:"0x2cdeC8BB723E3D7172B529858aa9A98865b2b57B",
           myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           click: true,
@@ -67,7 +68,7 @@ class Dashboard extends Component {
         await this.setState({
           heading: "Health Net California",
           network: "maticMumbai",
-          address:"0x93f27085AB3892E72E76451be0fB165fC2899e1c",
+          address:"0x88ddef1546b3C3D2D5120618B91051031CCAdaC7",
           myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
           otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
           click: true,
@@ -113,7 +114,8 @@ class Dashboard extends Component {
                 loginText: "Login",
                 account: '',
                 loginButtonDisabled: true,
-                copyVis: "hidden"
+                copyVis: "hidden",
+                email:'',
             })
           }
         } catch {
@@ -125,7 +127,8 @@ class Dashboard extends Component {
               policy:{},
               portis: {},
               web3: {}, 
-              copyVis: "hidden"
+              copyVis: "hidden",
+              email: ''
             })
         }
       
@@ -133,10 +136,18 @@ class Dashboard extends Component {
 
   
     async loadWeb3() {
-      const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.config);
+      const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.config,  { scope: ['email']});
       const portisGoerli = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
         nodeUrl: 'https://rpc.goerli.mudit.blog/', 
         chainId: 5
+      });
+      portis.onLogin(async (walletAddress, email) => {
+        console.log(walletAddress)
+        console.log(email)
+        await this.setState({
+          email: email,
+          
+        })
       });
 
       await this.setState({
@@ -197,7 +208,7 @@ class Dashboard extends Component {
                   <Modal.Title><b>Welcome to the Dapp</b></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  {this.state.account}
+                  {this.state.email}
                 </Modal.Body>
                   
                 <Modal.Footer>
@@ -219,7 +230,7 @@ class Dashboard extends Component {
                   <Modal.Title><b>Welcome Vendor</b></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                {this.state.account}
+                {this.state.email}
                 </Modal.Body>
                   
                 <Modal.Footer>
@@ -259,7 +270,7 @@ class Dashboard extends Component {
                     </div>
                     
                     <div className= "col-7" style={{fontSize:"15px", position:"right", color:"white", visibility: this.state.copyVis}} align="right">
-                        {this.state.account} 
+                        {this.state.email} 
                     </div>
                     <div className= "col-1" style={{fontSize:"17px"}} align = "Right">
                         <NavLink to={{
