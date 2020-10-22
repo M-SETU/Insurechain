@@ -15,6 +15,7 @@ const PortCardUser = props => {
         <td data-label="newvendor" style={{textAlign:"center"}}>{props.vendorMapping[props.portCard[3]]}</td>
         <td data-label="oldvendor" style={{textAlign:"center"}}>{props.vendorMapping[props.portCard[2]]}</td>
         <td data-label="policyType" style={{textAlign:"center"}}>{props.portCard[4]}</td>
+        <td data-label="reason" style={{textAlign:"center"}}>{props.portCard[7]}</td>
         <td data-label="status" style={{textAlign:"center"}}>{statusmapping[props.portCard[6]]}</td>
     </tr>
     );

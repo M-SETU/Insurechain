@@ -9,6 +9,8 @@ import PortCardUser from './User/PortCardUser';
 import ClaimCardUser from './User/ClaimCardUser';
 import PolicyCardUser from './User/PolicyCardUser';
 import Calendar from 'react-calendar';
+import details from '../details.json'
+
 
 // const Cryptr = require('cryptr');
 // const cryptr = new Cryptr('myTotalySecretKey');
@@ -19,7 +21,9 @@ class CreatePolicyDash extends Component {
     super(props)
     this.state = {
       dateOfBirth: new Date(),
+      periodOfIssuance: 0,
       buffer: [],
+      medicalBuffer:[],
       account: '',
       hash: '',
       policySelected: 'None',
@@ -39,15 +43,26 @@ class CreatePolicyDash extends Component {
       portsList: [],
       name: '',
       email: '',
+      gender: "None",
+      personalAddress: '',
+      mobileNumber: 0,
+      pan: '',
+      preDisease: '',
+      medication: '',
+      medicationProcedures: '',
       showPolicyModal: false,
       showClaimModal: false,
-      goerliAddress: "0x96e78929dD5fBbaB0ab6AeF097B97dd97728952d",
-      vendorMapping: {
-        "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
-        "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
-      },
+      goerliAddress: details["GOERLI_CHAIN_CONTRACT"],
+      vendorMapping: details["mapping"],
+      // {
+      //   "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9" : details["VENDOR1_NAME"],
+      //   "0xFE6c916d868626Becc2eE0E5014fA785A17893ec" : details["VENDOR2_NAME"],
+      // },
       showPortModal: false,
       portPolicyId: 0,
+      sumOfIssuance: 0,
+      type: "None",
+      portingReason: ""
     };
 
     this.loadBlockchainData = this.loadBlockchainData.bind(this);
@@ -56,6 +71,7 @@ class CreatePolicyDash extends Component {
     this.handlePolicySubmit = this.handlePolicySubmit.bind(this);
     this.policyList = this.policyList.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
+    this.handleMedicalFileChange = this.handleMedicalFileChange.bind(this);
     this.handleClaimSubmit = this.handleClaimSubmit.bind(this); 
     this.handleClaimList = this.handleClaimList.bind(this);
     this.handleClaimButton = this.handleClaimButton.bind(this);
@@ -133,6 +149,8 @@ class CreatePolicyDash extends Component {
           details[6],
           details[7],
           details[8],
+          details[9],
+          details[10]
         ]);
         let arr1 = details[5];
         let arr2 = details[6];
@@ -165,25 +183,54 @@ class CreatePolicyDash extends Component {
     }
   }
 
+  async handleMedicalFileChange(event){
+    event.preventDefault()
+    try{
+      const file = event.target.files[0]
+      const reader = new window.FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.onloadend = () => {
+      this.setState({ medicalBuffer: Buffer(reader.result) })
+      console.log('buffer', this.state.medicalBuffer)
+      }
+    } 
+    catch(err){
+      console.log(err)
+    }
+  }
+
   async handlePolicySubmit(event){
     event.preventDefault();
     try{
-      console.log(this.state.dateOfBirth.date)
+      let today = new Date();
+      let date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
       let result  = await ipfs.add(this.state.buffer)
+      let result1  = await ipfs.add(this.state.medicalBuffer)
       console.log('Ipfs result', result)
       this.setState({ hash: result })
       const personalDetails = JSON.stringify({
         name: this.state.name.toUpperCase(), 
         dateOfBirth: this.state.dateOfBirth.getFullYear() + '/' + (this.state.dateOfBirth.getMonth() + 1) + '/' + this.state.dateOfBirth.getDate(),
         email: this.state.email,
-        kycHash: result
+        kycHash: result,
+        gender: this.state.gender,
+        personalAddress: this.state.personalAddress,
+        mobileNumber: this.state.mobileNumber,
+        pan: this.state.pan,
+        preDisease: this.state.preDisease,
+        medication: this.state.medication,
+        medicationProcedures: this.state.medicationProcedures,
+        medicalHash: result1,
+        dateOfIssuance: date,
+        type: this.state.type,
+        sumOfIssuance: this.state.sumOfIssuance
       });
       console.log(personalDetails);
       let PI = await ipfs.add(personalDetails)
 
       const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
       policy.methods.createPolicy(
-        PI, this.state.policySelected)
+        PI, this.state.policySelected, this.state.periodOfIssuance)
       .send({from: this.state.account, gas:600000, gasPrice:15000000000})   
       .then (async (receipt) => {
         console.log(receipt);
@@ -252,7 +299,8 @@ class CreatePolicyDash extends Component {
       this.state.portPolicyId, 
       this.props.otherVendorOwner,
       this.props.myOwner, 
-      this.state.policySelected)
+      this.state.policySelected,
+      this.state.portingReason)
     .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
     .then (async (receipt) => {
       console.log(receipt);
@@ -393,6 +441,15 @@ class CreatePolicyDash extends Component {
                             </select>
                           </div>
                         </Form.Field>
+                        <Form.Field
+                            id='form-input-control-periodOfIssuance'
+                            control={Input}
+                            label='Period Of Issuance (in Years)'
+                            placeholder='Period Of Issuance'
+                            name="periodOfIssuance"
+                            onChange={this.handleChange}
+                          />
+                        
                       </Form.Group>
                     </Form>
                   </div>
@@ -407,12 +464,6 @@ class CreatePolicyDash extends Component {
                             name="name"
                             onChange={this.handleChange}
                           />
-                        </Form.Group>
-                      </Form>
-                    </div>
-                    <div >
-                      <Form>
-                        <Form.Group widths='equal'>
                           <Form.Field
                             id='form-input-control-email'
                             control={Input}
@@ -421,12 +472,66 @@ class CreatePolicyDash extends Component {
                             name="email"
                             onChange={this.handleChange}
                           />
+                          
+                        </Form.Group>
+                      </Form>
+                    </div>
+                    <div >
+                      <Form>
+                        <Form.Group widths='equal'>
+                          <Form.Field
+                            id='form-input-control-mobile'
+                            control={Input}
+                            label='Mobile Number'
+                            placeholder='Mobile Number'
+                            name="mobileNumber"
+                            onChange={this.handleChange}
+                          />
+                          <Form.Field
+                            id='form-input-control-address'
+                            control={Input}
+                            label='Address'
+                            placeholder='Address'
+                            name="personalAddress"
+                            onChange={this.handleChange}
+                          />      
+                        </Form.Group>
+                      </Form>
+                    </div>
+                    <div >
+                      <Form>
+                        <Form.Group widths='equal'>
+                          <Form.Field
+                            id='form-input-control-sumIssuance'
+                            control={Input}
+                            label='Sum of Issuance (INR)'
+                            placeholder='Sum of Issuance'
+                            name="sumOfIssuance"
+                            onChange={this.handleChange}
+                          />
+                          <Form.Field>
+                            <div>
+                              <strong>Type</strong>
+                              <select id="type" name="type" onChange={this.handleChange}
+                                >
+                                <option value="None" defaultValue>
+                                  {"None"}
+                                </option>
+                                <option value="Individual">
+                                  {"Individual"}
+                                </option>
+                                <option value="Floater">
+                                  {"Floater"}
+                                </option>
+                              </select>
+                            </div>  
+                          </Form.Field>    
                         </Form.Group>
                       </Form>
                     </div>
                     <div>
                       <Form>
-                        <Form.Group>
+                        <Form.Group widths='equal'> 
                           <Form.Field
                             id='form-input-control-documenthash'
                             control={Input}
@@ -438,14 +543,39 @@ class CreatePolicyDash extends Component {
                               value={this.state.dateOfBirth}
                             />
                           </Form.Field>
+                          <Form.Field>
+                            <div>
+                              <strong>Gender</strong>
+                              <select id="gender" name="gender" onChange={this.handleChange}
+                                >
+                                <option value="None" defaultValue>
+                                  {"None"}
+                                </option>
+                                <option value="Male">
+                                  {"Male"}
+                                </option>
+                                <option value="Female">
+                                  {"Female"}
+                                </option>
+                              </select>
+                            </div>  
+                          </Form.Field>
                         </Form.Group>
                       </Form>
                     </div>
                     
                   <div >
                     <Form>
-                      <Form.Group widths='equal'>
+                      <Form.Group widths='2'>
                         <Form.Field
+                            id='form-input-control-pan'
+                            control={Input}
+                            label='PAN Number'
+                            placeholder='PAN Number'
+                            name="pan"
+                            onChange={this.handleChange}
+                          />
+                        <Form.Field widths='12'
                           id='form-input-control-documenthash'
                           control={Input}
                           label='KYC Document'
@@ -456,6 +586,53 @@ class CreatePolicyDash extends Component {
                       </Form.Group>
                     </Form>
                   </div>
+
+                  <div >
+                      <Form>
+                        <Form.Group widths='equal'>
+                          <Form.Field
+                            id='form-input-control-premedical'
+                            control={Input}
+                            label='Pre Existing Disease'
+                            placeholder='Pre-Existing Disease'
+                            name="preDisease"
+                            onChange={this.handleChange}
+                          />
+                          <Form.Field
+                            id='form-input-control-medication'
+                            control={Input}
+                            label='Medication'
+                            placeholder='Medication'
+                            name="medication"
+                            onChange={this.handleChange}
+                          />
+                        </Form.Group>
+                      </Form>
+                    </div>
+                    <div >
+                      <Form>
+                        <Form.Group widths='2'>
+                          <Form.Field
+                            id='form-input-control-medicationProcedures'
+                            control={Input}
+                            label='Medication Procedures'
+                            placeholder='Medication Procedures'
+                            name="medicationProcedures"
+                            onChange={this.handleChange}
+                          />
+                          <Form.Field widths="12"
+                          id='form-input-control-documenthash'
+                          control={Input}
+                          label='Medical Records'
+                          name="medicalrecords"
+                        >
+                          <input type="file" onChange={this.handleMedicalFileChange} />
+                        </Form.Field>
+                        </Form.Group>
+                      </Form>
+                    </div>
+
+
                     </div>
               </Modal.Body>
               <Modal.Footer>
@@ -625,6 +802,20 @@ class CreatePolicyDash extends Component {
                         </Form.Group>
                       </Form>
                     </div>
+                    <div >
+                      <Form>
+                        <Form.Group widths='equal'>
+                          <Form.Field
+                            id='form-input-control-portReason'
+                            control={Input}
+                            label='Reason for Porting'
+                            placeholder='Reason for Porting'
+                            name="portingReason"
+                            onChange={this.handleChange}
+                          />
+                        </Form.Group>
+                      </Form>
+                    </div>
                     </div>
               </Modal.Body>
               <Modal.Footer>
@@ -678,12 +869,9 @@ class CreatePolicyDash extends Component {
                 <tr>
                   <th style={{textAlign:"center"}}>Policy ID</th>
                   <th style={{textAlign:"center"}}>Customer ID</th>
-                  <th style={{textAlign:"center"}}>Name</th>
-                  <th style={{textAlign:"center"}}>Email ID</th>
-                  <th style={{textAlign:"center"}}>DOB</th>
-                  <th style={{textAlign:"center"}}>Policy Type</th>
-                  <th style={{textAlign:"center"}}>KYC Documents</th>
-                  <th style={{textAlign:"center"}}>Application Type</th>
+                  <th style={{textAlign:"center"}}>Personal Details</th>
+                  <th style={{textAlign:"center"}}>Policy Details</th>
+                  <th style={{textAlign:"center"}}>Medical History</th>
                   <th style={{textAlign:"center"}}>Action</th>
                 </tr></thead>
                 <tbody>
@@ -702,11 +890,7 @@ class CreatePolicyDash extends Component {
                   <tr>
                     <th style={{textAlign:"center"}}>Claim ID</th>
                     <th style={{textAlign:"center"}}>Policy ID</th>
-                    <th style={{textAlign:"center"}}>Date</th>
-                    <th style={{textAlign:"center"}}>Hospital Name</th>
-                    <th style={{textAlign:"center"}}>Description</th>
-                    <th style={{textAlign:"center"}}>Amount</th>
-                    <th style={{textAlign:"center"}}>Documents</th>
+                    <th style={{textAlign:"center"}}>Claim Details</th>
                     <th style={{textAlign:"center"}}>Status</th>
                   </tr>
                 </thead>
@@ -728,6 +912,7 @@ class CreatePolicyDash extends Component {
                     <th style={{textAlign:"center"}}>New Vendor</th>
                     <th style={{textAlign:"center"}}>Old Vendor</th>
                     <th style={{textAlign:"center"}}>Policy Type</th>
+                    <th style={{textAlign:"center"}}>Reason for Porting</th>
                     <th style={{textAlign:"center"}}>Status</th>
                   </tr>
                 </thead>

@@ -121,11 +121,6 @@
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
-				"name": "_policyId",
-				"type": "uint256"
-			},
-			{
 				"internalType": "string",
 				"name": "_kycHash",
 				"type": "string"
@@ -149,6 +144,11 @@
 				"internalType": "string[2][]",
 				"name": "_claimDetails",
 				"type": "string[2][]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_periodOfIssuance",
+				"type": "uint256"
 			}
 		],
 		"name": "addPortData",
@@ -235,6 +235,25 @@
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "cBonus",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "_policyId",
 				"type": "uint256"
@@ -261,6 +280,11 @@
 				"internalType": "string",
 				"name": "_policyType",
 				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_periodOfIssuance",
+				"type": "uint256"
 			}
 		],
 		"name": "createPolicy",
@@ -362,6 +386,16 @@
 						"internalType": "string",
 						"name": "typeOfApplication",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "periodOfIssuance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "cumulativeBonus",
+						"type": "uint256"
 					}
 				],
 				"internalType": "struct cryptoPolicy.policy",
@@ -536,6 +570,16 @@
 				"internalType": "string",
 				"name": "typeOfApplication",
 				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "periodOfIssuance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "cumulativeBonus",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",

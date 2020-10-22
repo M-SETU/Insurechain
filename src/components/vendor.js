@@ -7,14 +7,17 @@ import ClaimCardVendor from './Vendor/ClaimCardVendor';
 import PolicyCardvendor from './Vendor/PolicyCardVendor';
 import ipfs from './ipfs.js'
 import { Button } from 'semantic-ui-react'
-// const Cryptr = require('cryptr');
-// const cryptr = new Cryptr('myTotalySecretKey');
+import details from '../details.json'
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('myTotalySecretKey');
 
 class Vendor extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
+      a: {},
+      b: {},
       account: '',
       policy:{},
       portis: {},
@@ -25,16 +28,18 @@ class Vendor extends Component {
       portsList: [],
       web3: {},
       address: "",
-      goerliAddress: "0x96e78929dD5fBbaB0ab6AeF097B97dd97728952d",
-      vendorMapping: {
-        "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9":"WellCare New York",
-        "0xFE6c916d868626Becc2eE0E5014fA785A17893ec":"Health Net California",
-      },
+      goerliAddress: details["GOERLI_CHAIN_CONTRACT"],
+      vendorMapping: details["mapping"],
+      // {
+      //   "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9" : details["VENDOR1_NAME"],
+      //   "0xFE6c916d868626Becc2eE0E5014fA785A17893ec" : details["VENDOR2_NAME"],
+      // },
       showRequestDetails: false,
       showSendDetails: false,
       showOnboardDetails: false,
       showRejectRequest: false, 
-      showCompletePortingModal: false
+      showCompletePortingModal: false,
+      detailsVisible: "false"
 
     };
 
@@ -44,6 +49,9 @@ class Vendor extends Component {
     this.handlePortButtons = this.handlePortButtons.bind(this);
     this.requestDetails = this.requestDetails.bind(this);
     this.handleStatusComment = this.handleStatusComment.bind(this);
+    this.handleDetails = this.handleDetails.bind(this);
+    this.viewDetails = this.viewDetails.bind(this);
+    this.hideDetails = this.hideDetails.bind(this);
     this.hideSendDetailsModal = this.hideSendDetailsModal.bind(this);
     this.showSendDetailsModal = this.showSendDetailsModal.bind(this);
     this.hideOnboardDetailsModal = this.hideOnboardDetailsModal.bind(this);
@@ -128,6 +136,8 @@ class Vendor extends Component {
           details[6],
           details[7],
           details[8],
+          details[9],
+          details[10]
         ]);
         let arr1 = details[5];
         let arr2 = details[6];
@@ -192,13 +202,15 @@ class Vendor extends Component {
         policyId: details[0], 
         owner: details[1],
         customerId: details[2],
-        kycHash: details[3],
+        personalDetails: details[3],
         policyType: details[4],
         claimIds: details[5],
         claimDetails: details[6],
-        typeOfApplication: details[8]
+        typeOfApplication: details[8],
+        periodOfIssuance: details[9]
       });
-      const pi = await ipfs.add(det);
+      const pi = await cryptr.encrypt(det);
+      //const pi = await ipfs.add(det);
 
       const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
       policyGoerli.methods.sendDetails(id, pi)
@@ -222,18 +234,21 @@ class Vendor extends Component {
 
   async onBoardPolicy(id, details, policyType, oldVendor){
     await this.showOnboardDetailsModal();
-    let a = await ipfs.cat(details);
+    //let a = await ipfs.cat(details);
+    let a = await cryptr.decrypt(details); 
     let b = JSON.parse(a);
 
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     await policy.methods.addPortData(
       b["owner"],
-      b["policyId"],
-      b["kycHash"],
+      // b["policyId"],
+      b["personalDetails"],
       policyType,
       "Ported from "+this.state.vendorMapping[oldVendor],
       b["claimIds"],
-      b["claimDetails"]
+      b["claimDetails"],
+      b["periodOfIssuance"]
+
     )
     .send({from: this.state.account, gas:900000, gasPrice:15000000000})
     .then (async (receipt) => {
@@ -329,6 +344,80 @@ class Vendor extends Component {
     }
   }
 
+  async viewDetails(details){
+      //let a = await ipfs.cat(details);
+      let a = await cryptr.decrypt(details); 
+      a = JSON.parse(a);
+      let b = await ipfs.cat(a["personalDetails"])
+      b = JSON.parse(b);
+      await this.setState({
+        a: a,
+        b: b,
+        detailsVisible: "true"
+      })
+  }
+
+  async hideDetails(){
+    await this.setState({
+      detailsVisible: "false"
+    })
+  }
+
+  handleDetails(details, newVendor, oldVendor, status){
+    if((status === "Details Sent" || status === "Approved") && (newVendor===this.state.account || oldVendor===this.state.account)){
+      if(this.state.detailsVisible === "false"){
+        return(
+          <td>
+            <Button onClick={() => { this.viewDetails(details) }} basic color='green'>
+              View Details
+            </Button>
+          </td>
+        )
+      }
+      else{
+        return(
+          <td>
+            <Button onClick={() => { this.hideDetails() }} basic color='red'>
+              Hide Details
+            </Button><br/>
+            <div>
+              <strong>Name: </strong>{this.state.b["name"]} <br/>
+              <strong>Email: </strong>{this.state.b["email"]} <br/>
+              <strong>Date of Birth: </strong>{this.state.b["dateOfBirth"]} <br/>
+              <strong>Mobile Number: </strong>{this.state.b["mobileNumber"]} <br/>
+              <strong>Address: </strong>{this.state.b["personalAddress"]} <br/>
+              <strong>PAN: </strong>{this.state.b["pan"]} <br/>
+              <strong>KYC Documents: </strong><a href={`https://${this.state.b["kycHash"]}.ipfs.infura-ipfs.io`}>View Document</a><br/>
+              <br/>
+              <strong style={{textAlign:"center"}}>Policy Details</strong><br/>
+              <strong>Period of Issuance: </strong>{this.state.a["periodOfIssuance"]} <br/>
+              <strong>PolicyType: </strong>{this.state.a["policyType"]} <br/>
+              <strong>Date of Issuance: </strong>{this.state.b["dateOfIssuance"]} <br/>
+              <strong>Type: </strong>{this.state.b["type"]} <br/>
+              <strong>Sum of Issuance: </strong>{'Rs.'+this.state.b["sumOfIssuance"]} <br/>
+              <br/>
+              <strong style={{textAlign:"center"}}>Medical History</strong><br/>
+              <strong>Pre-Existing Disease: </strong>{this.state.b["preDisease"]} <br/>
+              <strong>Medication: </strong>{this.state.b["medication"]} <br/>
+              <strong>Medical Procedures: </strong>{this.state.b["medicationProcedures"]} <br/>
+              <strong>Medical Test Records: </strong><a href={`https://${this.state.b["medicalHash"]}.ipfs.infura-ipfs.io`}>View Document</a>
+            </div>
+          </td>
+        )
+      }
+    } else if(!(newVendor===this.state.account || oldVendor===this.state.account)){
+      return(
+        <td style={{textAlign:"center"}}>
+          You dont have Access
+        </td>)
+    } else {
+      return(
+        <td style={{textAlign:"center"}}>
+          Details not shared yet
+        </td>)
+    }
+  }
+
   handlePortButtons(oldVendor, newVendor, id, status, details, policyType){
     if(oldVendor===this.state.account){
       const sdb = {
@@ -421,6 +510,7 @@ class Vendor extends Component {
       vendorMapping = {this.state.vendorMapping}
       handlePortButtons = {this.handlePortButtons}
       handleStatusComment = {this.handleStatusComment}
+      handleDetails = {this.handleDetails}
       key={currentport[0]}/>;
     })
   }
@@ -547,16 +637,14 @@ class Vendor extends Component {
                 <div style={{fontSize:"25px"}} align = "center"><strong>All Policies</strong></div>
                 <table className="ui celled table ">
                   <thead>
-                  <tr>
-                    <th style={{textAlign:"center"}}>Policy ID</th>
-                    <th style={{textAlign:"center"}}>Customer ID</th>
-                    <th style={{textAlign:"center"}}>Name</th>
-                    <th style={{textAlign:"center"}}>Email ID</th>
-                    <th style={{textAlign:"center"}}>DOB</th>
-                    <th style={{textAlign:"center"}}>Policy Type</th>
-                    <th style={{textAlign:"center"}}>KYC Documents</th>
-                    <th style={{textAlign:"center"}}>Application Type</th>
-                  </tr></thead>
+                    <tr>
+                      <th style={{textAlign:"center"}}>Policy ID</th>
+                      <th style={{textAlign:"center"}}>Customer ID</th>
+                      <th style={{textAlign:"center"}}>Personal Details</th>
+                      <th style={{textAlign:"center"}}>Policy Details</th>
+                      <th style={{textAlign:"center"}}>Medical History</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     { this.handlePolicyList() }
                   </tbody>
@@ -570,11 +658,7 @@ class Vendor extends Component {
                     <tr>
                       <th style={{textAlign:"center"}}>Claim ID</th>
                       <th style={{textAlign:"center"}}>Policy ID</th>
-                      <th style={{textAlign:"center"}}>Date</th>
-                      <th style={{textAlign:"center"}}> Hospital Name</th>
-                      <th style={{textAlign:"center"}}>Description</th>
-                      <th style={{textAlign:"center"}}>Documents</th>
-                      <th style={{textAlign:"center"}}>Amount</th>
+                      <th style={{textAlign:"center"}}>Claim Details</th>
                       <th style={{textAlign:"center"}}>Status</th>
                       <th style={{textAlign:"center"}}>Action</th>
                     </tr>
@@ -596,6 +680,7 @@ class Vendor extends Component {
                     <th style={{textAlign:"center"}}>Old Vendor</th>
                     <th style={{textAlign:"center"}}>Details</th>
                     <th style={{textAlign:"center"}}>Policy Type</th>
+                    <th style={{textAlign:"center"}}>Reason for Porting</th>
                     <th style={{textAlign:"center"}}>Status</th>
                     <th style={{textAlign:"center"}}>Action</th>
                   </tr>

@@ -43,6 +43,11 @@
 				"internalType": "string",
 				"name": "status",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -133,6 +138,11 @@
 						"internalType": "string",
 						"name": "status",
 						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "reason",
+						"type": "string"
 					}
 				],
 				"internalType": "struct consortiumPolicy.portPolicy",
@@ -176,6 +186,11 @@
 			{
 				"internalType": "string",
 				"name": "_policyType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_reason",
 				"type": "string"
 			}
 		],

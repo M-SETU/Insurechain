@@ -13,6 +13,7 @@ import insuranc from "../images/logos/43951.jpg";
 import question from "../images/logos/64627.jpg";
 import customer from "../images/logos/2650149.jpg";
 import MainImage from "../images/logos/help.png";
+import details from '../details.json'
 
 
 class Dashboard extends Component {
@@ -50,11 +51,11 @@ class Dashboard extends Component {
     }
     async handleSubmit1() {
         await this.setState({
-          heading: "WellCare New York",
+          heading: details["VENDOR1_NAME"],
           network: "maticMumbai",
-          address:"0x2cdeC8BB723E3D7172B529858aa9A98865b2b57B",
-          myOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
-          otherVendorOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
+          address: details["CONTRACT1_ADDRESS"],
+          myOwner: details["VENDOR1_ADDRRESS"],
+          otherVendorOwner: details["VENDOR2_ADDRRESS"],
           click: true,
           config: {
             nodeUrl: 'https://rpc-mumbai.matic.today', 
@@ -66,11 +67,11 @@ class Dashboard extends Component {
     
     async handleSubmit2() {
         await this.setState({
-          heading: "Health Net California",
+          heading: details["VENDOR2_NAME"],
           network: "maticMumbai",
-          address:"0x88ddef1546b3C3D2D5120618B91051031CCAdaC7",
-          myOwner: "0xFE6c916d868626Becc2eE0E5014fA785A17893ec",
-          otherVendorOwner: "0x0C3388508dB0CA289B49B45422E56479bCD5ddf9",
+          address: details["CONTRACT2_ADDRESS"],
+          myOwner: details["VENDOR2_ADDRRESS"],
+          otherVendorOwner: details["VENDOR1_ADDRRESS"],
           click: true,
           // config: {
           //   nodeUrl: 'https://rpc-60001.matic.today', 
@@ -134,10 +135,9 @@ class Dashboard extends Component {
       
     }
 
-  
     async loadWeb3() {
-      const portis = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', this.state.config,  { scope: ['email']});
-      const portisGoerli = new Portis('a16b70b3-8f7c-49cc-b33f-98db6607f425', {
+      const portis = new Portis('8f5bb2d2-4810-4f48-8023-df9f6cfc9711', this.state.config,  { scope: ['email']});
+      const portisGoerli = new Portis('8f5bb2d2-4810-4f48-8023-df9f6cfc9711', {
         nodeUrl: 'https://rpc.goerli.mudit.blog/', 
         chainId: 5
       });
@@ -258,7 +258,7 @@ class Dashboard extends Component {
                       </NavLink> 
                     </div>
                     
-                    <div className= "col-1" style={{fontSize:"17px",color:"white", visibility: "hidden"}}>
+                    {/* <div className= "col-1" style={{fontSize:"17px",color:"white", visibility: "hidden"}}>
                         <NavLink to={{
                             pathname: '/CreatePolicyDash',
                         }}>My Policies</NavLink>
@@ -267,7 +267,7 @@ class Dashboard extends Component {
                         <NavLink to={{
                             pathname: '/vendor',
                         }}>Customers' Policies</NavLink>
-                    </div>
+                    </div> */}
                     
                     <div className= "col-7" style={{fontSize:"15px", position:"right", color:"white", visibility: this.state.copyVis}} align="right">
                         {this.state.email} 
@@ -325,7 +325,7 @@ class Dashboard extends Component {
                         <img src={MainImage}></img>
                       </div>
                       <div className="vendorCard1">
-                        <h3>WellCare New York</h3>
+                        <h3>HDFC</h3>
                         <div className="btnVendor">
                           <NavLink to={{
                               pathname: '/vendor',
@@ -347,7 +347,7 @@ class Dashboard extends Component {
                         </div>
                       </div>
                       <div className="vendorCard2">
-                        <h3>Health Net California</h3>
+                        <h3>LIC</h3>
                         <div className="btnVendor1">
                           <NavLink to={{
                               pathname: '/vendor',
