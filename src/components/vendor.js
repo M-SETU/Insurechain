@@ -166,6 +166,7 @@ class Vendor extends Component {
           .call({from: this.state.account});
         if(details){ 
             arr.push(details);
+            console.log(details);
         }
       }
     }
@@ -209,19 +210,21 @@ class Vendor extends Component {
         typeOfApplication: details[8],
         periodOfIssuance: details[9]
       });
-      const pi = await cryptr.encrypt(det);
+      let pii = await cryptr.encrypt(det);
       //const pi = await ipfs.add(det);
+      console.log(pii);
 
       const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
-      policyGoerli.methods.sendDetails(id, pi)
-      .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
+      policyGoerli.methods.sendDetails(id, pii)
+      .send({from: this.state.account, gas:900000, gasPrice:20000000000})   
       .then (async (receipt) => {
         console.log(receipt);
         await this.hideSendDetailsModal();
         await this.handleLoop();
         await this.handlePortsLoop();
       })
-      .catch(async ()=> {
+      .catch(async (err)=> {
+        console.log(err)
         await this.hideSendDetailsModal();
         await this.handleLoop();
         await this.handlePortsLoop();
@@ -250,7 +253,7 @@ class Vendor extends Component {
       b["periodOfIssuance"]
 
     )
-    .send({from: this.state.account, gas:900000, gasPrice:15000000000})
+    .send({from: this.state.account, gas:5000000, gasPrice:100000000000})
     .then (async (receipt) => {
       console.log(receipt);
       const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
