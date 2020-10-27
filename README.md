@@ -1,5 +1,8 @@
 # Insurechain
-Insurechain is a hybrid blockchain which enables seamless porting of the policies between different vendors, allowing interoperability and interaction between various private chains.
+Insurechain is a blockchain which enables seamless porting of the policies, allowing interoperability and interaction between various private chains run by insurance companies
+
+# Problem Statement
+The current process for porting insurance policies is time consuming, expensive and leads to errors in data and ultimately loss of coverage for the customer. When customers move from one insurer to another, the entire data footprint eg KYC docs, claims, medical docs etc. is created all over again. This means the process folowed to port the policy is the same as the process of creating a new policy. This leads to increased costs and lead time,costs and possible loss of cover for the customer in case all the claims data cannot be produced at the new insurer. 
 
 ## Idea behind Insurechain
 1. Hybrid blockchain includes benefits of both the openness of a public blockchain and restriction of a private network by limiting the access to join a network
