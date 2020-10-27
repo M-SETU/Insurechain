@@ -195,9 +195,13 @@ class Vendor extends Component {
 
   async sendDetails(id){
     await this.showSendDetailsModal();
+    console.log("asasa");
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
-    let details = await policy.methods.getPolicy(id)
+    console.log("asasa");
+    console.log(id);
+    let details = await policy.methods.getPolicy("10140973")
         .call({from: this.state.account});
+        console.log(details);
     if(details && details[7]===true){
       const det = JSON.stringify({
         policyId: details[0], 
@@ -215,6 +219,7 @@ class Vendor extends Component {
       console.log(pii);
 
       const policyGoerli = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
+      console.log("send");
       policyGoerli.methods.sendDetails(id, pii)
       .send({from: this.state.account, gas:900000, gasPrice:20000000000})   
       .then (async (receipt) => {
@@ -296,6 +301,7 @@ class Vendor extends Component {
   }
 
   async completePorting(id){
+    console.log(id);
     await this.showCompletePortingModal();
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     await policy.methods.burn(id)
@@ -449,7 +455,7 @@ class Vendor extends Component {
         <Button onClick={() => { this.rejectRequest(id) }} basic color='red' disabled={rrb[status]}>
           Reject Request
         </Button>
-        <Button onClick={() => { this.completePorting(id) }} basic color='pink' disabled={cpb[status]}>
+        <Button onClick={() => { this.completePorting(10140973) }} basic color='pink' disabled={cpb[status]}>
           Complete Transfer
         </Button>
       </td>)

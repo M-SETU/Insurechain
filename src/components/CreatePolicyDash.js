@@ -301,14 +301,15 @@ class CreatePolicyDash extends Component {
       this.props.myOwner, 
       this.state.policySelected,
       this.state.portingReason)
-    .send({from: this.state.account, gas:500000, gasPrice:10000000000})   
+    .send({from: this.state.account, gas:700000, gasPrice:20000000000})   
     .then (async (receipt) => {
       console.log(receipt);
       this.hidePortModal();
       await this.handleLoop();
       await this.handlePortsLoop();
     })
-    .catch(async ()=> {
+    .catch(async (err)=> {
+      console.log(err);
       this.hidePortModal();
       await this.handleLoop();
       await this.handlePortsLoop();
@@ -316,6 +317,7 @@ class CreatePolicyDash extends Component {
   }
 
   async handlePortsLoop(){
+    console.log("asas");
     const policy = new this.state.web3Goerli.eth.Contract(Consortium, this.state.goerliAddress);
     var ids = await policy.methods.getAllIds()
     .call({from: this.state.account});
@@ -324,9 +326,14 @@ class CreatePolicyDash extends Component {
       if(ids[i]!=="0"){
         let details = await policy.methods.getPortPolicyDetails(ids[i])
           .call({from: this.state.account});
+          console.log(details);
         if(details && this.state.account === details[5]){  
             arr.push(details);
+            console.log(details);
+            console.log("asas");
         }
+        console.log("asas");
+        console.log(details);
       }
     }
     await this.setState({
