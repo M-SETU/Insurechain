@@ -7,16 +7,17 @@ Insurechain is a hybrid blockchain which enables seamless porting of the policie
 3. Insurechain is a solution which allows the enterprise to maintain a layer of privacy, along with scalability of transactions. Not only this, enterprises can take advantage of existing public blockchain, ethereum in this case, for security and validation. 
 4. This helps the enterprise get the scalability of transactions like private network by building on sidechain by Matic, validate transactions through a trust-minimized network by using public checkpointing validators and get benefit of Ethereum public chain’s security.
 
-## Architecture
+## Public Blockchain Architecture
 The basic working architecture of the public Matic Network chain can be studied here. However, here we take a step further and provide flexibility to what can be built on Matic Network. Apart from the public sidechain, we can build an enterprise sidechain or optimistic rollup sidechain or any other sidechain that wants to interact with the existing public architecture of Matic Network and benefit from the security provided by a public chain such as ethereum.
 
 
 ![Insurechain PPS](https://github.com/M-SETU/Insurechain/blob/master/PPS.png "Insurechain Architecture")
 
+## Technical Architecture of the Portal
+The Technical architecture of the Insurechain portal can be studued here. 
 
-WIP
+## Insurance portability using public Blockcahin
 
+## Customer Journeys: Customer onboarding, Claims & Porting of Health Insurance
 
-
-
-
+## Conclusion
