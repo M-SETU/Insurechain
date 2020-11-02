@@ -34,9 +34,6 @@ The following things happen on the public blockchain in the InsureChain Portal
 
 ## Customer Journeys: Customer onboarding, Claims & Porting of Health Insurance
 The UserFlow Diagram can be studued here.
-![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/User_flow.png "UserFlow Diagram")
-
-## Conclusion
 1. Vendor 1 & Vendor 2 have their own PPS commit chains which does\
    - Customer onboarding
    - Claim Handling
@@ -44,3 +41,14 @@ The UserFlow Diagram can be studued here.
 2. Consortium smart contract adding which does\
    - Interoperability between the vendors
    - Policy Transfers
+The UserFlow Diagram can be studued here.
+
+![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/User_flow.png "UserFlow Diagram")
+
+## Conclusion
+
+The Fourth Industrial Revolution will entirely depend on a few cutting edge technologies.
+This revolution will introduce new challenges as well as exciting opportunities. Tackling these challenges and exploiting the opportunity will solely rely on the effective usage of these Public Blockchains. 
+
+Realizing the potential of public Blockchains Insurechain a policy creation and porting platform has been created. 
+This will not just increase ease the process of policy creation but will also leverage public blockchain to port insurance policies hasslefree.
