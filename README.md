@@ -21,9 +21,7 @@ The Technical architecture of the Insurechain portal can be studued here.
 Ethereum, the world’s first fully-fledged smart-contract platform, provides exciting propositions. It is in fact Ethereum that is leading the innovation in the public blockchain domain and is being explored in a multitude of application areas.
 Application on Ethereum are making huge progress but the current blockchain ecosystem is not prepared to scale as per the demand because of slow block confirmations and high gas fees.
 
-
 Matic Network solves the above problems by building a decentralized platform using an adapted version of Plasma framework that provides a solution for faster and extremely low-cost transactions with finality on the main chain.
-
 
 The following things happen on the public blockchain in the InsureChain Portal
 1. Basic identifiable details of the customers
@@ -35,5 +33,14 @@ The following things happen on the public blockchain in the InsureChain Portal
    - Hashes of the claims
 
 ## Customer Journeys: Customer onboarding, Claims & Porting of Health Insurance
-![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/UserFlow.png "UserFlow Diagram")
+The UserFlow Diagram can be studued here.
+![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/User_flow.png "UserFlow Diagram")
+
 ## Conclusion
+1. Vendor 1 & Vendor 2 have their own PPS commit chains which does\
+   - Customer onboarding
+   - Claim Handling
+   - Portability Handling
+2. Consortium smart contract adding which does\
+   - Interoperability between the vendors
+   - Policy Transfers
