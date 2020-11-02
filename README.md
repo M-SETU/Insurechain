@@ -35,5 +35,5 @@ The following things happen on the public blockchain in the InsureChain Portal
    - Hashes of the claims
 
 ## Customer Journeys: Customer onboarding, Claims & Porting of Health Insurance
-
+![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/UserFlow.png "UserFlow Diagram")
 ## Conclusion
