@@ -65,15 +65,15 @@ The following things happen on the public blockchain in the InsureChain Portal
    - Hashes of the claims
 
 ## Customer Journeys: Customer onboarding, Claims & Porting of Health Insurance
-The UserFlow Diagram can be studued here.
-1. Vendor 1 & Vendor 2 have their own PPS commit chains which does\
+The UserFlow Diagram can be studied here.
+1. Vendor 1 & Vendor 2 have their own PPS commit chains which does
    - Customer onboarding
    - Claim Handling
    - Portability Handling
-2. Consortium smart contract adding which does\
+2. Consortium smart contract adding which does
    - Interoperability between the vendors
    - Policy Transfers
-The UserFlow Diagram can be studued here.
+The UserFlow Diagram can be studied here.
 
 ![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/User_flow.png "UserFlow Diagram")
 
