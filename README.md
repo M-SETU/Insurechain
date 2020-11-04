@@ -15,7 +15,7 @@ There are two main problems which need to be solved:
 The current process for porting insurance policies is time consuming, expensive and leads to errors in data and ultimately loss of coverage for the customer. When customers move from one insurer to another, the entire data footprint eg KYC docs, claims, medical docs etc. is created all over again. This means the process folowed to port the policy is the same as the process of creating a new policy. This leads to increased costs and lead time,costs and possible loss of cover for the customer in case all the claims data cannot be produced at the new insurer. 
 
 2. No Trasnparency or Accountability
-Even if two insurers are willing to co-operate with each other, there is no transparency in the process. This means that no SLA's can be enforced on porting the insurance and government bodies like IRDAI will also not have any visibility on the 
+Even if two insurers are willing to co-operate with each other, there is no transparency in the process. This means that no SLA's can be enforced on porting the insurance and government bodies like IRDAI will also not have any visibility on the portal
 
 ## Public Blockchain Architecture
 The basic working architecture of the public Matic Network chain can be studied here. However, here we take a step further and provide flexibility to what can be built on Matic Network. Apart from the public sidechain, we can build an enterprise sidechain or optimistic rollup sidechain or any other sidechain that wants to interact with the existing public architecture of Matic Network and benefit from the security provided by a public chain such as ethereum.
