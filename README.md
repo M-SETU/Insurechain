@@ -12,9 +12,11 @@ various private chains.
 There are two main problems which need to be solved:
 
 1. Broken Process
+
 The current process for porting insurance policies is time consuming, expensive and leads to errors in data and ultimately loss of coverage for the customer. When customers move from one insurer to another, the entire data footprint eg KYC docs, claims, medical docs etc. is created all over again. This means the process folowed to port the policy is the same as the process of creating a new policy. This leads to increased costs and lead time,costs and possible loss of cover for the customer in case all the claims data cannot be produced at the new insurer. 
 
 2. No Trasnparency or Accountability
+
 Even if two insurers are willing to co-operate with each other, there is no transparency in the process. This means that no SLA's can be enforced on porting the insurance and government bodies like IRDAI will also not have any visibility on the portal
 
 ## Public Blockchain Architecture
