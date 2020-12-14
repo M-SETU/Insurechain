@@ -1,8 +1,4 @@
-# M-SETU
-M-Setu is a hybrid blockchain which enables seamless porting of the policies between different vendors, allowing interoperability and interaction between 
-various private chains.
 
-## Idea behind M-SETU
 1. Hybrid blockchain includes benefits of both the openness of a public blockchain and restriction of a private network by limiting the access to join a network
 2. Private networks generate the record of transactions which are stored and verified on the public blockchain. These help in faster transaction speeds, privacy of the data.
 3. M-Setu is a solution which allows the enterprise to maintain a layer of privacy, along with scalability of transactions. Not only this, enterprises can take advantage of existing public blockchain, ethereum in this case, for security and validation. 
