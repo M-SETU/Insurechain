@@ -1,11 +1,11 @@
-# Insurechain
-Insurechain is a hybrid blockchain which enables seamless porting of the policies between different vendors, allowing interoperability and interaction between 
+# M-Setu
+M-Setu is a hybrid blockchain which enables seamless porting of the policies between different vendors, allowing interoperability and interaction between 
 various private chains.
 
-## Idea behind Insurechain
+## Idea behind M-Setu
 1. Hybrid blockchain includes benefits of both the openness of a public blockchain and restriction of a private network by limiting the access to join a network
 2. Private networks generate the record of transactions which are stored and verified on the public blockchain. These help in faster transaction speeds, privacy of the data.
-3. Insurechain is a solution which allows the enterprise to maintain a layer of privacy, along with scalability of transactions. Not only this, enterprises can take advantage of existing public blockchain, ethereum in this case, for security and validation. 
+3. M-Setu is a solution which allows the enterprise to maintain a layer of privacy, along with scalability of transactions. Not only this, enterprises can take advantage of existing public blockchain, ethereum in this case, for security and validation. 
 4. This helps the enterprise get the scalability of transactions like private network by building on sidechain by Matic, validate transactions through a trust-minimized network by using public checkpointing validators and get benefit of Ethereum public chain’s security.
 
 # Problem Statement
@@ -30,7 +30,7 @@ The basic working architecture of the public Matic Network chain can be studied 
 
 The major advantage is that it batches transactions on-chain, and reduces cost of user transaction. In this approach, not all of the data is exposed. The transaction data required for calling transactions, is transferred. However, the issue is that all the transactions are published. 
 
-![Insurechain PPS](https://github.com/M-SETU/Insurechain/blob/master/PPS.png "Matic Architecture")
+![M-Setu PPS](https://github.com/M-SETU/Insurechain/blob/master/PPS.png "Matic Architecture")
 
 # Using Public Ledger versus Private Ledger
 We have decided to use public ledgers to do the porting as it leads to reduced costs and increased security. This also prevents any particular insurer or government body from having dispropotionate power or influence in this system. 
@@ -41,12 +41,12 @@ However, the public ledger used to build this system should have high performanc
 # Technology used in the POC
 The POC is using a Goerli chain and 2 Matic chains to simulate the porting mechainsm between the insurance providers. 
 
-![Insurechain Arch](https://github.com/M-SETU/Insurechain/blob/phase-v1/Architecture.png "Insurechain Architecture")
+![M-Setu Arch](https://github.com/M-SETU/Insurechain/blob/phase-v1/Architecture.png "M-Setu Architecture")
 
 
 1. Hybrid blockchain includes benefits of both the openness of a public blockchain and restriction of a private network by limiting the access to join a network
 2. Private networks generate the record of transactions which are stored and verified on the public blockchain. These help in faster transaction speeds, privacy of the data.
-3. Insurechain is a solution which allows the enterprise to maintain a layer of privacy, along with scalability of transactions. Not only this, enterprises can take advantage of existing public blockchain, ethereum in this case, for security and validation. 
+3. M-Setu is a solution which allows the enterprise to maintain a layer of privacy, along with scalability of transactions. Not only this, enterprises can take advantage of existing public blockchain, ethereum in this case, for security and validation. 
 4. This helps the enterprise get the scalability of transactions like private network by building on sidechain by Matic, validate transactions through a trust-minimized network by using public checkpointing validators and get benefit of Ethereum public chain’s security.
 
 
@@ -57,7 +57,7 @@ Application on Ethereum are making huge progress but the current blockchain ecos
 
 Matic Network solves the above problems by building a decentralized platform using an adapted version of Plasma framework that provides a solution for faster and extremely low-cost transactions with finality on the main chain.
 
-The following things happen on the public blockchain in the InsureChain Portal
+The following things happen on the public blockchain in the M-Setu Portal
 1. Basic identifiable details of the customers
 2. Basic identifiable details of the vendors
 3. Metadata for NFTs\
@@ -84,5 +84,5 @@ The UserFlow Diagram can be studied here.
 The Fourth Industrial Revolution will entirely depend on a few cutting edge technologies.
 This revolution will introduce new challenges as well as exciting opportunities. Tackling these challenges and exploiting the opportunity will solely rely on the effective usage of these Public Blockchains. 
 
-Realizing the potential of public Blockchains Insurechain a policy creation and porting platform has been created. 
+Realizing the potential of public Blockchains M-Setu a policy creation and porting platform has been created. 
 This will not just increase ease the process of policy creation but will also leverage public blockchain to port insurance policies hasslefree.
