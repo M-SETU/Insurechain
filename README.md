@@ -79,6 +79,10 @@ The UserFlow Diagram can be studied here.
 
 ![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/User_flow.png "UserFlow Diagram")
 
+## Video Demo
+
+[![Insurechain Video demo](Screenshot 2020-12-18 at 4.37.13 PM.png)](https://drive.google.com/file/d/1hmPr25-C1rDK9lDcw7CsvH5VCATJchE0/view)
+
 ## Conclusion
 
 The Fourth Industrial Revolution will entirely depend on a few cutting edge technologies.
