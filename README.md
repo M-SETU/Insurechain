@@ -81,7 +81,7 @@ The UserFlow Diagram can be studied here.
 
 ## Video Demo
 
-[![Insurechain Video demo](Screenshot 2020-12-18 at 4.37.13 PM.png)](https://drive.google.com/file/d/1hmPr25-C1rDK9lDcw7CsvH5VCATJchE0/view)
+[![Insurechain Video demo](Video.png)](https://drive.google.com/file/d/1hmPr25-C1rDK9lDcw7CsvH5VCATJchE0/view)
 
 ## Conclusion
 
