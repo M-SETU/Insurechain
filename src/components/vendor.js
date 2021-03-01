@@ -199,7 +199,7 @@ class Vendor extends Component {
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     console.log("asasa");
     console.log(id);
-    let details = await policy.methods.getPolicy("10140973")
+    let details = await policy.methods.getPolicy(id)
         .call({from: this.state.account});
         console.log(details);
     if(details && details[7]===true){
@@ -249,14 +249,13 @@ class Vendor extends Component {
     const policy = new this.state.web3.eth.Contract(Policy, this.props.address);
     await policy.methods.addPortData(
       b["owner"],
-      // b["policyId"],
+      b["policyId"],
       b["personalDetails"],
       policyType,
       "Ported from "+this.state.vendorMapping[oldVendor],
       b["claimIds"],
       b["claimDetails"],
       b["periodOfIssuance"]
-
     )
     .send({from: this.state.account, gas:5000000, gasPrice:100000000000})
     .then (async (receipt) => {
@@ -455,7 +454,7 @@ class Vendor extends Component {
         <Button onClick={() => { this.rejectRequest(id) }} basic color='red' disabled={rrb[status]}>
           Reject Request
         </Button>
-        <Button onClick={() => { this.completePorting(10140973) }} basic color='pink' disabled={cpb[status]}>
+        <Button onClick={() => { this.completePorting(id) }} basic color='pink' disabled={cpb[status]}>
           Complete Transfer
         </Button>
       </td>)

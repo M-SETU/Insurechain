@@ -301,7 +301,7 @@ class CreatePolicyDash extends Component {
       this.props.myOwner, 
       this.state.policySelected,
       this.state.portingReason)
-    .send({from: this.state.account, gas:700000, gasPrice:20000000000})   
+    .send({from: this.state.account})   
     .then (async (receipt) => {
       console.log(receipt);
       this.hidePortModal();

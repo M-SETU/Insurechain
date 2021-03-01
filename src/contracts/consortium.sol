@@ -1,4 +1,6 @@
-pragma solidity ^0.6.12;
+// SPDX-License-Identifier: UNLICENSED
+
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 contract consortiumPolicy{
@@ -11,6 +13,7 @@ contract consortiumPolicy{
         string policyType;
         address owner;
         string status;
+        string reason;
     }
     
     uint256[] allPortIds;
@@ -29,13 +32,14 @@ contract consortiumPolicy{
         }
     }
     
-    function requestPort(uint256 _policyId, address _oldVendor, address _newVendor, string memory _policyType) external {
+    function requestPort(uint256 _policyId, address _oldVendor, address _newVendor, string memory _policyType, string memory _reason) external {
         allPortIds.push(_policyId);
         allPortRequests[_policyId].policyId = _policyId;
         allPortRequests[_policyId].oldVendor = _oldVendor;
         allPortRequests[_policyId].newVendor = _newVendor;
         allPortRequests[_policyId].owner = msg.sender;
         allPortRequests[_policyId].policyType = _policyType;
+        allPortRequests[_policyId].reason = _reason;
         allPortRequests[_policyId].status = "Application Submitted";
     }
     

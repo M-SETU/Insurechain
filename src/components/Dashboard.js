@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Web3 from 'web3'
 import Policy from '../abis/policy_1.json';
 import Portis from '@portis/web3';
-import logo from '../images/logos/Matic logo symbol.png';
+import logo from '../images/logos/polygon.png';
 import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import Vendor from "./vendor.js";
@@ -40,7 +40,7 @@ class Dashboard extends Component {
         showUser: false,
         showVendor: false,
         loginButtonDisabled: true,
-        heading: "Matic",
+        heading: "Polygon",
         
       };
 
@@ -244,7 +244,7 @@ class Dashboard extends Component {
                 </Modal.Footer>
               </Modal>
 
-                <nav className="navbar navbar-light" style={{backgroundColor:"#0B1647"}}>
+                <nav className="navbar navbar-light" style={{backgroundColor:"#8448E5"}}>
                     <div className=" col-0 navbar-brand" position="inline-block">
                       <NavLink to={{
                             pathname: '/',
@@ -254,6 +254,7 @@ class Dashboard extends Component {
                         color: "white",
                         top: "22px",
                         fontSize: "20px",
+                        paddingLeft: "8px",
                         fontFamily: "arial"}}>{this.state.heading}</b>
                       </NavLink> 
                     </div>
@@ -276,7 +277,7 @@ class Dashboard extends Component {
                         <NavLink to={{
                             pathname: '/',
                         }}>
-                          <Button onClick={this.login} basic color='green'  disabled= {this.state.loginButtonDisabled} >
+                          <Button onClick={this.login} color="black" disabled= {this.state.loginButtonDisabled} >
                             {this.state.loginText}
                           </Button>
                         </NavLink>

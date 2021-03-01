@@ -1,4 +1,5 @@
-pragma solidity ^0.6.12;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 
@@ -77,12 +78,12 @@ contract cryptoPolicy is ERC721{
         uint256 _periodOfIssuance
     ) external returns (uint256) {
         uint256 policyId = uint256(
-            keccak256(abi.encodePacked(now, msg.sender, nonce))
+            keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))
         ) % 100000;
         nonce++;
         if(userCustomerId[msg.sender] == 0){
             uint256 custId = uint256(
-                keccak256(abi.encodePacked(now, msg.sender, nonce))
+                keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))
             ) % 100000;
             custId =custId + 1;
             userCustomerId[msg.sender]=custId;
@@ -118,7 +119,7 @@ contract cryptoPolicy is ERC721{
     ) external {
         require(userCustomerId[msg.sender] == policies[_policyId].customerId);
         uint256 id = uint256(
-            keccak256(abi.encodePacked(now, msg.sender, nonce))
+            keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))
         ) % 100000;
         id = id + 1;
         nonce++;
@@ -149,7 +150,7 @@ contract cryptoPolicy is ERC721{
         require(msg.sender == admin);
         if(userCustomerId[_owner] == 0){
             uint256 custId = uint256(
-                keccak256(abi.encodePacked(now, _owner, nonce))
+                keccak256(abi.encodePacked(block.timestamp, _owner, nonce))
             ) % 100000;
             custId =custId + 1;
             userCustomerId[_owner]=custId;
