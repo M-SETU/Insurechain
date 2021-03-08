@@ -41,7 +41,7 @@ However, the public ledger used to build this system should have high performanc
 # Technology used in the POC
 The POC uses a Goerli chain and 2 Polygon proof of stake chains to simulate the insurance providers' porting mechanism. 
 
-![M-Setu Arch](https://github.com/M-SETU/Insurechain/blob/phase-v1/Architecture.png "M-Setu Architecture")
+![M-Setu Arch](https://github.com/M-SETU/Insurechain/blob/master/Architecture.png "M-Setu Architecture")
 
 
 1. Public-Private Blockchain includes benefits of both the openness of a public blockchain and confidentiality of a private network by limiting the access to join a network
@@ -77,7 +77,7 @@ The user flow Diagram can be studied here.
    - Policy Transfers
 The user flow Diagram can be studied here.
 
-![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/phase-v1/User_flow.png "UserFlow Diagram")
+![UserFlow Diagram](https://github.com/M-SETU/Insurechain/blob/master/User_flow.png "UserFlow Diagram")
 
 ## Video Demo
 
