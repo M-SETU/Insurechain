@@ -3,6 +3,8 @@ M-Setu is a hybrid blockchain that enables seamless porting of the policies betw
 public and private Blockchain.
 
 ## Idea behind Insurechain
+The idea of M-Setu came from building a bridge between public and private blockchain within Ethereum ecosystem. Snaket can add further by taking example of polkadot on bitcoin. 
+
 1. Public-Private Blockchain includes benefits of both the openness of a public blockchain and confidentiality of a private network by limiting the access to join a network
 2. Private networks generate the record of transactions that are stored and verified on the public Blockchain. These help in faster transaction speeds, the privacy of the data.
 3. M-Setu is a solution that allows any company to maintain a layer of privacy along with public verifiability of the transactions. 
