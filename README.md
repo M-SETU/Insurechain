@@ -1,9 +1,9 @@
 # M-Setu
-M-Setu is a hybrid blockchain that enables seamless porting of the policies between different vendors, allowing interoperability and interaction between 
-public and private Blockchain.
+M-Setu is a hybrid blockchain that enables seamless porting of the policies between different vendors, allowing interoperability and interaction between public and private Blockchain.
 
 ## Idea behind Insurechain
-The idea of M-Setu came from building a bridge between public and private blockchain within Ethereum ecosystem. Snaket can add further by taking example of polkadot on bitcoin. 
+The idea of M-Setu came from building a bridge between public and private blockchain within the Ethereum ecosystem.
+This is an outcome of multiple discussions between Infosys Consulting and Polygon on the basis of domain expertise of Infosys Consulting in insurance sector and Polygon's expertise in the area of blockchain. 
 
 1. Public-Private Blockchain includes benefits of both the openness of a public blockchain and confidentiality of a private network by limiting the access to join a network
 2. Private networks generate the record of transactions that are stored and verified on the public Blockchain. These help in faster transaction speeds, the privacy of the data.
@@ -11,7 +11,7 @@ The idea of M-Setu came from building a bridge between public and private blockc
 4. This helps the enterprise get the scalability of transactions like private Blockchain by building on a sidechain by Polygon and validating transactions through a trust-minimized network using public checkpointing validators that finally commit it on Ethereum main chain to provide verifiable public proof.
 
 # Problem Statement
-There are two main problems which need to be solved:
+In our experience working with multiple insurance companies, there are two main pain points that need to be solved:
 
 1. Broken Process
 
@@ -21,8 +21,12 @@ The current process for porting insurance policies is time-consuming, expensive,
 
 Even if two insurers are willing to cooperate, there is no transparency in the process. No service level agreements (SLA) are enforced on porting the insurance, and government bodies like IRDAI will not have any visibility on the portal.
 
+## Design Considerations
+In the following section, let us cover the salient points of the technical solution and the architecture.
+We will also cover the rationale of choosing a given functionality on the basis of domain expertise of Infosys Consulting in insurance sector.
+
 ## Public Blockchain Architecture
-The basic working architecture of the public Polygon Network chain can be studied here. However, here we take a step further and provide a proof-of-concept(POC) on the possibilities of using Polygon Network. Apart from the public sidechain, we can build an enterprise sidechain or optimistic rollup or any other sidechain that wants to interact with the existing public architecture of Polygon Network and benefit from the security provided by a public chain such as Ethereum.
+In this section, we provide a proof-of-concept(POC) on how we address these business challenges using Polygon Network. Apart from the public Proof-of-Stake (PoS) chain, we can build an enterprise sidechain or optimistic rollup or any other sidechain that wants to interact with the existing public architecture of Polygon Network and benefit from the security provided by a public chain such as Ethereum.
 
 ### How Does it Work
 1. A user does a normal transaction off-chain to an aggregator (block producer)
@@ -34,32 +38,23 @@ The significant advantage is that it batches transactions on-chain and reduces t
 
 ![M-Setu PPS](https://github.com/M-SETU/Insurechain/blob/master/PPS.png "Matic Architecture")
 
-# Using Public Ledger versus Private Ledger
-We have decided to use public ledgers to do the porting to reduce costs and increase security. That also prevents any particular insurer or government body from having disproportionate power or influence in this system. 
-The PoC can be deployed using a permissioned ledger, but this will lead to centralization of power, where the body running the private infrastructure will have the power to add/remove nodes and thereby control which transactions are valid ones are not. That will ultimately defeat the purpose of using blockchain technology as this system would not be trust-minimized.
+# Rationale for choosing Public Ledger over Private Ledger
+We decided to choose a public ledger for the insurance porting to reduce costs and increase security. This architecture prevents any particular insurer or government body from having disproportionate power or influence in this system. 
+The Proof of concept (PoC) can be deployed using a permissioned ledger, but this will lead to centralization of power, where the body running the private infrastructure will have the power to add/remove nodes and thereby control which transactions are valid ones and which are not. That will ultimately defeat the purpose of using blockchain technology as this system would not be trust-minimized.
 
-However, the public ledger used to build this system should have high performance and low cost per transaction to make the system viable. For this purpose, we have decided to use the Polygon Network public ledger as it supports 7200+ TPS at a transaction cost of less than $0.00003. 
+In order to have high performance and low cost per transaction to make the system commerically viable, we decided to use the Polygon Network's public ledger (PoS chain) as it can support upto 7200+ transaction per sec (tps) at a transaction cost of less than $0.00003 per transaction. 
 
-# Technology used in the POC
-The POC uses a Goerli chain and 2 Polygon proof of stake chains to simulate the insurance providers' porting mechanism. 
+# High-level Technical Architecture and its advantages
 
 ![M-Setu Arch](https://github.com/M-SETU/Insurechain/blob/master/Architecture.png "M-Setu Architecture")
 
-
 1. Public-Private Blockchain includes benefits of both the openness of a public blockchain and confidentiality of a private network by limiting the access to join a network
 2. Private networks generate the record of transactions that are stored and verified on the public Blockchain. These help in faster transaction speeds, the privacy of the data.
-3. M-Setu is a solution that allows any company to maintain a layer of privacy along with public verifiability of the transactions. 
-4. This helps the enterprise get the scalability of transactions like private Blockchain by building on a sidechain by Polygon and validating transactions through a trust-minimized network using public checkpointing validators that finally commit it on Ethereum main chain to provide verifiable public proof.
-
-
+3. M-Setu is a solution that allows any enterprise to maintain a layer of privacy along with public verifiability of the transactions. 
 
 ## Insurance portability using public Blockchain
-Ethereum, the world's first fully-fledged smart-contract platform, provides exciting propositions. Ethereum is leading the innovation in the public blockchain domain.
-Decentralized application on Ethereum is making tremendous progress. However, the current blockchain ecosystem is not prepared to scale due to slow block confirmations and high gas fees.
+We have modelled an insurance policy as Non-fungible token (NFT) as per the ERC-721 specification. We capture the following data objects for this PoC.
 
-Polygon Network solves the above problems by building a protocol for building and connecting Ethereum-compatible blockchain networks for faster and extremely low-cost transactions with commit on the Ethereum main chain.
-
-The following things happen on the public Blockchain in the M-Setu Portal
 1. Basic identifiable details of the customers
 2. Basic identifiable details of the vendors
 3. Metadata for NFTs\
@@ -85,10 +80,12 @@ The user flow Diagram can be studied here.
 
 [![Insurechain Video demo](Video.png)](https://drive.google.com/file/d/140nkdJTaBX_qfekZsVtRshdBNxEdVfSd/view)
 
+## Future Enhancements
+
+As per the roadmap of Polygon, an Software Development Kit (SDK) will enable Stand Alone and Secured Chains. In the future we can add the new functionality such as zk-rollups, optimistic rollups, Arbitrum roll ups etc. to expose non-sensitive information on the chain to the public/external world. This will allow insurance companies to have third-party application developers build richer functionality on the top of the existing m-Setu platform. Please refer to [Polygon lightpaper](https://polygon.technology/lightpaper-polygon.pdf) for more details on the upcoming technologies.
+
 ## Conclusion
 
-The Fourth Industrial Revolution will entirely depend on a few cutting-edge technologies.
-This revolution will introduce new challenges as well as exciting opportunities. Tackling these challenges and exploiting the opportunity will solely rely on the practical usage of these Public Blockchains. 
+The PoC is the synergy between the domain expertise of Infosys Consulting in the insurance sector and Polygon's path-breaking blockchain technology. Future enhancement to this PoC can be considered on the basis of business requirements. 
 
-Realizing the potential of public Blockchains M-Setu a policy creation and porting platform, is built as a PoC in partnership with Infosys.
-The idea is to ease insurance policy creation and leverage public Blockchain to port insurance policies hassle-free.
+
