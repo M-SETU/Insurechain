@@ -6,7 +6,7 @@ The idea of M-Setu came from building a bridge between public and private blockc
 This is an outcome of multiple discussions between Infosys Consulting and Polygon on the basis of domain expertise of Infosys Consulting in insurance sector and Polygon's expertise in the area of blockchain. 
 
 1. Public-Private Blockchain includes benefits of both the openness of a public blockchain and confidentiality of a private network by limiting the access to join a network
-2. Private networks generate the record of transactions that are stored and verified on the public Blockchain. These help in faster transaction speeds, the privacy of the data.
+2. Private networks generate the record of transactions that are stored and verified on the public Blockchain. These help in faster transaction speeds.
 3. M-Setu is a solution that allows any company to maintain a layer of privacy along with public verifiability of the transactions. 
 4. This helps the enterprise get the scalability of transactions like private Blockchain by building on a sidechain by Polygon and validating transactions through a trust-minimized network using public checkpointing validators that finally commit it on Ethereum main chain to provide verifiable public proof.
 
