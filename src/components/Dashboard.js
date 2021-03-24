@@ -4,6 +4,7 @@ import Web3 from 'web3'
 import Policy from '../abis/policy_1.json';
 import Portis from '@portis/web3';
 import logo from '../images/logos/polygon.png';
+import infosysLogo from '../images/logos/infosys.png';
 import {Route, Switch, NavLink } from 'react-router-dom';
 import CreatePolicyDash from "./CreatePolicyDash.js";
 import Vendor from "./vendor.js";
@@ -40,7 +41,7 @@ class Dashboard extends Component {
         showUser: false,
         showVendor: false,
         loginButtonDisabled: true,
-        heading: "Polygon",
+        heading: "",
         
       };
 
@@ -138,7 +139,7 @@ class Dashboard extends Component {
     async loadWeb3() {
       const portis = new Portis('8f5bb2d2-4810-4f48-8023-df9f6cfc9711', this.state.config,  { scope: ['email']});
       const portisGoerli = new Portis('8f5bb2d2-4810-4f48-8023-df9f6cfc9711', {
-        nodeUrl: 'https://rpc.goerli.mudit.blog/', 
+        nodeUrl: 'https://goerli.infura.io/v3/166476a8c1cc4b4c93f6f81b2c97aeb1', 
         chainId: 5
       });
       portis.onLogin(async (walletAddress, email) => {
@@ -244,11 +245,20 @@ class Dashboard extends Component {
                 </Modal.Footer>
               </Modal>
 
-                <nav className="navbar navbar-light" style={{backgroundColor:"#8448E5"}}>
+                <nav className="navbar navbar-light" style={{backgroundColor:"#00145B"}}>
                     <div className=" col-0 navbar-brand" position="inline-block">
                       <NavLink to={{
                             pathname: '/',
-                      }}><img src={logo} style = {{width: "40px" , height: "40px"}} />
+                      }}>
+                      <img src={logo} style = {{width: "40px" , height: "40px"}} />
+                      <b style={{
+                        position: "absolute",
+                        color: "white",
+                        top: "22px",
+                        fontSize: "20px",
+                        paddingLeft: "8px",
+                        fontFamily: "arial"}}>Polygon</b>
+                      <img src={infosysLogo} style = {{width: "290px" , height: "40px", paddingLeft: "90px"}} />
                       <b style={{
                         position: "absolute",
                         color: "white",
@@ -277,7 +287,7 @@ class Dashboard extends Component {
                         <NavLink to={{
                             pathname: '/',
                         }}>
-                          <Button onClick={this.login} color="black" disabled= {this.state.loginButtonDisabled} >
+                          <Button onClick={this.login}  disabled= {this.state.loginButtonDisabled} >
                             {this.state.loginText}
                           </Button>
                         </NavLink>
